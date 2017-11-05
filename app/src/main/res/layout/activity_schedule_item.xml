@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    tools:context="com.rafhaanshah.studyassistant.ScheduleItemActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Title"
+            android:inputType="textPersonName"
+            android:maxLength="35"
+            android:paddingTop="10dp" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:paddingTop="20dp">
+
+            <Button
+                android:id="@+id/dateButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:onClick="pickDate"
+                android:text="Pick Date" />
+
+            <Button
+                android:id="@+id/timeButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:onClick="pickTime"
+                android:text="Pick Time" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:hint="Date" />
+
+            <TextView
+                android:id="@+id/timeText"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:hint="Time" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/notesText"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:hint="Additional Notes"
+            android:inputType="textMultiLine"
+            android:maxLength="250"
+            android:paddingTop="20dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:paddingTop="20dp">
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:onClick="saveItem"
+                android:text="Save" />
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:onClick="deleteItem"
+                android:text="Delete" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.adapters.ItemAdapter;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScheduleFragment extends Fragment {
     public static ScheduleFragment newInstance() {
@@ -23,33 +21,25 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
         return inflater.inflate(R.layout.fragment_schedule, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        //create the ItemAdapter holding your Items
-        ItemAdapter itemAdapter = new ItemAdapter();
-        //create the managing FastAdapter, by passing in the itemAdapter
-        FastAdapter fastAdapter = FastAdapter.with(itemAdapter);
-
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
-        //set our adapters to the RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(fastAdapter);
-
-        //set the items to your ItemAdapter
-        ArrayList<ScheduleItem> items = new ArrayList<>();
-        items.add(new ScheduleItem(1, "A"));
-        items.add(new ScheduleItem(2, "B"));
-        itemAdapter.add(items);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        // use a linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        List<String> input = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            input.add("Test" + i);
+        }// define an adapter
+        RecyclerView.Adapter mAdapter = new ScheduleRecyclerAdapter(input);
+        recyclerView.setAdapter(mAdapter);
+        super.onViewCreated(view, savedInstanceState);
     }
-
 }

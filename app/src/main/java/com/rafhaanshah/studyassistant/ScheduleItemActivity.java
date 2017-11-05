@@ -6,6 +6,8 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,14 +29,55 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     private String title, type, dueDate, dueTime, notes;
     private long epochTime;
     private int day, month, year, hour, minute;
+    private boolean newItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_item);
 
-        setSpinner();
+        String item = getIntent().getStringExtra("item");
+        if (item == null) {
+            newItem = true;
+            findViewById(R.id.finishButton).setVisibility(View.INVISIBLE);
+        } else {
 
+        }
+        setSpinner();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (newItem) {
+            return false;
+        } else {
+            getMenuInflater().inflate(R.menu.schedule_item_menu, menu);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.deleteButton:
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm Delete")
+                        .setMessage("Are you sure you want to delete this item?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //TODO: delete item, check if exists first
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                return true;
+        }
+        return false;
     }
 
     public void setSpinner() {
@@ -46,7 +89,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         List<String> categories = new ArrayList<String>();
         categories.add("Homework");
-        categories.add("Coursework Assignement");
+        categories.add("Coursework Assignment");
         categories.add("Class Test");
         categories.add("Exam");
 
@@ -71,22 +114,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         finish();
     }
 
-    public void deleteItem(View v) {
-        AlertDialog ad = new AlertDialog.Builder(this)
-                .setTitle("Confirm Delete")
-                .setMessage("Are you sure you want to delete this item?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //TODO: delete item, check if exists first
-                        finish();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
+    public void finishItem(View v) {
+        //TODO: mark as completed. Hide button if new item, and delete button
+        return;
 
     }
 

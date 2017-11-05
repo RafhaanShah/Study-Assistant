@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content, ScheduleFragment.newInstance());
         transaction.commit();
-
     }
 
     public void newScheduleItem(View v) {

@@ -1,75 +1,53 @@
 package com.rafhaanshah.studyassistant;
 
-import android.support.annotation.NonNull;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
+import io.realm.RealmObject;
 
-import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.items.AbstractItem;
+public class ScheduleItem extends RealmObject {
+    private int ID;
+    private String title, type, notes;
+    private Long time;
 
-import java.util.List;
+    public int getID() {
+        return ID;
+    }
 
-/**
- * Created by Raf on 05/11/2017.
- */
-
-public class ScheduleItem extends AbstractItem<ScheduleItem, ScheduleItem.ViewHolder> {
-    public int ID;
-    public String title;
-
-    ScheduleItem(int num, String text) {
-        ID = num;
-        title = text;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getTitle() {
         return title;
     }
 
-    //The unique ID for this type of item
-    @Override
-    public int getType() {
-        return ID;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    //The layout to be used for this type of item
-    @Override
-    public int getLayoutRes() {
-        return R.layout.schedule_item;
+    public String getType() {
+        return type;
     }
 
-    @Override
-    public ViewHolder getViewHolder(@NonNull View v) {
-        return new ViewHolder(v);
+    public void setType(String type) {
+        this.type = type;
     }
 
-    protected static class ViewHolder extends FastAdapter.ViewHolder<ScheduleItem> {
-        TextView title;
-        TextView date;
-
-        public ViewHolder(View view) {
-            super(view);
-            title = view.findViewById(R.id.itemTitle);
-            date = view.findViewById(R.id.itemDate);
-        }
-
-        @Override
-        public void bindView(ScheduleItem item, List<Object> payloads) {
-            Log.v("ITEM", payloads.toString());
-            Log.v("ITEM", String.valueOf(payloads.size()));
-            //title.setText(payloads.get(0).toString());
-            //date.setText(payloads.get(1).toString());
-            title.setText(item.getTitle());
-            date.setText(String.valueOf(item.getType()));
-        }
-
-        @Override
-        public void unbindView(ScheduleItem item) {
-            title.setText(null);
-            date.setText(null);
-        }
+    public String getNotes() {
+        return notes;
     }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
+    }
+
+
 }
 
 

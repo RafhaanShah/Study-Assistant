@@ -93,13 +93,13 @@
                 android:text="Save" />
 
             <Button
-                android:id="@+id/cancelButton"
+                android:id="@+id/finishButton"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:onClick="deleteItem"
-                android:text="Delete" />
+                android:onClick="finishItem"
+                android:text="Mark Completed" />
 
         </RelativeLayout>
 

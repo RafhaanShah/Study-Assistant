@@ -6,6 +6,7 @@ public class ScheduleItem extends RealmObject {
     private int ID;
     private String title, type, notes;
     private Long time;
+    private boolean completed;
 
     public int getID() {
         return ID;
@@ -47,6 +48,13 @@ public class ScheduleItem extends RealmObject {
         this.time = time;
     }
 
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
 
 }
 

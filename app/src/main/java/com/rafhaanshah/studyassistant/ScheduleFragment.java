@@ -8,11 +8,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class ScheduleFragment extends Fragment {
+
+    private Realm realm;
+    private RealmResults<ScheduleItem> items;
+    private ScheduleRecyclerAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
+
     public static ScheduleFragment newInstance() {
         ScheduleFragment fragment = new ScheduleFragment();
         return fragment;
@@ -21,6 +29,7 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -30,16 +39,31 @@ public class ScheduleFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        List<String> input = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            input.add("Test" + i);
-        }// define an adapter
-        RecyclerView.Adapter mAdapter = new ScheduleRecyclerAdapter(input);
-        recyclerView.setAdapter(mAdapter);
+
+        recyclerAdapter = new ScheduleRecyclerAdapter(items);
+        recyclerView.setAdapter(recyclerAdapter);
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        items = realm.where(ScheduleItem.class).equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
+        recyclerAdapter.updateData(items);
+        recyclerView.invalidate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close(); // Remember to close Realm when done.
+    }
+
+    public void showCompleted() {
+        Toast.makeText(getContext(), "TOAST", Toast.LENGTH_SHORT).show();
     }
 }

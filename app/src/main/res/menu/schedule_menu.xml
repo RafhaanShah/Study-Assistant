@@ -4,16 +4,9 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/button1"
-        android:icon="@drawable/ic_picture_as_pdf_black_24dp"
-        android:title="Delete"
+        android:id="@+id/historyButton"
+        android:icon="@drawable/ic_history_white_24dp"
+        android:title="History"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/button2"
-        android:icon="@drawable/ic_find_in_page_black_24dp"
-        android:title="Delete"
-        app:showAsAction="always" />
-
 
 </menu>

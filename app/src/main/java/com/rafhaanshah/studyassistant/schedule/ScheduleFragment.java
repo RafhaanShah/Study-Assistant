@@ -1,4 +1,4 @@
-package com.rafhaanshah.studyassistant;
+package com.rafhaanshah.studyassistant.schedule;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.rafhaanshah.studyassistant.R;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -20,6 +22,7 @@ public class ScheduleFragment extends Fragment {
     private RealmResults<ScheduleItem> items;
     private ScheduleRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
+    private boolean history;
 
     public static ScheduleFragment newInstance() {
         ScheduleFragment fragment = new ScheduleFragment();
@@ -64,6 +67,16 @@ public class ScheduleFragment extends Fragment {
     }
 
     public void showCompleted() {
-        Toast.makeText(getContext(), "TOAST", Toast.LENGTH_SHORT).show();
+        if (!history) {
+            history = true;
+            Toast.makeText(getContext(), "Completed events", Toast.LENGTH_SHORT).show();
+            items = realm.where(ScheduleItem.class).equalTo("completed", true).findAllSorted("time", Sort.DESCENDING);
+            recyclerAdapter.updateData(items);
+            recyclerView.invalidate();
+        } else {
+            history = false;
+            Toast.makeText(getContext(), "Incomplete events", Toast.LENGTH_SHORT).show();
+            onResume();
+        }
     }
 }

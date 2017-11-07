@@ -11,10 +11,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.rafhaanshah.studyassistant.schedule.ScheduleFragment;
+import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
+
 public class MainActivity extends AppCompatActivity {
 
     private Menu menu;
     private Fragment selectedFragment;
+    private boolean scheduleHistory;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -25,12 +29,15 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     selectedFragment = ScheduleFragment.newInstance();
+                    scheduleSelected();
                     break;
                 case R.id.navigation_dashboard:
                     selectedFragment = FlashCardFragment.newInstance();
+                    flashCardSelected();
                     break;
                 case R.id.navigation_notifications:
                     selectedFragment = LectureFragment.newInstance();
+                    lectureSelected();
                     break;
             }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -67,11 +74,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         //TODO: Change the menu to change based on which fragment
         switch (item.getItemId()) {
-            case R.id.deleteButton:
-                menu.clear();
-                getMenuInflater().inflate(R.menu.schedule_menu, menu);
-                return true;
-            case R.id.button1:
+            case R.id.historyButton:
+                if (scheduleHistory) {
+                    scheduleHistory = false;
+                    getSupportActionBar().setTitle("Schedule");
+                } else {
+                    scheduleHistory = true;
+                    getSupportActionBar().setTitle("History");
+                }
                 ScheduleFragment frag = (ScheduleFragment) selectedFragment;
                 frag.showCompleted();
         }
@@ -82,4 +92,23 @@ public class MainActivity extends AppCompatActivity {
         Intent nextScreen = new Intent(getApplicationContext(), ScheduleItemActivity.class);
         startActivity(nextScreen);
     }
+
+    private void scheduleSelected() {
+        menu.clear();
+        getSupportActionBar().setTitle("Schedule");
+        getMenuInflater().inflate(R.menu.schedule_menu, menu);
+    }
+
+    private void flashCardSelected() {
+        menu.clear();
+        getSupportActionBar().setTitle("Flash Cards");
+        //getMenuInflater().inflate(R.menu.schedule_menu, menu);
+    }
+
+    private void lectureSelected() {
+        menu.clear();
+        getSupportActionBar().setTitle("Lecturess");
+        //getMenuInflater().inflate(R.menu.schedule_menu, menu);
+    }
+
 }

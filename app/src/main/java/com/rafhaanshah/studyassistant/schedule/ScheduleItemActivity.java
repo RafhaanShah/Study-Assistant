@@ -1,4 +1,4 @@
-package com.rafhaanshah.studyassistant;
+package com.rafhaanshah.studyassistant.schedule;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -16,10 +16,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.rafhaanshah.studyassistant.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,11 +55,16 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         if (item == null) {
             newItem = true;
             findViewById(R.id.finishButton).setVisibility(View.INVISIBLE);
+            Button saveButton = findViewById(R.id.saveButton);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) saveButton.getLayoutParams();
+            params.addRule(RelativeLayout.CENTER_IN_PARENT);
+            params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            params.width = 500;
+            saveButton.setLayoutParams(params);
         } else {
             newItem = false;
             setFields(Integer.valueOf(item));
         }
-
     }
 
     private void setFields(int ID) {
@@ -206,7 +214,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        // On selecting a spinner item
         type = adapterView.getItemAtPosition(i).toString();
     }
 
@@ -224,7 +231,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             day = c.get(Calendar.DAY_OF_MONTH);
         }
 
-        //Launch date picker dialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
@@ -250,7 +256,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             minute = c.get(Calendar.MINUTE);
         }
 
-        // Launch time picker dialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
@@ -266,7 +271,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     private long parseDateTime(String date, String time) {
-        SimpleDateFormat df = new SimpleDateFormat("dd/mm/yyyy HH:mm");
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date epochDate = null;
         try {
             epochDate = df.parse(date + " " + time);

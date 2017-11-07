@@ -1,4 +1,4 @@
-package com.rafhaanshah.studyassistant;
+package com.rafhaanshah.studyassistant.schedule;
 
 import io.realm.RealmObject;
 

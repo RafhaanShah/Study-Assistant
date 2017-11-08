@@ -8,7 +8,8 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:minHeight="50dp"
+    android:maxHeight="60dp"
+    android:minHeight="60dp"
     card_view:cardBackgroundColor="@android:color/transparent"
     card_view:cardCornerRadius="4dp"
     card_view:cardElevation="2dp">
@@ -21,25 +22,38 @@
         <View
             android:id="@+id/rectangle"
             android:layout_width="15dp"
-            android:layout_height="50dp"
-            android:background="@drawable/rectangle"
-            android:backgroundTint="@color/scheduleGreen" />
+            android:layout_height="60dp" />
 
         <TextView
             android:id="@+id/itemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:paddingLeft="20dp"
+            android:layout_alignParentStart="true"
+            android:paddingStart="20dp"
             android:text="TITLE"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/itemType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:paddingBottom="4dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="20dp"
+            android:text="TYPE"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/itemDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:paddingRight="4dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:paddingBottom="4dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="4dp"
             android:text="DATE"
             android:textSize="15sp" />
 

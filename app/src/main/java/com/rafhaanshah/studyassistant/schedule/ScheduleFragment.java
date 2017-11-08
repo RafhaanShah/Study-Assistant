@@ -56,6 +56,7 @@ public class ScheduleFragment extends Fragment {
     public void onResume() {
         super.onResume();
         items = realm.where(ScheduleItem.class).equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
+        history = false;
         recyclerAdapter.updateData(items);
         recyclerView.invalidate();
     }

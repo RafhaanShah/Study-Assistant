@@ -71,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        scheduleHistory = false;
+        getSupportActionBar().setTitle("Schedule");
+    }
+
+
+    //TODO: On resume reset title bar, get rid of toast on click of item
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //TODO: Change the menu to change based on which fragment
         switch (item.getItemId()) {

@@ -1,14 +1,17 @@
 package com.rafhaanshah.studyassistant.schedule;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
 
@@ -18,8 +21,10 @@ import java.util.Date;
 import io.realm.RealmResults;
 
 public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecyclerAdapter.ViewHolder> {
-    private final long daySeconds = 86400;
+    private final long msDay = 86400000;
+    private final long msHour = 3600000;
     private RealmResults<ScheduleItem> values;
+    private Context context;
 
     public ScheduleRecyclerAdapter(RealmResults<ScheduleItem> dataset) {
         values = dataset;
@@ -29,31 +34,43 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     public ScheduleRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.schedule_item, parent, false);
+        context = v.getContext();
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ScheduleItem item = values.get(position);
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy");
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
-        int colour = R.color.scheduleGreen;
+        String showTime = dateTimeFormat.format(new Date(eventTime));
+        int colour = ContextCompat.getColor(context, R.color.scheduleGreen);
 
-        if (eventTime < currentTime) {
-            colour = R.color.scheduleRed;
-        } else if (eventTime < (currentTime + (daySeconds * 3))) {
-            colour = R.color.scheduleOrange;
+        if (!item.isCompleted()) {
+            if (eventTime < currentTime) {
+                colour = ContextCompat.getColor(context, R.color.scheduleRed);
+                showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.DAY_IN_MILLIS);
+            } else if (eventTime < (currentTime + (msDay * 3))) {
+                colour = ContextCompat.getColor(context, R.color.scheduleOrange);
+                //TODO: if today, show time
+                showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.DAY_IN_MILLIS);
+            }
+        } else {
+            colour = ContextCompat.getColor(context, R.color.scheduleBlue);
         }
 
-        //TODO: Set colour
-        //holder.rectangle.getBackground().setColorFilter(new PorterDuffColorFilter(colour, PorterDuff.Mode.DARKEN));
+        GradientDrawable shape = new GradientDrawable();
+        shape.setColor(colour);
+        shape.setShape(GradientDrawable.RECTANGLE);
+        holder.rectangle.setBackground(shape);
+
         holder.titleText.setText(item.getTitle());
-        holder.timeText.setText(dateTimeFormat.format(new Date(eventTime)));
+        holder.timeText.setText(showTime);
+        holder.typeText.setText(item.getType());
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), String.valueOf(eventTime) + "-" + String.valueOf(currentTime), Toast.LENGTH_LONG).show();
                 Intent nextScreen = new Intent(v.getContext(), ScheduleItemActivity.class);
                 nextScreen.putExtra("item", String.valueOf(item.getID()));
                 v.getContext().startActivity(nextScreen);
@@ -61,13 +78,12 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         });
     }
 
-    // Return the size of your data set (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return values.size();
     }
 
-    public void updateData(RealmResults<ScheduleItem> items) {
+    void updateData(RealmResults<ScheduleItem> items) {
         values = items;
         notifyDataSetChanged();
     }
@@ -75,6 +91,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView titleText;
         private TextView timeText;
+        private TextView typeText;
         private View rectangle;
         private CardView cardView;
 
@@ -82,6 +99,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             super(v);
             titleText = v.findViewById(R.id.itemTitle);
             timeText = v.findViewById(R.id.itemDate);
+            typeText = v.findViewById(R.id.itemType);
             rectangle = v.findViewById(R.id.rectangle);
             cardView = v.findViewById(R.id.cardView);
         }

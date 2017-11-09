@@ -3,6 +3,7 @@ package com.rafhaanshah.studyassistant.schedule;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,12 +12,13 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -47,6 +49,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_item);
+        getSupportActionBar().setTitle("Event");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         realm = Realm.getDefaultInstance();
         setSpinner();
@@ -54,12 +58,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         String item = getIntent().getStringExtra("item");
         if (item == null) {
             newItem = true;
-            findViewById(R.id.finishButton).setVisibility(View.INVISIBLE);
+            findViewById(R.id.finishButton).setVisibility(View.GONE);
             Button saveButton = findViewById(R.id.saveButton);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) saveButton.getLayoutParams();
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            params.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            params.width = 500;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            params.weight = 2;
             saveButton.setLayoutParams(params);
         } else {
             newItem = false;
@@ -91,17 +93,21 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String time = timeFormat.format(new Date(oldItem.getTime()));
-        String date = dateFormat.format(new Date(oldItem.getTime()));
+        dueDate = dateFormat.format(new Date(oldItem.getTime()));
+        dueTime = timeFormat.format(new Date(oldItem.getTime()));
 
-        dueTime = time;
-        dueDate = date;
+        hour = Integer.parseInt(dueTime.substring(0, 2));
+        minute = Integer.parseInt(dueTime.substring(3, 5));
+
+        day = Integer.parseInt(dueDate.substring(0, 2));
+        month = Integer.parseInt(dueDate.substring(3, 5)) - 1;
+        year = Integer.parseInt(dueDate.substring(6, 10));
 
         TextView timeText = findViewById(R.id.timeText);
-        timeText.setText(time);
+        timeText.setText(dueTime);
 
         TextView dateText = findViewById(R.id.dateText);
-        dateText.setText(date);
+        dateText.setText(dueDate);
 
     }
 
@@ -223,6 +229,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     public void pickDate(View v) {
         final TextView dateText = findViewById(R.id.dateText);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         if (day == 0) {
             final Calendar c = Calendar.getInstance();
@@ -237,8 +245,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                     @Override
                     public void onDateSet(DatePicker view, int pickedYear, int monthOfYear, int dayOfMonth) {
 
-                        dateText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + pickedYear);
                         dueDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + pickedYear;
+                        dateText.setText(dueDate);
                         year = pickedYear;
                         month = monthOfYear;
                         day = dayOfMonth;
@@ -249,8 +257,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     public void pickTime(View v) {
         final TextView timeText = findViewById(R.id.timeText);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-        if (hour == 0) {
+        if (hour == 0 && minute == 0) {
             final Calendar c = Calendar.getInstance();
             hour = c.get(Calendar.HOUR_OF_DAY);
             minute = c.get(Calendar.MINUTE);
@@ -260,8 +270,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {
-                        timeText.setText(String.format("%02d", hourOfDay) + ":" + String.format("%02d", minuteOfHour));
-                        dueTime = hourOfDay + ":" + minute;
+                        dueTime = (String.format("%02d", hourOfDay) + ":" + String.format("%02d", minuteOfHour));
+                        timeText.setText(dueTime);
                         hour = hourOfDay;
                         minute = minuteOfHour;
                     }

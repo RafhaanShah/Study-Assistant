@@ -6,104 +6,111 @@
     android:layout_margin="8dp"
     tools:context="com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/titleText"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Title"
-            android:inputType="textCapWords"
-            android:maxLength="35"
-            android:paddingTop="10dp" />
-
-        <Spinner
-            android:id="@+id/spinner"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp" />
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:paddingTop="20dp">
-
-            <Button
-                android:id="@+id/dateButton"
-                android:layout_width="150dp"
+            <EditText
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:onClick="pickDate"
-                android:text="Pick Date" />
+                android:hint="Title"
+                android:inputType="textCapWords"
+                android:maxLength="35"
+                android:paddingTop="10dp" />
 
-            <Button
-                android:id="@+id/timeButton"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:onClick="pickTime"
-                android:text="Pick Time" />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp" />
 
-            <TextView
-                android:id="@+id/dateText"
-                android:layout_width="250dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:hint="Date" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:paddingTop="20dp">
 
-            <TextView
-                android:id="@+id/timeText"
-                android:layout_width="250dp"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:gravity="center"
-                android:hint="Time" />
+                <Button
+                    android:id="@+id/dateButton"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:onClick="pickDate"
+                    android:text="Pick Date" />
 
-        </RelativeLayout>
+                <Button
+                    android:id="@+id/timeButton"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:onClick="pickTime"
+                    android:text="Pick Time" />
 
-        <EditText
-            android:id="@+id/notesText"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:hint="Additional Notes"
-            android:inputType="textCapSentences|textMultiLine"
-            android:maxLength="250"
-            android:paddingTop="20dp" />
+                <TextView
+                    android:id="@+id/dateText"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center"
+                    android:hint="Date" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:paddingTop="20dp">
+                <TextView
+                    android:id="@+id/timeText"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center"
+                    android:hint="Time" />
 
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:onClick="saveItem"
-                android:text="Save" />
+            </RelativeLayout>
 
-            <Button
-                android:id="@+id/finishButton"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:onClick="finishItem"
-                android:text="Mark Completed" />
+            <EditText
+                android:id="@+id/notesText"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:hint="Additional Notes"
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLength="250"
+                android:paddingTop="20dp" />
 
-        </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingTop="20dp"
+                android:weightSum="2">
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:onClick="saveItem"
+                    android:text="Save" />
+
+                <Button
+                    android:id="@+id/finishButton"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:onClick="finishItem"
+                    android:text="Mark Completed" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

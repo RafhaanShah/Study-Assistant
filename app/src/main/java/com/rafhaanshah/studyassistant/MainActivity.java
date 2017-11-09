@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        scheduleHistory = false;
-        getSupportActionBar().setTitle("Schedule");
     }
 
 
@@ -93,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle("History");
                 }
                 ScheduleFragment frag = (ScheduleFragment) selectedFragment;
-                frag.showCompleted();
+                frag.updateData(scheduleHistory);
         }
         return false;
     }
@@ -105,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void scheduleSelected() {
         menu.clear();
+        scheduleHistory = false;
         getSupportActionBar().setTitle("Schedule");
         getMenuInflater().inflate(R.menu.schedule_menu, menu);
     }
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void lectureSelected() {
         menu.clear();
-        getSupportActionBar().setTitle("Lecturess");
+        getSupportActionBar().setTitle("Lectures");
         //getMenuInflater().inflate(R.menu.schedule_menu, menu);
     }
 

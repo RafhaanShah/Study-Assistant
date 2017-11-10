@@ -49,8 +49,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_item);
+
+        assert getSupportActionBar() != null;
         getSupportActionBar().setTitle("Event");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         realm = Realm.getDefaultInstance();
         setSpinner();
@@ -67,6 +68,12 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             newItem = false;
             setFields(Integer.valueOf(item));
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     private void setFields(int ID) {
@@ -127,10 +134,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             case R.id.deleteButton:
                 new AlertDialog.Builder(this)
                         .setTitle("Confirm Delete")
-                        .setMessage("Are you sure you want to delete this item?")
+                        .setMessage("Are you sure you want to delete this event?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //TODO: delete item, check if exists first
                                 realm.executeTransaction(new Realm.Transaction() {
                                     @Override
                                     public void execute(@NonNull Realm realm) {
@@ -161,7 +167,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         categories.add("Class Test");
         categories.add("Exam");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
@@ -230,7 +236,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     public void pickDate(View v) {
         final TextView dateText = findViewById(R.id.dateText);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         if (day == 0) {
             final Calendar c = Calendar.getInstance();
@@ -244,7 +250,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
                     @Override
                     public void onDateSet(DatePicker view, int pickedYear, int monthOfYear, int dayOfMonth) {
-
+                        //TODO: Format date locales
                         dueDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + pickedYear;
                         dateText.setText(dueDate);
                         year = pickedYear;
@@ -258,7 +264,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     public void pickTime(View v) {
         final TextView timeText = findViewById(R.id.timeText);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
         if (hour == 0 && minute == 0) {
             final Calendar c = Calendar.getInstance();
@@ -286,8 +292,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         try {
             epochDate = df.parse(date + " " + time);
         } catch (ParseException e) {
-            epochTime = Calendar.getInstance().getTimeInMillis();
+            e.printStackTrace();
         }
-        return epochDate.getTime();
+        if (epochDate != null) return epochDate.getTime();
+        else return Calendar.getInstance().getTimeInMillis();
     }
 }

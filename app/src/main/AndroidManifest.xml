@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".schedule.ScheduleItemActivity"
-            android:label="New Item"></activity>
+            android:label="New Item"
+            android:parentActivityName="com.rafhaanshah.studyassistant.MainActivity" />
     </application>
 
 </manifest>

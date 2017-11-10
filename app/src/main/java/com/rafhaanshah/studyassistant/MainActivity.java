@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
     private Fragment selectedFragment;
     private boolean scheduleHistory;
+    private ActionBar actionBar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         selectedFragment = ScheduleFragment.newInstance();
+        actionBar = getSupportActionBar();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content, selectedFragment);
@@ -75,23 +78,19 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-
-    //TODO: On resume reset title bar, get rid of toast on click of item
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //TODO: Change the menu to change based on which fragment
         switch (item.getItemId()) {
             case R.id.historyButton:
                 if (scheduleHistory) {
                     scheduleHistory = false;
-                    getSupportActionBar().setTitle("Schedule");
+                    actionBar.setTitle("Schedule");
                 } else {
                     scheduleHistory = true;
-                    getSupportActionBar().setTitle("History");
+                    actionBar.setTitle("History");
                 }
                 ScheduleFragment frag = (ScheduleFragment) selectedFragment;
-                frag.updateData(scheduleHistory);
+                frag.showData(scheduleHistory);
         }
         return false;
     }
@@ -104,19 +103,19 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleSelected() {
         menu.clear();
         scheduleHistory = false;
-        getSupportActionBar().setTitle("Schedule");
+        actionBar.setTitle("Schedule");
         getMenuInflater().inflate(R.menu.schedule_menu, menu);
     }
 
     private void flashCardSelected() {
         menu.clear();
-        getSupportActionBar().setTitle("Flash Cards");
+        actionBar.setTitle("Flash Cards");
         //getMenuInflater().inflate(R.menu.schedule_menu, menu);
     }
 
     private void lectureSelected() {
         menu.clear();
-        getSupportActionBar().setTitle("Lectures");
+        actionBar.setTitle("Lectures");
         //getMenuInflater().inflate(R.menu.schedule_menu, menu);
     }
 

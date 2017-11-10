@@ -8,11 +8,11 @@ public class ScheduleItem extends RealmObject {
     private Long time;
     private boolean completed;
 
-    public int getID() {
+    int getID() {
         return ID;
     }
 
-    public void setID(int ID) {
+    void setID(int ID) {
         this.ID = ID;
     }
 
@@ -24,19 +24,19 @@ public class ScheduleItem extends RealmObject {
         this.title = title;
     }
 
-    public String getType() {
+    String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    void setType(String type) {
         this.type = type;
     }
 
-    public String getNotes() {
+    String getNotes() {
         return notes;
     }
 
-    public void setNotes(String notes) {
+    void setNotes(String notes) {
         this.notes = notes;
     }
 
@@ -44,18 +44,17 @@ public class ScheduleItem extends RealmObject {
         return time;
     }
 
-    public void setTime(Long time) {
+    void setTime(Long time) {
         this.time = time;
     }
 
-    public boolean isCompleted() {
+    boolean isCompleted() {
         return completed;
     }
 
-    public void setCompleted(boolean completed) {
+    void setCompleted(boolean completed) {
         this.completed = completed;
     }
-
 }
 
 

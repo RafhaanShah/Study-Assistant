@@ -15,18 +15,13 @@ import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import io.realm.RealmResults;
 
 public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecyclerAdapter.ViewHolder> {
-    private final long msDay = 86400000;
-    private final long msHour = 3600000;
     private RealmResults<ScheduleItem> values;
     private Context context;
 
-    public ScheduleRecyclerAdapter(RealmResults<ScheduleItem> dataset) {
+    ScheduleRecyclerAdapter(RealmResults<ScheduleItem> dataset) {
         values = dataset;
     }
 
@@ -41,23 +36,17 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ScheduleItem item = values.get(position);
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy");
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
-        String showTime = dateTimeFormat.format(new Date(eventTime));
+        String showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.HOUR_IN_MILLIS);
         int colour = ContextCompat.getColor(context, R.color.scheduleGreen);
 
-        if (!item.isCompleted()) {
-            if (eventTime < currentTime) {
-                colour = ContextCompat.getColor(context, R.color.scheduleRed);
-                showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.DAY_IN_MILLIS);
-            } else if (eventTime < (currentTime + (msDay * 3))) {
-                colour = ContextCompat.getColor(context, R.color.scheduleOrange);
-                //TODO: if today, show time
-                showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.DAY_IN_MILLIS);
-            }
-        } else {
+        if (item.isCompleted()) {
             colour = ContextCompat.getColor(context, R.color.scheduleBlue);
+        } else if (eventTime < currentTime) {
+            colour = ContextCompat.getColor(context, R.color.scheduleRed);
+        } else if (eventTime < (currentTime + (86400000 * 3))) {
+            colour = ContextCompat.getColor(context, R.color.scheduleOrange);
         }
 
         GradientDrawable shape = new GradientDrawable();

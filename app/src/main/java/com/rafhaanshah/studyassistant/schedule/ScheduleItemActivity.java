@@ -26,12 +26,14 @@ import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -44,6 +46,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     private boolean newItem;
     private Realm realm;
     private ScheduleItem oldItem;
+    private SimpleDateFormat timeFormat, dateFormat, dateTimeFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         realm = Realm.getDefaultInstance();
         setSpinner();
+
+        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
         String item = getIntent().getStringExtra("item");
         if (item == null) {
@@ -98,10 +105,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             }
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        dueDate = dateFormat.format(new Date(oldItem.getTime()));
         dueTime = timeFormat.format(new Date(oldItem.getTime()));
+        dueDate = dateFormat.format(new Date(oldItem.getTime()));
 
         hour = Integer.parseInt(dueTime.substring(0, 2));
         minute = Integer.parseInt(dueTime.substring(3, 5));
@@ -111,11 +116,16 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         year = Integer.parseInt(dueDate.substring(6, 10));
 
         TextView timeText = findViewById(R.id.timeText);
-        timeText.setText(dueTime);
-
         TextView dateText = findViewById(R.id.dateText);
-        dateText.setText(dueDate);
-
+        try {
+            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
+            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+            timeText.setText(dueTime);
+            dateText.setText(dueDate);
+        }
     }
 
     @Override
@@ -238,7 +248,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-        if (day == 0) {
+        if (newItem) {
             final Calendar c = Calendar.getInstance();
             year = c.get(Calendar.YEAR);
             month = c.get(Calendar.MONTH);
@@ -250,9 +260,14 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
                     @Override
                     public void onDateSet(DatePicker view, int pickedYear, int monthOfYear, int dayOfMonth) {
-                        //TODO: Format date locales
                         dueDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + pickedYear;
-                        dateText.setText(dueDate);
+                        try {
+                            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                            dateText.setText(dueDate);
+                        }
                         year = pickedYear;
                         month = monthOfYear;
                         day = dayOfMonth;
@@ -266,7 +281,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-        if (hour == 0 && minute == 0) {
+        if (newItem) {
             final Calendar c = Calendar.getInstance();
             hour = c.get(Calendar.HOUR_OF_DAY);
             minute = c.get(Calendar.MINUTE);
@@ -276,8 +291,14 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {
-                        dueTime = (String.format("%02d", hourOfDay) + ":" + String.format("%02d", minuteOfHour));
-                        timeText.setText(dueTime);
+                        dueTime = (String.valueOf(hourOfDay) + ":" + String.valueOf(minuteOfHour));
+                        try {
+                            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                            timeText.setText(dueTime);
+                        }
                         hour = hourOfDay;
                         minute = minuteOfHour;
                     }
@@ -287,12 +308,12 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     private long parseDateTime(String date, String time) {
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date epochDate = null;
         try {
-            epochDate = df.parse(date + " " + time);
+            epochDate = dateTimeFormat.parse(date + " " + time);
         } catch (ParseException e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
         }
         if (epochDate != null) return epochDate.getTime();
         else return Calendar.getInstance().getTimeInMillis();

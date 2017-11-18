@@ -161,6 +161,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
                             }
                         })
+                        .setIcon(R.drawable.ic_delete_black_24dp)
                         .show();
                 return true;
         }

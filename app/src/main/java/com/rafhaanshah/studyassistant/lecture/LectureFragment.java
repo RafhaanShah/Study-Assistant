@@ -16,17 +16,20 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class LectureFragment extends Fragment {
 
+    private static int sorting;
     private LectureRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private ArrayList<File> items;
     private File directory;
 
-    public static LectureFragment newInstance() {
-        LectureFragment fragment = new LectureFragment();
-        return fragment;
+    public static LectureFragment newInstance(int i) {
+        sorting = i;
+        return new LectureFragment();
     }
 
     @Override
@@ -45,12 +48,15 @@ public class LectureFragment extends Fragment {
         directory = new File(getContext().getFilesDir().getAbsolutePath() + File.separator + "lectures");
         getData();
 
-        recyclerView = view.findViewById(R.id.recyclerView);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
+
         recyclerAdapter = new LectureRecyclerAdapter(items);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
+
+        updateData(sorting, false);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -63,13 +69,7 @@ public class LectureFragment extends Fragment {
                 }
             }
         });
-
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    public void updateData() {
-        getData();
-        recyclerAdapter.updateData(items);
     }
 
     private void getData() {
@@ -79,5 +79,41 @@ public class LectureFragment extends Fragment {
                 return name.toLowerCase().endsWith(".pdf");
             }
         })));
+    }
+
+    public void updateData(int i, boolean update) {
+        if (update) {
+            getData();
+        }
+        sorting = i;
+        switch (i) {
+            case 0:
+                Collections.sort(items, new Comparator<File>() {
+                    @Override
+                    public int compare(File a, File b) {
+                        return a.getName().compareTo(b.getName());
+                    }
+                });
+                break;
+            case 1:
+                Collections.sort(items, new Comparator<File>() {
+                    @Override
+                    public int compare(File a, File b) {
+                        Long lng = (b.lastModified() - a.lastModified());
+                        return lng.intValue();
+                    }
+                });
+                break;
+            case 2:
+                Collections.sort(items, new Comparator<File>() {
+                    @Override
+                    public int compare(File a, File b) {
+                        Long lng = (b.length() - a.length());
+                        return lng.intValue();
+                    }
+                });
+                break;
+        }
+        recyclerAdapter.updateData(items);
     }
 }

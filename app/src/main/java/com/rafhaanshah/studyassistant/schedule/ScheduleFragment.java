@@ -99,6 +99,5 @@ public class ScheduleFragment extends Fragment {
         } else {
             recyclerAdapter.updateData(items);
         }
-        recyclerView.invalidate();
     }
 }

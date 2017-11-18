@@ -4,9 +4,9 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/lectureButton"
-        android:icon="@drawable/ic_history_white_24dp"
-        android:title="Delete"
+        android:id="@+id/lectureSortButton"
+        android:icon="@drawable/ic_sort_white_24dp"
+        android:title="Sort"
         app:showAsAction="always" />
 
 </menu>

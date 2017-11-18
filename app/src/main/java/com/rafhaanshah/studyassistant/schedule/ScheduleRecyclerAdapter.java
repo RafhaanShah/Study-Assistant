@@ -21,8 +21,8 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     private RealmResults<ScheduleItem> values;
     private Context context;
 
-    ScheduleRecyclerAdapter(RealmResults<ScheduleItem> dataset) {
-        values = dataset;
+    ScheduleRecyclerAdapter(RealmResults<ScheduleItem> data) {
+        values = data;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.rafhaanshah.studyassistant;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -11,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean scheduleHistory;
     private ActionBar actionBar;
     private File directory;
+    private int lectureSorting;
+    private SharedPreferences preferences;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                     flashCardSelected();
                     break;
                 case R.id.navigation_notifications:
-                    selectedFragment = LectureFragment.newInstance();
+                    selectedFragment = LectureFragment.newInstance(lectureSorting);
                     lectureSelected();
                     break;
             }
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        lectureSorting = preferences.getInt("sorting", 0);
 
         directory = new File(getFilesDir().getAbsolutePath() + File.separator + "lectures");
 
@@ -91,9 +97,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        for (File f : directory.listFiles()) {
-            Log.v("FILES", f.toString());
-        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt("sorting", lectureSorting);
+        editor.apply();
     }
 
     @Override
@@ -107,8 +118,29 @@ public class MainActivity extends AppCompatActivity {
                     scheduleHistory = true;
                     actionBar.setTitle("History");
                 }
-                ScheduleFragment frag = (ScheduleFragment) selectedFragment;
-                frag.showData(scheduleHistory);
+                ScheduleFragment Sfrag = (ScheduleFragment) selectedFragment;
+                Sfrag.showData(scheduleHistory);
+                return true;
+            case R.id.lectureSortButton:
+                LectureFragment Lfrag = (LectureFragment) selectedFragment;
+                switch (lectureSorting) {
+                    case 0:
+                        Lfrag.updateData(1, false);
+                        lectureSorting = 1;
+                        Toast.makeText(getApplicationContext(), "Sorting by added date", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Lfrag.updateData(2, false);
+                        lectureSorting = 2;
+                        Toast.makeText(getApplicationContext(), "Sorting by file size", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Lfrag.updateData(0, false);
+                        lectureSorting = 0;
+                        Toast.makeText(getApplicationContext(), "Sorting by title", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
         }
         return false;
     }
@@ -119,27 +151,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newLectureItem(View v) {
+        Toast.makeText(getApplicationContext(), "Select PDF file", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent()
                 .setType("application/pdf")
                 .setAction(Intent.ACTION_GET_CONTENT);
 
-        startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+        startActivityForResult(Intent.createChooser(intent, "Select a PDF file"), 100);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123 && resultCode == RESULT_OK) {
+        if (requestCode == 100 && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
-            String fileName = "tempFile.pdf";
+            String fileName = "New File.pdf";
             try (Cursor cursor = getContentResolver().query(selectedFile, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
             }
 
-            Log.v("FILES", selectedFile.toString());
-            Log.v("FILES", selectedFile.getPath());
+            if (new File(directory + File.separator + fileName).exists()) {
+                Toast.makeText(getApplicationContext(), "Error: File already added", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             try {
                 InputStream initialStream = getContentResolver().openInputStream(selectedFile);
@@ -155,10 +190,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             LectureFragment frag = (LectureFragment) selectedFragment;
-            frag.updateData();
+            frag.updateData(lectureSorting, true);
 
-        } else {
-            Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -172,13 +205,18 @@ public class MainActivity extends AppCompatActivity {
     private void flashCardSelected() {
         menu.clear();
         actionBar.setTitle("Flash Cards");
-        //getMenuInflater().inflate(R.menu.schedule_menu, menu);
+        //getMenuInflater().inflate(R.menu.flash_card_menu, menu);
     }
 
     private void lectureSelected() {
         menu.clear();
         actionBar.setTitle("Lectures");
-        //getMenuInflater().inflate(R.menu.schedule_menu, menu);
+        getMenuInflater().inflate(R.menu.lecture_menu, menu);
     }
 
+    public void deleteLecture(File file) {
+        file.delete();
+        LectureFragment frag = (LectureFragment) selectedFragment;
+        frag.updateData(lectureSorting, true);
+    }
 }

@@ -2,13 +2,48 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="60dp"
+    android:background="@drawable/divider"
     android:clickable="true"
     android:focusable="true">
 
     <TextView
         android:id="@+id/lectureTitle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingEnd="2dp"
+        android:paddingStart="4dp"
+        android:text="TITLE"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/lectureSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:paddingBottom="4dp"
+        android:paddingEnd="2dp"
+        android:paddingStart="4dp"
+        android:paddingTop="2dp"
+        android:text="SIZE"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/lectureDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:paddingBottom="4dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="2dp"
+        android:paddingTop="2dp"
+        android:text="DATE"
+        android:textSize="16sp" />
 
 </RelativeLayout>

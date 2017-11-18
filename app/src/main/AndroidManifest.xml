@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.rafhaanshah.studyassistant">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -23,6 +26,16 @@
             android:name=".schedule.ScheduleItemActivity"
             android:label="New Item"
             android:parentActivityName="com.rafhaanshah.studyassistant.MainActivity" />
+
+        <provider
+            android:name=".GenericFileProvider"
+            android:authorities="${applicationId}.com.rafhaanshah.studyassistant.GenericFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

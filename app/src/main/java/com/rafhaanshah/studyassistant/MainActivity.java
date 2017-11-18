@@ -1,19 +1,31 @@
 package com.rafhaanshah.studyassistant;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.rafhaanshah.studyassistant.lecture.LectureFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment selectedFragment;
     private boolean scheduleHistory;
     private ActionBar actionBar;
+    private File directory;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -55,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        directory = new File(getFilesDir().getAbsolutePath() + File.separator + "lectures");
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -76,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        for (File f : directory.listFiles()) {
+            Log.v("FILES", f.toString());
+        }
     }
 
     @Override
@@ -98,6 +116,50 @@ public class MainActivity extends AppCompatActivity {
     public void newScheduleItem(View v) {
         Intent nextScreen = new Intent(getApplicationContext(), ScheduleItemActivity.class);
         startActivity(nextScreen);
+    }
+
+    public void newLectureItem(View v) {
+        Intent intent = new Intent()
+                .setType("application/pdf")
+                .setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            Uri selectedFile = data.getData();
+            String fileName = "tempFile.pdf";
+            try (Cursor cursor = getContentResolver().query(selectedFile, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            }
+
+            Log.v("FILES", selectedFile.toString());
+            Log.v("FILES", selectedFile.getPath());
+
+            try {
+                InputStream initialStream = getContentResolver().openInputStream(selectedFile);
+                byte[] buffer = new byte[initialStream.available()];
+                initialStream.read(buffer);
+                File targetFile = new File(directory + File.separator + fileName);
+                OutputStream outStream = new FileOutputStream(targetFile);
+                outStream.write(buffer);
+                initialStream.close();
+                outStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            LectureFragment frag = (LectureFragment) selectedFragment;
+            frag.updateData();
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void scheduleSelected() {

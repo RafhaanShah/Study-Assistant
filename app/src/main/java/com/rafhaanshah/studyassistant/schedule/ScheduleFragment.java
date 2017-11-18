@@ -71,6 +71,8 @@ public class ScheduleFragment extends Fragment {
             }
         });
 
+        //TODO: On swipe mark done
+
         super.onViewCreated(view, savedInstanceState);
     }
 

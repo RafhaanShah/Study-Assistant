@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.MainActivity;
 import com.rafhaanshah.studyassistant.R;
 
 import java.io.File;
@@ -25,6 +28,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
     private ArrayList<File> values;
     private Context context;
+    private File directory;
 
     LectureRecyclerAdapter(ArrayList<File> data) {
         values = data;
@@ -35,11 +39,12 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.lecture_item, parent, false);
         context = v.getContext();
+        directory = new File(context.getFilesDir().getAbsolutePath() + File.separator + "lectures");
         return new LectureRecyclerAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(LectureRecyclerAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
         final File lec = values.get(position);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(new DecimalFormat("#.##").format((double) lec.length() / 1048576) + " MB");
@@ -59,20 +64,47 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public boolean onLongClick(final View v) {
+                final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+
+                final EditText input = new EditText(context);
+                input.setText(holder.lectureTitle.getText());
+                input.setSelectAllOnFocus(true);
+
+                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 new AlertDialog.Builder(context)
-                        .setTitle("Confirm Delete")
-                        .setMessage("Are you sure you want to delete this lecture file?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle("Rename File")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                ((MainActivity) context).deleteLecture(lec);
+                                File newFile = new File(directory.getAbsolutePath() + File.separator + input.getText().toString() + ".pdf");
+                                if (newFile.exists()) {
+                                    Toast.makeText(context, "File with that name already exists", Toast.LENGTH_LONG).show();
+                                } else if (!lec.renameTo(newFile)) {
+                                    Toast.makeText(context, "Invalid characters entered", Toast.LENGTH_LONG).show();
+                                } else {
+                                    holder.lectureTitle.setText(input.getText().toString());
+                                }
+                                if (imm != null)
+                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                if (imm != null)
+                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                             }
                         })
-                        .setIcon(R.drawable.ic_delete_black_24dp)
+                        .setIcon(R.drawable.ic_create_black_24dp)
+                        .setView(input)
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                Toast.makeText(context, "ON CANCEL", Toast.LENGTH_SHORT).show();
+                                if (imm != null)
+                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+                            }
+                        })
                         .show();
                 return true;
             }

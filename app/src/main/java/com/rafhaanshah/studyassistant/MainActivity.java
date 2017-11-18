@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         lectureSorting = preferences.getInt("sorting", 0);
-
         directory = new File(getFilesDir().getAbsolutePath() + File.separator + "lectures");
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -111,38 +110,46 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.historyButton:
-                if (scheduleHistory) {
-                    scheduleHistory = false;
-                    actionBar.setTitle("Schedule");
-                } else {
-                    scheduleHistory = true;
-                    actionBar.setTitle("History");
-                }
-                ScheduleFragment Sfrag = (ScheduleFragment) selectedFragment;
-                Sfrag.showData(scheduleHistory);
+                historyButtonPressed();
                 return true;
             case R.id.lectureSortButton:
-                LectureFragment Lfrag = (LectureFragment) selectedFragment;
-                switch (lectureSorting) {
-                    case 0:
-                        Lfrag.updateData(1, false);
-                        lectureSorting = 1;
-                        Toast.makeText(getApplicationContext(), "Sorting by added date", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
-                        Lfrag.updateData(2, false);
-                        lectureSorting = 2;
-                        Toast.makeText(getApplicationContext(), "Sorting by file size", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 2:
-                        Lfrag.updateData(0, false);
-                        lectureSorting = 0;
-                        Toast.makeText(getApplicationContext(), "Sorting by title", Toast.LENGTH_SHORT).show();
-                        break;
-                }
+                lectureSortButtonPressed();
                 return true;
         }
         return false;
+    }
+
+    private void historyButtonPressed() {
+        if (scheduleHistory) {
+            scheduleHistory = false;
+            actionBar.setTitle("Schedule");
+        } else {
+            scheduleHistory = true;
+            actionBar.setTitle("History");
+        }
+        ScheduleFragment scheduleFragment = (ScheduleFragment) selectedFragment;
+        scheduleFragment.showData(scheduleHistory);
+    }
+
+    private void lectureSortButtonPressed() {
+        LectureFragment lectureFragment = (LectureFragment) selectedFragment;
+        switch (lectureSorting) {
+            case 0:
+                lectureFragment.updateData(1, false);
+                lectureSorting = 1;
+                Toast.makeText(getApplicationContext(), "Sorting by added date", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                lectureFragment.updateData(2, false);
+                lectureSorting = 2;
+                Toast.makeText(getApplicationContext(), "Sorting by file size", Toast.LENGTH_SHORT).show();
+                break;
+            case 2:
+                lectureFragment.updateData(0, false);
+                lectureSorting = 0;
+                Toast.makeText(getApplicationContext(), "Sorting by title", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     public void newScheduleItem(View v) {
@@ -212,11 +219,5 @@ public class MainActivity extends AppCompatActivity {
         menu.clear();
         actionBar.setTitle("Lectures");
         getMenuInflater().inflate(R.menu.lecture_menu, menu);
-    }
-
-    public void deleteLecture(File file) {
-        file.delete();
-        LectureFragment frag = (LectureFragment) selectedFragment;
-        frag.updateData(lectureSorting, true);
     }
 }

@@ -262,6 +262,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                     @Override
                     public void onDateSet(DatePicker view, int pickedYear, int monthOfYear, int dayOfMonth) {
                         dueDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + pickedYear;
+                        year = pickedYear;
+                        month = monthOfYear;
+                        day = dayOfMonth;
                         try {
                             dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
                         } catch (ParseException e) {
@@ -269,9 +272,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                             Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
                             dateText.setText(dueDate);
                         }
-                        year = pickedYear;
-                        month = monthOfYear;
-                        day = dayOfMonth;
                     }
                 }, year, month, day);
         datePickerDialog.show();
@@ -293,6 +293,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {
                         dueTime = (String.valueOf(hourOfDay) + ":" + String.valueOf(minuteOfHour));
+                        hour = hourOfDay;
+                        minute = minuteOfHour;
                         try {
                             timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
                         } catch (ParseException e) {
@@ -300,8 +302,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                             Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             timeText.setText(dueTime);
                         }
-                        hour = hourOfDay;
-                        minute = minuteOfHour;
                     }
                 }, hour, minute, false);
 

@@ -55,7 +55,7 @@ public class LectureFragment extends Fragment {
         final FloatingActionButton fab = view.findViewById(R.id.fab);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        recyclerAdapter = new LectureRecyclerAdapter(items);
+        recyclerAdapter = new LectureRecyclerAdapter(items, this);
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
@@ -163,5 +163,9 @@ public class LectureFragment extends Fragment {
                 break;
         }
         recyclerAdapter.updateData(items);
+    }
+
+    public void updateData(boolean update) {
+        updateData(sorting, update);
     }
 }

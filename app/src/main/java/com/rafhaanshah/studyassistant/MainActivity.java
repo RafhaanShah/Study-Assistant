@@ -1,5 +1,6 @@
 package com.rafhaanshah.studyassistant;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -163,7 +164,12 @@ public class MainActivity extends AppCompatActivity {
                 .setType("application/pdf")
                 .setAction(Intent.ACTION_GET_CONTENT);
 
-        startActivityForResult(Intent.createChooser(intent, "Select a PDF file"), 100);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Select a PDF file"), 100);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getApplicationContext(), "Error: File picker app installed", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -172,10 +178,16 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
             String fileName = "New File.pdf";
+
             try (Cursor cursor = getContentResolver().query(selectedFile, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
+            }
+
+            if (!fileName.toLowerCase().endsWith(".pdf")) {
+                Toast.makeText(getApplicationContext(), "Error: Not a PDF", Toast.LENGTH_SHORT).show();
+                return;
             }
 
             if (new File(directory + File.separator + fileName).exists()) {
@@ -193,12 +205,12 @@ public class MainActivity extends AppCompatActivity {
                 initialStream.close();
                 outStream.close();
             } catch (IOException e) {
+                Toast.makeText(getApplicationContext(), "Error: File may not be accessible", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
+            } finally {
+                LectureFragment frag = (LectureFragment) selectedFragment;
+                frag.updateData(lectureSorting, true);
             }
-
-            LectureFragment frag = (LectureFragment) selectedFragment;
-            frag.updateData(lectureSorting, true);
-
         }
     }
 

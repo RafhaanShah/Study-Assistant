@@ -1,6 +1,7 @@
 package com.rafhaanshah.studyassistant.lecture;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,9 +30,11 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     private ArrayList<File> values;
     private Context context;
     private File directory;
+    private LectureFragment lectureFragment;
 
-    LectureRecyclerAdapter(ArrayList<File> data) {
+    LectureRecyclerAdapter(ArrayList<File> data, LectureFragment fragment) {
         values = data;
+        lectureFragment = fragment;
     }
 
     @Override
@@ -44,10 +47,10 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     @Override
-    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
         final File lec = values.get(position);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
-        holder.lectureSize.setText(new DecimalFormat("#.##").format((double) lec.length() / 1048576) + " MB");
+        holder.lectureSize.setText(new DecimalFormat("#.##").format((double) lec.length() / 1000000) + " MB");
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
 
 
@@ -58,7 +61,13 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".com.rafhaanshah.studyassistant.GenericFileProvider", lec);
                 intent.setDataAndType(uri, "application/pdf");
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(intent);
+                try {
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(context, "Error: No PDF reader app installed", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -83,28 +92,17 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                                 } else if (!lec.renameTo(newFile)) {
                                     Toast.makeText(context, "Invalid characters entered", Toast.LENGTH_LONG).show();
                                 } else {
-                                    holder.lectureTitle.setText(input.getText().toString());
+                                    lectureFragment.updateData(true);
                                 }
-                                if (imm != null)
-                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                if (imm != null)
-                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                             }
                         })
                         .setIcon(R.drawable.ic_create_black_24dp)
                         .setView(input)
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                Toast.makeText(context, "ON CANCEL", Toast.LENGTH_SHORT).show();
-                                if (imm != null)
-                                    imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-                            }
-                        })
+
                         .show();
                 return true;
             }

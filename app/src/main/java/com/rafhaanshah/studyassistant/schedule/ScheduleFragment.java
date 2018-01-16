@@ -1,14 +1,17 @@
 package com.rafhaanshah.studyassistant.schedule;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
 
@@ -71,7 +74,40 @@ public class ScheduleFragment extends Fragment {
             }
         });
 
-        //TODO: On swipe mark done
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                final int position = viewHolder.getAdapterPosition();
+                final ScheduleItem item;
+                if (!history) {
+                    item = items.get(position);
+                } else {
+                    item = oldItems.get(position);
+                }
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(@NonNull Realm realm) {
+                        if (item.isCompleted()) {
+                            item.setCompleted(false);
+                            Toast.makeText(getContext(), item.getTitle() + " Incomplete", Toast.LENGTH_SHORT).show();
+                        } else {
+                            item.setCompleted(true);
+                            Toast.makeText(getContext(), item.getTitle() + " Completed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                updateData();
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -79,6 +115,10 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateData();
+    }
+
+    private void updateData() {
         if (dataChanged) {
             dataChanged = false;
             items = realm.where(ScheduleItem.class).equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);

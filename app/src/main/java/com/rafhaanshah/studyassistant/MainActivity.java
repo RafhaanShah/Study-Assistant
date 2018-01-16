@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private File directory;
     private int lectureSorting;
     private SharedPreferences preferences;
+    private boolean nullInstance;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -46,15 +47,15 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             selectedFragment = null;
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_schedule:
                     selectedFragment = ScheduleFragment.newInstance();
                     scheduleSelected();
                     break;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_flash_cards:
                     selectedFragment = FlashCardFragment.newInstance();
                     flashCardSelected();
                     break;
-                case R.id.navigation_notifications:
+                case R.id.navigation_lectures:
                     selectedFragment = LectureFragment.newInstance(lectureSorting);
                     lectureSelected();
                     break;
@@ -79,18 +80,33 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        selectedFragment = ScheduleFragment.newInstance();
         actionBar = getSupportActionBar();
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content, selectedFragment);
-        transaction.commit();
+        if (savedInstanceState == null) {
+            nullInstance = true;
+        } else {
+            selectedFragment = getSupportFragmentManager().findFragmentById(R.id.content);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
-        getMenuInflater().inflate(R.menu.schedule_menu, menu);
+        if (nullInstance) {
+            selectedFragment = ScheduleFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, selectedFragment);
+            transaction.commit();
+            scheduleSelected();
+        } else {
+            if (selectedFragment.getClass() == ScheduleFragment.class) {
+                scheduleSelected();
+            } else if (selectedFragment.getClass() == FlashCardFragment.class) {
+                flashCardSelected();
+            } else if (selectedFragment.getClass() == LectureFragment.class) {
+                lectureSelected();
+            }
+        }
         return true;
     }
 

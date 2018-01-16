@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 final EditText input = new EditText(context);
                 input.setText(holder.lectureTitle.getText());
                 input.setSelectAllOnFocus(true);
+                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
 
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 new AlertDialog.Builder(context)

@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             startActivityForResult(Intent.createChooser(intent, "Select a PDF file"), 100);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(getApplicationContext(), "Error: File picker app installed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Error: File picker app not installed", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }

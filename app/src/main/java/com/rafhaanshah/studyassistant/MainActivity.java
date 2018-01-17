@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private File directory;
     private int lectureSorting;
     private SharedPreferences preferences;
-    private boolean nullInstance;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -83,7 +82,10 @@ public class MainActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
 
         if (savedInstanceState == null) {
-            nullInstance = true;
+            selectedFragment = ScheduleFragment.newInstance();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content, selectedFragment);
+            transaction.commit();
         } else {
             selectedFragment = getSupportFragmentManager().findFragmentById(R.id.content);
         }
@@ -92,20 +94,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
-        if (nullInstance) {
-            selectedFragment = ScheduleFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, selectedFragment);
-            transaction.commit();
+        if (selectedFragment.getClass() == ScheduleFragment.class) {
             scheduleSelected();
-        } else {
-            if (selectedFragment.getClass() == ScheduleFragment.class) {
-                scheduleSelected();
-            } else if (selectedFragment.getClass() == FlashCardFragment.class) {
-                flashCardSelected();
-            } else if (selectedFragment.getClass() == LectureFragment.class) {
-                lectureSelected();
-            }
+        } else if (selectedFragment.getClass() == FlashCardFragment.class) {
+            flashCardSelected();
+        } else if (selectedFragment.getClass() == LectureFragment.class) {
+            lectureSelected();
         }
         return true;
     }

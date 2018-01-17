@@ -47,6 +47,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     private Realm realm;
     private ScheduleItem oldItem;
     private SimpleDateFormat timeFormat, dateFormat, dateTimeFormat;
+    private TextView timeText, dateText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
+        timeText = findViewById(R.id.timeText);
+        dateText = findViewById(R.id.dateText);
 
         String item = getIntent().getStringExtra("item");
         if (item == null) {
@@ -81,6 +85,24 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     public void onDestroy() {
         super.onDestroy();
         realm.close();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putString("time", timeText.getText().toString());
+        out.putString("date", dateText.getText().toString());
+        out.putString("dueTime", dueTime);
+        out.putString("dueDate", dueDate);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle in) {
+        super.onRestoreInstanceState(in);
+        timeText.setText(in.getString("time"));
+        dateText.setText(in.getString("date"));
+        dueTime = in.getString("dueTime");
+        dueDate = in.getString("dueDate");
     }
 
     private void setFields(int ID) {
@@ -115,8 +137,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         month = Integer.parseInt(dueDate.substring(3, 5)) - 1;
         year = Integer.parseInt(dueDate.substring(6, 10));
 
-        TextView timeText = findViewById(R.id.timeText);
-        TextView dateText = findViewById(R.id.dateText);
+        timeText = findViewById(R.id.timeText);
+        dateText = findViewById(R.id.dateText);
         try {
             timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
             dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
@@ -245,7 +267,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void pickDate(View v) {
-        final TextView dateText = findViewById(R.id.dateText);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
@@ -278,7 +299,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void pickTime(View v) {
-        final TextView timeText = findViewById(R.id.timeText);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 

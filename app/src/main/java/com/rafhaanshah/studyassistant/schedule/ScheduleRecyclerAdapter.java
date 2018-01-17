@@ -38,7 +38,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         final ScheduleItem item = values.get(position);
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
-        String showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.HOUR_IN_MILLIS);
+        String showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS);
         int colour = ContextCompat.getColor(context, R.color.scheduleGreen);
 
         if (item.isCompleted()) {

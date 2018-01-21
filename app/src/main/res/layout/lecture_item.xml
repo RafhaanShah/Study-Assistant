@@ -17,7 +17,6 @@
         android:maxLines="1"
         android:paddingEnd="2dp"
         android:paddingStart="4dp"
-        android:text="TITLE"
         android:textSize="22sp" />
 
     <TextView
@@ -30,7 +29,6 @@
         android:paddingEnd="2dp"
         android:paddingStart="4dp"
         android:paddingTop="2dp"
-        android:text="SIZE"
         android:textSize="16sp" />
 
     <TextView
@@ -43,7 +41,6 @@
         android:paddingEnd="4dp"
         android:paddingStart="2dp"
         android:paddingTop="2dp"
-        android:text="DATE"
         android:textSize="16sp" />
 
 </RelativeLayout>

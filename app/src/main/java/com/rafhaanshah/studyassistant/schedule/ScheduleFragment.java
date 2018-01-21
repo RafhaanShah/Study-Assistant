@@ -17,7 +17,6 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
 
@@ -101,10 +100,8 @@ public class ScheduleFragment extends Fragment {
                     public void execute(@NonNull Realm realm) {
                         if (item.isCompleted()) {
                             item.setCompleted(false);
-                            Toast.makeText(getContext(), item.getTitle() + " Incomplete", Toast.LENGTH_SHORT).show();
                         } else {
                             item.setCompleted(true);
-                            Toast.makeText(getContext(), item.getTitle() + " Completed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

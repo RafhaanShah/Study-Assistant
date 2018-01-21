@@ -1,9 +1,45 @@
 <resources>
     <string name="app_name">Study Assistant</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="title_activity_flash">FlashActivity</string>
-    <string name="title_activity_main2">Main2Activity</string>
+    <string name="menu_schedule">Schedule</string>
+    <string name="menu_flash_cards">Flash Cards</string>
+    <string name="menu_lectures">Lectures</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_history">History</string>
+    <string name="title">Title</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="additional_notes">Additional Notes</string>
+    <string name="save">Save</string>
+    <string name="mark_completed">Mark Completed</string>
+    <string name="mark_incompleted">Mark Incompleted</string>
+    <string name="confirm_delete">Confirm Delete</string>
+    <string name="delete_lecture">Are you sure you want to delete this lecture file?</string>
+    <string name="delete_event">Are you sure you want to delete this event?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="error_pdf">Error: No PDF reader app installed</string>
+    <string name="error_file_picker">Error: File picker app not installed</string>
+    <string name="error_invalid_file">Error: Not a PDF</string>
+    <string name="error_inaccessible_file">"Error: File may not be accessible"</string>
+    <string name="error_file_added">Error: File already added</string>
+    <string name="rename_file">Rename File</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">No</string>
+    <string name="error_rename">File with that name already exists</string>
+    <string name="error_characters">Invalid characters entered</string>
+    <string name="sort_date">Sorting by added date</string>
+    <string name="sort_size">Sorting by file size</string>
+    <string name="sort_title">Sorting by title</string>
+    <string name="pdf_select">Sorting by title</string>
+    <string name="fill_event">Please fill in the title and select a date</string>
+    <string name="homework">Homework</string>
+    <string name="coursework">Coursework Assignment</string>
+    <string name="class_test">Class Test</string>
+    <string name="exam">Exam</string>
+    <string name="event">Event</string>
+
 
 </resources>

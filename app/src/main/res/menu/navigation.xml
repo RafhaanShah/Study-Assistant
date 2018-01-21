@@ -4,16 +4,16 @@
     <item
         android:id="@+id/navigation_schedule"
         android:icon="@drawable/ic_schedule_black_24dp"
-        android:title="Schedule" />
+        android:title="@string/menu_schedule" />
 
     <item
         android:id="@+id/navigation_flash_cards"
         android:icon="@drawable/ic_find_in_page_black_24dp"
-        android:title="Flash Cards" />
+        android:title="@string/menu_flash_cards" />
 
     <item
         android:id="@+id/navigation_lectures"
         android:icon="@drawable/ic_picture_as_pdf_black_24dp"
-        android:title="Lectures" />
+        android:title="@string/menu_lectures" />
 
 </menu>

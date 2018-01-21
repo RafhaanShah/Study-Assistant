@@ -20,7 +20,7 @@
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="Title"
+                android:hint="@string/title"
                 android:inputType="textCapWords"
                 android:maxLength="35"
                 android:paddingTop="10dp" />
@@ -43,7 +43,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:onClick="pickDate"
-                    android:text="Pick Date" />
+                    android:text="@string/pick_date" />
 
                 <Button
                     android:id="@+id/timeButton"
@@ -52,7 +52,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentStart="true"
                     android:onClick="pickTime"
-                    android:text="Pick Time" />
+                    android:text="@string/pick_time" />
 
                 <TextView
                     android:id="@+id/dateText"
@@ -61,7 +61,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:gravity="center"
-                    android:hint="Date" />
+                    android:hint="@string/date" />
 
                 <TextView
                     android:id="@+id/timeText"
@@ -70,7 +70,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:gravity="center"
-                    android:hint="Time" />
+                    android:hint="@string/time" />
 
             </RelativeLayout>
 
@@ -78,7 +78,7 @@
                 android:id="@+id/notesText"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:hint="Additional Notes"
+                android:hint="@string/additional_notes"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="250"
                 android:paddingTop="20dp" />
@@ -93,19 +93,21 @@
 
                 <Button
                     android:id="@+id/saveButton"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:onClick="saveItem"
-                    android:text="Save" />
+                    android:text="@string/save" />
 
                 <Button
                     android:id="@+id/finishButton"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
                     android:onClick="finishItem"
-                    android:text="Mark Completed" />
+                    android:text="@string/mark_completed" />
 
             </LinearLayout>
 

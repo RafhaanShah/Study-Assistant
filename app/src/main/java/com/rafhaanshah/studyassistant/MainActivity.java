@@ -133,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
     private void historyButtonPressed() {
         if (scheduleHistory) {
             scheduleHistory = false;
-            actionBar.setTitle("Schedule");
+            actionBar.setTitle(getString(R.string.menu_schedule));
         } else {
             scheduleHistory = true;
-            actionBar.setTitle("History");
+            actionBar.setTitle(getString(R.string.menu_history));
         }
         ScheduleFragment scheduleFragment = (ScheduleFragment) selectedFragment;
         scheduleFragment.showData(scheduleHistory);
@@ -148,17 +148,17 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 lectureFragment.updateData(1, false);
                 lectureSorting = 1;
-                Toast.makeText(getApplicationContext(), "Sorting by added date", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.sort_date), Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 lectureFragment.updateData(2, false);
                 lectureSorting = 2;
-                Toast.makeText(getApplicationContext(), "Sorting by file size", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.sort_size), Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 lectureFragment.updateData(0, false);
                 lectureSorting = 0;
-                Toast.makeText(getApplicationContext(), "Sorting by title", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.sort_title), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -169,15 +169,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newLectureItem(View v) {
-        Toast.makeText(getApplicationContext(), "Select PDF file", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getString(R.string.pdf_select), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent()
                 .setType("application/pdf")
                 .setAction(Intent.ACTION_GET_CONTENT);
 
         try {
-            startActivityForResult(Intent.createChooser(intent, "Select a PDF file"), 100);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), 100);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(getApplicationContext(), "Error: File picker app not installed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -196,12 +196,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!fileName.toLowerCase().endsWith(".pdf")) {
-                Toast.makeText(getApplicationContext(), "Error: Not a PDF", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (new File(directory + File.separator + fileName).exists()) {
-                Toast.makeText(getApplicationContext(), "Error: File already added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_file_added), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 initialStream.close();
                 outStream.close();
             } catch (IOException e) {
-                Toast.makeText(getApplicationContext(), "Error: File may not be accessible", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_inaccessible_file), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } finally {
                 LectureFragment frag = (LectureFragment) selectedFragment;
@@ -227,19 +227,19 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleSelected() {
         menu.clear();
         scheduleHistory = false;
-        actionBar.setTitle("Schedule");
+        actionBar.setTitle(getString(R.string.menu_schedule));
         getMenuInflater().inflate(R.menu.schedule_menu, menu);
     }
 
     private void flashCardSelected() {
         menu.clear();
-        actionBar.setTitle("Flash Cards");
+        actionBar.setTitle(getString(R.string.menu_flash_cards));
         //getMenuInflater().inflate(R.menu.flash_card_menu, menu);
     }
 
     private void lectureSelected() {
         menu.clear();
-        actionBar.setTitle("Lectures");
+        actionBar.setTitle(getString(R.string.menu_lectures));
         getMenuInflater().inflate(R.menu.lecture_menu, menu);
     }
 }

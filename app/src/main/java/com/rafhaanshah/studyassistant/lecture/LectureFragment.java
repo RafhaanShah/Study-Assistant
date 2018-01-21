@@ -92,14 +92,14 @@ public class LectureFragment extends Fragment {
                 items.remove(position);
                 recyclerAdapter.notifyItemRemoved(position);
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Confirm Delete")
-                        .setMessage("Are you sure you want to delete this lecture file?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(getString(R.string.confirm_delete))
+                        .setMessage(getString(R.string.delete_lecture))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 file.delete();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 items.add(position, file);
                                 recyclerAdapter.notifyItemInserted(position);

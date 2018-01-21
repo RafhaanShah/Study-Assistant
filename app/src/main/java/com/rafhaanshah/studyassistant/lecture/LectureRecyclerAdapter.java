@@ -65,7 +65,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 try {
                     context.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
-                    Toast.makeText(context, "Error: No PDF reader app installed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 
@@ -85,20 +85,20 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
                 new AlertDialog.Builder(context)
-                        .setTitle("Rename File")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        .setTitle(context.getString(R.string.rename_file))
+                        .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 File newFile = new File(directory.getAbsolutePath() + File.separator + input.getText().toString() + ".pdf");
                                 if (newFile.exists()) {
-                                    Toast.makeText(context, "File with that name already exists", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
                                 } else if (!lec.renameTo(newFile)) {
-                                    Toast.makeText(context, "Invalid characters entered", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
                                 } else {
                                     lectureFragment.updateData(true);
                                 }
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                             }
                         })

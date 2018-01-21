@@ -55,7 +55,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         setContentView(R.layout.activity_schedule_item);
 
         assert getSupportActionBar() != null;
-        getSupportActionBar().setTitle("Event");
+        getSupportActionBar().setTitle(getString(R.string.event));
 
         realm = Realm.getDefaultInstance();
         setSpinner();
@@ -116,7 +116,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         if (oldItem.isCompleted()) {
             Button button = findViewById(R.id.finishButton);
-            button.setText("Mark Incomplete");
+            button.setText(getString(R.string.mark_incompleted));
         }
 
         Spinner spinner = findViewById(R.id.spinner);
@@ -165,9 +165,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         switch (item.getItemId()) {
             case R.id.deleteButton:
                 new AlertDialog.Builder(this)
-                        .setTitle("Confirm Delete")
-                        .setMessage("Are you sure you want to delete this event?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        .setTitle(getString(R.string.confirm_delete))
+                        .setMessage(getString(R.string.delete_event))
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 realm.executeTransaction(new Realm.Transaction() {
                                     @Override
@@ -178,7 +178,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                                 finish();
                             }
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
                             }
@@ -195,10 +195,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         spinner.setOnItemSelectedListener(this);
 
         List<String> categories = new ArrayList<>();
-        categories.add("Homework");
-        categories.add("Coursework Assignment");
-        categories.add("Class Test");
-        categories.add("Exam");
+        categories.add(getString(R.string.homework));
+        categories.add(getString(R.string.coursework));
+        categories.add(getString(R.string.class_test));
+        categories.add(getString(R.string.exam));
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -211,7 +211,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         notes = ((EditText) findViewById(R.id.notesText)).getText().toString();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(dueDate) || TextUtils.isEmpty(dueTime)) {
-            Toast.makeText(getApplicationContext(), "Please fill in the title and select a date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.fill_event), Toast.LENGTH_SHORT).show();
             return;
         }
         epochTime = parseDateTime(dueDate, dueTime);

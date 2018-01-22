@@ -36,13 +36,17 @@ public class LectureFragment extends Fragment {
     private File directory;
 
     public static LectureFragment newInstance(int i) {
-        sorting = i;
-        return new LectureFragment();
+        LectureFragment lcf = new LectureFragment();
+        Bundle bndl = new Bundle(1);
+        bndl.putInt("sorting", i);
+        lcf.setArguments(bndl);
+        return lcf;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sorting = getArguments().getInt("sorting");
     }
 
     @Override
@@ -168,7 +172,7 @@ public class LectureFragment extends Fragment {
                 Collections.sort(items, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
-                        return a.getName().compareTo(b.getName());
+                        return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
                     }
                 });
                 break;

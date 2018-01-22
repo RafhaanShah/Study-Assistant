@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rafhaanshah.studyassistant.flashcards.FlashCardActivity;
 import com.rafhaanshah.studyassistant.flashcards.FlashCardFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleFragment;
@@ -184,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newFlashCardItem(View v) {
-
+        Intent nextScreen = new Intent(getApplicationContext(), FlashCardActivity.class);
+        startActivity(nextScreen);
     }
 
     @Override

@@ -7,6 +7,9 @@ import android.view.View;
 
 import com.rafhaanshah.studyassistant.R;
 
+import io.realm.Realm;
+import io.realm.RealmQuery;
+
 public class FlashCardActivity extends AppCompatActivity {
 
     @Override
@@ -14,15 +17,31 @@ public class FlashCardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash_card);
 
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         ViewPager mPager = findViewById(R.id.viewPager);
 
-        FlashCardStackAdapter mAdapter = new FlashCardStackAdapter(getSupportFragmentManager());
+        String title = getIntent().getStringExtra("item");
+
+        RealmQuery query = Realm.getDefaultInstance().where(FlashCardSet.class).equalTo("title", title);
+        FlashCardSet item = (FlashCardSet) query.findFirst();
+
+        FlashCardStackAdapter mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
 
         mPager.setPageTransformer(true, new FlashCardStackTransformer());
 
         mPager.setOffscreenPageLimit(10);
 
         mPager.setAdapter(mAdapter);
+
+        setTitle(title);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     private class FlashCardStackTransformer implements ViewPager.PageTransformer {

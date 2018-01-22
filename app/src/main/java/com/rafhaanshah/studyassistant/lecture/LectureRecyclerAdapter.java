@@ -82,8 +82,8 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 input.setText(holder.lectureTitle.getText());
                 input.setSelectAllOnFocus(true);
                 input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
-
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
                 new AlertDialog.Builder(context)
                         .setTitle(context.getString(R.string.rename_file))
                         .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {

@@ -54,8 +54,11 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_item);
 
-        assert getSupportActionBar() != null;
-        getSupportActionBar().setTitle(getString(R.string.event));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(getString(R.string.event));
+        }
+
 
         realm = Realm.getDefaultInstance();
         setSpinner();
@@ -79,6 +82,12 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             newItem = false;
             setFields(Integer.valueOf(item));
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     @Override

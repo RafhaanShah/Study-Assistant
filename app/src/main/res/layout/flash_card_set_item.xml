@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@drawable/divider"
+    android:clickable="true"
+    android:focusable="true">
+
+    <TextView
+        android:id="@+id/flashCardSetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingEnd="2dp"
+        android:paddingStart="4dp"
+        android:textSize="22sp" />
+
+</RelativeLayout>

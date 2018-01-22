@@ -37,9 +37,9 @@ public class LectureFragment extends Fragment {
 
     public static LectureFragment newInstance(int i) {
         LectureFragment lcf = new LectureFragment();
-        Bundle bndl = new Bundle(1);
-        bndl.putInt("sorting", i);
-        lcf.setArguments(bndl);
+        Bundle bundle = new Bundle(1);
+        bundle.putInt("sorting", i);
+        lcf.setArguments(bundle);
         return lcf;
     }
 

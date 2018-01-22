@@ -14,28 +14,34 @@ import com.rafhaanshah.studyassistant.R;
 public class FlashCardStackFragment extends Fragment {
 
 
-    private String title;
+    private String card;
+    private String answer;
 
-    public static FlashCardStackFragment newInstance(String title) {
+    public static FlashCardStackFragment newInstance(String cardText, String answerText) {
         FlashCardStackFragment fcs = new FlashCardStackFragment();
-        Bundle bndl = new Bundle(1);
-        bndl.putString("title", title);
-        fcs.setArguments(bndl);
+        Bundle bundle = new Bundle(2);
+        bundle.putString("cardText", cardText);
+        bundle.putString("answerText", answerText);
+        fcs.setArguments(bundle);
         return fcs;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        title = getArguments().getString("title");
+        card = getArguments().getString("cardText");
+        answer = getArguments().getString("answerText");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
-        TextView tv = inflatedView.findViewById(R.id.textView);
-        tv.setText(title);
+
+        TextView cardTextView = inflatedView.findViewById(R.id.cardText);
+        TextView answerTextView = inflatedView.findViewById(R.id.answerText);
+        cardTextView.setText(card);
+        answerTextView.setText(answer);
 
         return inflatedView;
     }

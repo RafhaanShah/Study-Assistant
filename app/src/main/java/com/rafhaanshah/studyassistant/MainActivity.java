@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.rafhaanshah.studyassistant.flashcards.FlashCardFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
@@ -180,6 +181,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+    }
+
+    public void newFlashCardItem(View v) {
+
     }
 
     @Override

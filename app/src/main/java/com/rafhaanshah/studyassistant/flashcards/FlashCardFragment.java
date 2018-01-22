@@ -1,10 +1,12 @@
-package com.rafhaanshah.studyassistant;
+package com.rafhaanshah.studyassistant.flashcards;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.rafhaanshah.studyassistant.R;
 
 public class FlashCardFragment extends Fragment {
     public static FlashCardFragment newInstance() {

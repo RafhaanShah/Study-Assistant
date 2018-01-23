@@ -14,8 +14,8 @@ import com.rafhaanshah.studyassistant.R;
 public class FlashCardStackFragment extends Fragment {
 
 
-    private String card;
-    private String answer;
+    private String card, answer;
+    private TextView cardTextView, answerTextView;
 
     public static FlashCardStackFragment newInstance(String cardText, String answerText) {
         FlashCardStackFragment fcs = new FlashCardStackFragment();
@@ -38,11 +38,19 @@ public class FlashCardStackFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
 
-        TextView cardTextView = inflatedView.findViewById(R.id.cardText);
-        TextView answerTextView = inflatedView.findViewById(R.id.answerText);
+        cardTextView = inflatedView.findViewById(R.id.cardText);
+        answerTextView = inflatedView.findViewById(R.id.answerText);
         cardTextView.setText(card);
         answerTextView.setText(answer);
 
         return inflatedView;
+    }
+
+    public String getCardText() {
+        return cardTextView.getText().toString();
+    }
+
+    public String getAnswerText() {
+        return answerTextView.getText().toString();
     }
 }

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent">
 
-    <TextView
+    <EditText
         android:id="@+id/cardText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,12 +14,23 @@
         android:layout_marginTop="229dp"
         android:text="Card Text" />
 
-    <TextView
+    <EditText
         android:id="@+id/answerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/cardText"
         android:layout_centerHorizontal="true"
         android:text="Answer Text" />
+
+    <Button
+        android:id="@+id/cardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/answerText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:onClick="saveButton"
+        android:text="Button" />
+
 
 </RelativeLayout>

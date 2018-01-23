@@ -12,13 +12,14 @@ import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
 
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class FlashCardRecycleAdapter extends RecyclerView.Adapter<FlashCardRecycleAdapter.ViewHolder> {
-    private RealmResults<FlashCardSet> values;
+public class FlashCardRecyclerAdapter extends RecyclerView.Adapter<FlashCardRecyclerAdapter.ViewHolder> {
+    private RealmList<FlashCardSet> values;
     private Context context;
 
-    FlashCardRecycleAdapter(RealmResults<FlashCardSet> data) {
+    FlashCardRecyclerAdapter(RealmList<FlashCardSet> data) {
         values = data;
     }
 
@@ -50,7 +51,9 @@ public class FlashCardRecycleAdapter extends RecyclerView.Adapter<FlashCardRecyc
     }
 
     void updateData(RealmResults<FlashCardSet> items) {
-        values = items;
+        RealmList vals = new RealmList();
+        vals.addAll(items);
+        values = vals;
         notifyDataSetChanged();
     }
 

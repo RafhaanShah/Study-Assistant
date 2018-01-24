@@ -3,6 +3,8 @@ package com.rafhaanshah.studyassistant.flashcards;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
+import android.util.SparseArray;
 
 import io.realm.RealmList;
 
@@ -10,20 +12,24 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
 
     private RealmList<String> cardTexts;
     private RealmList<String> answerTexts;
-    private FlashCardStackFragment[] arr;
+    private SparseArray<FlashCardStackFragment> arr;
 
     public FlashCardStackAdapter(FragmentManager fm, FlashCardSet set) {
         super(fm);
-
         cardTexts = set.getCards();
         answerTexts = set.getAnswers();
-        arr = new FlashCardStackFragment[cardTexts.size()];
+        Log.v("CREATED", "ADAPTER" + String.valueOf(cardTexts.size()));
+        arr = new SparseArray<>(cardTexts.size());
+        for (int i = 0; i < cardTexts.size(); i++) {
+            arr.put(0, null);
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
         FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position));
-        arr[position] = frag;
+        Log.v("CREATED", String.valueOf(position));
+        arr.setValueAt(position, frag);
         return frag;
     }
 
@@ -39,7 +45,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
     }
 
     public Fragment getFragment(int position) {
-        return arr[position];
+        return arr.get(position);
     }
 
     @Override

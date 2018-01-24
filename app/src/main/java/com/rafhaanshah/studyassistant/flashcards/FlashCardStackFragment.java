@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
@@ -16,6 +17,7 @@ public class FlashCardStackFragment extends Fragment {
 
     private String card, answer;
     private TextView cardTextView, answerTextView;
+    private Button button;
 
     public static FlashCardStackFragment newInstance(String cardText, String answerText) {
         FlashCardStackFragment fcs = new FlashCardStackFragment();
@@ -40,8 +42,10 @@ public class FlashCardStackFragment extends Fragment {
 
         cardTextView = inflatedView.findViewById(R.id.cardText);
         answerTextView = inflatedView.findViewById(R.id.answerText);
+        button = inflatedView.findViewById(R.id.cardButton);
         cardTextView.setText(card);
         answerTextView.setText(answer);
+        answerTextView.setVisibility(View.INVISIBLE);
 
         return inflatedView;
     }
@@ -52,5 +56,10 @@ public class FlashCardStackFragment extends Fragment {
 
     public String getAnswerText() {
         return answerTextView.getText().toString();
+    }
+
+    public void revealAnswer() {
+        answerTextView.setVisibility(View.VISIBLE);
+        button.setVisibility(View.INVISIBLE);
     }
 }

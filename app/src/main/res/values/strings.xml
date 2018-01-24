@@ -41,4 +41,6 @@
     <string name="class_test">Class Test</string>
     <string name="exam">Exam</string>
     <string name="event">Event</string>
+    <string name="menu_edit">Edit</string>
+    <string name="menu_add">Add</string>
 </resources>

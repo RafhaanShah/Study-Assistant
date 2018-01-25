@@ -36,7 +36,6 @@ public class FlashCardFragment extends Fragment {
     private RealmChangeListener realmListener;
     private FlashCardRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
-    private boolean dataChanged;
 
     public static FlashCardFragment newInstance() {
         FlashCardFragment fragment = new FlashCardFragment();
@@ -46,18 +45,8 @@ public class FlashCardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataChanged = true;
         realm = Realm.getDefaultInstance();
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange(Object o) {
-                dataChanged = true;
-            }
-        };
-        realm.addChangeListener(realmListener);
         items = new RealmList<>();
-        items.addAll(realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING));
-        //items = realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING);
     }
 
     @Override
@@ -74,6 +63,7 @@ public class FlashCardFragment extends Fragment {
 
         recyclerAdapter = new FlashCardRecyclerAdapter(items);
         recyclerView.setAdapter(recyclerAdapter);
+        updateData();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -109,6 +99,7 @@ public class FlashCardFragment extends Fragment {
                                     @Override
                                     public void execute(@NonNull Realm realm) {
                                         set.deleteFromRealm();
+                                        updateData();
                                     }
                                 });
                             }
@@ -193,22 +184,18 @@ public class FlashCardFragment extends Fragment {
             }
 
         });
-
         updateData();
     }
 
     private void updateData() {
-        if (dataChanged) {
-            dataChanged = false;
-
-        }
-        recyclerAdapter.updateData(realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING));
+        items.clear();
+        items.addAll(realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING));
+        recyclerAdapter.updateData(items);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realm.removeChangeListener(realmListener);
         realm.close();
     }
 }

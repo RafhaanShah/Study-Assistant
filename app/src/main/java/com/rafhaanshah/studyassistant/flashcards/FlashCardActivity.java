@@ -25,7 +25,6 @@ public class FlashCardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("CREATED", "ACTIVITY" + String.valueOf(current));
         setContentView(R.layout.activity_flash_card);
 
         if (getSupportActionBar() != null)
@@ -51,11 +50,12 @@ public class FlashCardActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 current = position;
                 setTitle(title + " - " + String.valueOf(current + 1) + "/" + String.valueOf(total));
+                Log.v("PAGER", "ACTIVITY SWIPED " + String.valueOf(current));
             }
         });
 
         setTitle(title + " - " + String.valueOf(current + 1) + "/" + String.valueOf(total));
-        Log.v("CREATED", "ACTIVITY" + String.valueOf(current));
+
     }
 
     @Override
@@ -83,7 +83,9 @@ public class FlashCardActivity extends AppCompatActivity {
 
     public void buttonPressed(View v) {
 
-        final int pos = current;
+        final int pos = mPager.getCurrentItem();
+
+        Log.v("PAGER", "ACTIVITY BUTTON " + String.valueOf(pos));
 
         FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(pos);
 

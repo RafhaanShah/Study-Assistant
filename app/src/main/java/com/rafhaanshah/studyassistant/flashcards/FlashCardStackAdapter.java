@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import io.realm.RealmList;
 
@@ -18,17 +19,25 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
         super(fm);
         cardTexts = set.getCards();
         answerTexts = set.getAnswers();
-        Log.v("CREATED", "ADAPTER" + String.valueOf(cardTexts.size()));
+        Log.v("PAGER", "ADAPTER " + String.valueOf(cardTexts.size()));
         arr = new SparseArray<>(cardTexts.size());
         for (int i = 0; i < cardTexts.size(); i++) {
-            arr.put(0, null);
+            arr.put(i, null);
         }
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        FlashCardStackFragment frag = (FlashCardStackFragment) super.instantiateItem(container, position);
+        Log.v("PAGER NEW", String.valueOf(position));
+        arr.setValueAt(position, frag);
+        return frag;
     }
 
     @Override
     public Fragment getItem(int position) {
         FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position));
-        Log.v("CREATED", String.valueOf(position));
+        Log.v("PAGER OLD", String.valueOf(position));
         arr.setValueAt(position, frag);
         return frag;
     }
@@ -45,6 +54,11 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
     }
 
     public Fragment getFragment(int position) {
+        Log.v("PAGER", "ADAPTER GET" + String.valueOf(position));
+        Log.v("PAGER", "ADAPTER SIZE" + String.valueOf(arr.size()));
+        if (arr.get(position) == null)
+            Log.v("PAGER", "ADAPTER FRAG NULL");
+        Log.v("PAGER", "ADAPTER FRAG" + String.valueOf(position));
         return arr.get(position);
     }
 

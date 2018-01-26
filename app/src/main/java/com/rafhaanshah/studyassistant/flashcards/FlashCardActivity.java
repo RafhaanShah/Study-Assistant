@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -88,61 +87,49 @@ public class FlashCardActivity extends AppCompatActivity {
     }
 
     private void addFlashCard() {
-        Log.v("PAGER", "ADD");
         total += 1;
-        current += 1;
-        updateTitle();
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                if (current + 1 == total) {
-                    item.getCards().add("BLANK");
-                    item.getAnswers().add("BLANK");
-                } else {
-                    item.getCards().add(current + 1, "BLANK");
-                    item.getAnswers().add(current + 1, "BLANK");
-                }
+                item.getCards().add(current + 1, "BLANK");
+                item.getAnswers().add(current + 1, "BLANK");
             }
         });
         mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
         mPager.setAdapter(mAdapter);
-        mPager.setCurrentItem(current, true);
+        mPager.setCurrentItem(current + 1, true);
     }
 
     private void deleteFlashCard() {
         total -= 1;
-        updateTitle();
-        final boolean[] finish = new boolean[1];
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
                 if (total == 0) {
                     item.deleteFromRealm();
-                    finish[0] = true;
+                    mPager.setAdapter(null);
                 } else {
                     item.getCards().remove(current);
                     item.getAnswers().remove(current);
                 }
             }
         });
-        if (finish[0]) {
+        if (mPager.getAdapter() == null) {
             finish();
         } else {
+            if (!(current == 0)) {
+                current -= 1;
+            }
+            updateTitle();
             mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
             mPager.setAdapter(mAdapter);
             mPager.setCurrentItem(current, true);
         }
     }
 
-
     public void buttonPressed(View v) {
-
         final int pos = mPager.getCurrentItem();
-
-        Log.v("PAGER", "ACTIVITY BUTTON " + String.valueOf(pos));
-
         FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(pos);
-
         frag.revealAnswer();
 
         /*
@@ -157,7 +144,7 @@ public class FlashCardActivity extends AppCompatActivity {
             }
         });
 
-        mAdapter.updateData(item.getCards(), item.getAnswers());
+        mAdapter.updateData();
         */
     }
 

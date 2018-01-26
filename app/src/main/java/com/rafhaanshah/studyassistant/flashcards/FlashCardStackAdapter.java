@@ -4,7 +4,6 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -24,7 +23,6 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
         item = set;
         cardTexts = set.getCards();
         answerTexts = set.getAnswers();
-        Log.v("PAGER", "ADAPTER " + String.valueOf(cardTexts.size()));
         arr = new SparseArray<>(cardTexts.size());
         for (int i = 0; i < cardTexts.size() + 1; i++) {
             arr.put(i, null);
@@ -33,7 +31,6 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        Log.v("PAGER NEW", String.valueOf(position) + cardTexts.get(position));
         FlashCardStackFragment frag = (FlashCardStackFragment) super.instantiateItem(container, position);
         arr.setValueAt(position, frag);
         return frag;
@@ -41,7 +38,6 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.v("PAGER OLD", String.valueOf(position) + cardTexts.get(position));
         FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position));
         arr.setValueAt(position, frag);
         return frag;
@@ -63,11 +59,14 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return cardTexts.size();
+        if (item.isValid()) {
+            return cardTexts.size();
+        } else {
+            return 0;
+        }
     }
 
     public void updateData() {
-        Log.v("PAGER", "UPDATE");
         cardTexts = item.getCards();
         answerTexts = item.getAnswers();
         notifyDataSetChanged();

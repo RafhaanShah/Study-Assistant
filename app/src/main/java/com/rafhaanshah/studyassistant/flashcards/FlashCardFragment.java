@@ -36,6 +36,7 @@ public class FlashCardFragment extends Fragment {
     private RealmChangeListener realmListener;
     private FlashCardRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
+    private boolean dataChanged;
 
     public static FlashCardFragment newInstance() {
         FlashCardFragment fragment = new FlashCardFragment();
@@ -46,8 +47,24 @@ public class FlashCardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
+        realmListener = new RealmChangeListener() {
+            @Override
+            public void onChange(Object o) {
+                dataChanged = true;
+            }
+        };
+        realm.addChangeListener(realmListener);
         items = new RealmList<>();
     }
+
+    @Override
+    public void onResume() {
+        if (dataChanged) {
+            updateData();
+        }
+        super.onResume();
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -156,7 +173,6 @@ public class FlashCardFragment extends Fragment {
 
     public void newSet() {
 
-        final char[] ALPHA_NUMERIC_STRING = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',};
         final Random random = new Random();
 
 
@@ -165,20 +181,20 @@ public class FlashCardFragment extends Fragment {
             public void execute(@NonNull Realm realm) {
                 RealmList<String> list = new RealmList<String>();
                 RealmList<String> list2 = new RealmList<String>();
-                list.add("Q ONE");
-                list.add("Q TWO");
-                list.add("Q THREE");
-                list.add("Q FOUR");
-                list.add("Q FIVE");
+                list.add("ONE");
+                list.add("TWO");
+//                list.add("THREE");
+//                list.add("FOUR");
+//                list.add("FIVE");
 
-                list2.add("A ONE");
-                list2.add("A TWO");
-                list2.add("A THREE");
-                list2.add("A FOUR");
-                list2.add("A FIVE");
+                list2.add("1");
+                list2.add("2");
+//                list2.add("3");
+//                list2.add("4");
+//                list2.add("5");
 
                 FlashCardSet item = realm.createObject(FlashCardSet.class);
-                item.setTitle("Set " + String.valueOf(ALPHA_NUMERIC_STRING[random.nextInt(10)]));
+                item.setTitle("Set " + String.valueOf(random.nextInt(100) + 1));
                 item.setCards(list);
                 item.setAnswers(list2);
             }
@@ -188,6 +204,7 @@ public class FlashCardFragment extends Fragment {
     }
 
     private void updateData() {
+
         items.clear();
         items.addAll(realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING));
         recyclerAdapter.updateData(items);
@@ -196,6 +213,7 @@ public class FlashCardFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        realm.removeChangeListener(realmListener);
         realm.close();
     }
 }

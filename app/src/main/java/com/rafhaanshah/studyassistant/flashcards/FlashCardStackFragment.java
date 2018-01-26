@@ -3,6 +3,7 @@ package com.rafhaanshah.studyassistant.flashcards;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class FlashCardStackFragment extends Fragment {
         bundle.putString("cardText", cardText);
         bundle.putString("answerText", answerText);
         fcs.setArguments(bundle);
+        Log.v("PAGER FRAG INSTANTIATE", cardText);
         return fcs;
     }
 
@@ -33,6 +35,7 @@ public class FlashCardStackFragment extends Fragment {
         super.onCreate(savedInstanceState);
         card = getArguments().getString("cardText");
         answer = getArguments().getString("answerText");
+        Log.v("PAGER FRAG", "ONCREATE " + card);
     }
 
     @Nullable
@@ -46,6 +49,7 @@ public class FlashCardStackFragment extends Fragment {
         cardTextView.setText(card);
         answerTextView.setText(answer);
         answerTextView.setVisibility(View.INVISIBLE);
+        Log.v("PAGER FRAG", "ONCREATE VIEW " + card);
 
         return inflatedView;
     }

@@ -1,6 +1,7 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -49,13 +50,14 @@ public class FlashCardActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 current = position;
-                setTitle(title + " - " + String.valueOf(current + 1) + "/" + String.valueOf(total));
-                Log.v("PAGER", "ACTIVITY SWIPED " + String.valueOf(current));
+                updateTitle();
             }
         });
+        updateTitle();
+    }
 
+    private void updateTitle() {
         setTitle(title + " - " + String.valueOf(current + 1) + "/" + String.valueOf(total));
-
     }
 
     @Override
@@ -76,10 +78,62 @@ public class FlashCardActivity extends AppCompatActivity {
             case R.id.editFlashCardButton:
                 return true;
             case R.id.deleteFlashCardButton:
+                deleteFlashCard();
+                return true;
+            case R.id.addFlashCardButton:
+                addFlashCard();
                 return true;
         }
         return false;
     }
+
+    private void addFlashCard() {
+        Log.v("PAGER", "ADD");
+        total += 1;
+        current += 1;
+        updateTitle();
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(@NonNull Realm realm) {
+                if (current + 1 == total) {
+                    item.getCards().add("BLANK");
+                    item.getAnswers().add("BLANK");
+                } else {
+                    item.getCards().add(current + 1, "BLANK");
+                    item.getAnswers().add(current + 1, "BLANK");
+                }
+            }
+        });
+        mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
+        mPager.setAdapter(mAdapter);
+        mPager.setCurrentItem(current, true);
+    }
+
+    private void deleteFlashCard() {
+        total -= 1;
+        updateTitle();
+        final boolean[] finish = new boolean[1];
+        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(@NonNull Realm realm) {
+                if (total == 0) {
+                    item.deleteFromRealm();
+                    finish[0] = true;
+                } else {
+                    item.getCards().remove(current);
+                    item.getAnswers().remove(current);
+                }
+            }
+        });
+        if (finish[0]) {
+            finish();
+        } else {
+            mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
+            mPager.setAdapter(mAdapter);
+            mPager.setCurrentItem(current, true);
+        }
+    }
+
 
     public void buttonPressed(View v) {
 

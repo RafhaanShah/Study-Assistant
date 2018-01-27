@@ -216,8 +216,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void saveItem(View v) {
-        title = ((EditText) findViewById(R.id.titleText)).getText().toString();
-        notes = ((EditText) findViewById(R.id.notesText)).getText().toString();
+        title = ((EditText) findViewById(R.id.titleText)).getText().toString().trim();
+        notes = ((EditText) findViewById(R.id.notesText)).getText().toString().trim();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(dueDate) || TextUtils.isEmpty(dueTime)) {
             Toast.makeText(getApplicationContext(), getString(R.string.fill_event), Toast.LENGTH_SHORT).show();

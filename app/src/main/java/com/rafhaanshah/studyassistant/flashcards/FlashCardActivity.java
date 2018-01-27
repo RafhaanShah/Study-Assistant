@@ -75,6 +75,7 @@ public class FlashCardActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.editFlashCardButton:
+                editFlashCard();
                 return true;
             case R.id.deleteFlashCardButton:
                 deleteFlashCard();
@@ -91,13 +92,14 @@ public class FlashCardActivity extends AppCompatActivity {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                item.getCards().add(current + 1, "BLANK");
-                item.getAnswers().add(current + 1, "BLANK");
+                item.getCards().add(current + 1, "");
+                item.getAnswers().add(current + 1, "");
             }
         });
         mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
         mPager.setAdapter(mAdapter);
         mPager.setCurrentItem(current + 1, true);
+        editFlashCard();
     }
 
     private void deleteFlashCard() {
@@ -127,25 +129,31 @@ public class FlashCardActivity extends AppCompatActivity {
         }
     }
 
+    private void editFlashCard() {
+        FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(mPager.getCurrentItem());
+        frag.editCard();
+    }
+
     public void buttonPressed(View v) {
         final int pos = mPager.getCurrentItem();
         FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(pos);
-        frag.revealAnswer();
 
-        /*
-        final String newCard = frag.getCardText();
-        final String newAns = frag.getAnswerText();
+        if (frag.isEditing()) {
+            final String newCard = frag.getCardText();
+            final String newAns = frag.getAnswerText();
 
-        Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(@NonNull Realm realm) {
-                item.getCards().set(pos, newCard);
-                item.getAnswers().set(pos, newAns);
-            }
-        });
+            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(@NonNull Realm realm) {
+                    item.getCards().set(pos, newCard);
+                    item.getAnswers().set(pos, newAns);
+                }
+            });
 
-        mAdapter.updateData();
-        */
+            mAdapter.updateData();
+        } else {
+            frag.revealAnswer();
+        }
     }
 
     /*private class FlashCardStackTransformer implements ViewPager.PageTransformer {

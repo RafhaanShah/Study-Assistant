@@ -1,7 +1,9 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,14 +17,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
-
-import java.util.Random;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
@@ -172,35 +178,61 @@ public class FlashCardFragment extends Fragment {
     }
 
     public void newSet() {
+        final InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-        final Random random = new Random();
+        final EditText input = new EditText(getContext());
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(@NonNull Realm realm) {
-                RealmList<String> list = new RealmList<String>();
-                RealmList<String> list2 = new RealmList<String>();
-                list.add("ONE");
-                list.add("TWO");
-//                list.add("THREE");
-//                list.add("FOUR");
-//                list.add("FIVE");
-
-                list2.add("1");
-                list2.add("2");
-//                list2.add("3");
-//                list2.add("4");
-//                list2.add("5");
-
-                FlashCardSet item = realm.createObject(FlashCardSet.class);
-                item.setTitle("Set " + String.valueOf(random.nextInt(100) + 1));
-                item.setCards(list);
-                item.setAnswers(list2);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getContext().getString(R.string.new_flash));
+        builder.setPositiveButton(getContext().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
             }
-
         });
-        updateData();
+        builder.setNegativeButton(getContext().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.setIcon(R.drawable.ic_create_black_24dp);
+        builder.setView(input);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String title = input.getText().toString().trim();
+                if (TextUtils.isEmpty(title)) {
+                    Toast.makeText(getContext(), R.string.error_blank, Toast.LENGTH_SHORT).show();
+                } else {
+                    FlashCardSet set = realm.where(FlashCardSet.class).equalTo("title", title).findFirst();
+                    if (set == null) {
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(@NonNull Realm realm) {
+                                RealmList<String> cards = new RealmList<String>();
+                                RealmList<String> ans = new RealmList<String>();
+                                cards.add("");
+                                ans.add("");
+                                FlashCardSet item = realm.createObject(FlashCardSet.class);
+                                item.setTitle(title);
+                                item.setCards(cards);
+                                item.setAnswers(ans);
+                            }
+
+                        });
+                        dialog.dismiss();
+                        Intent nextScreen = new Intent(getContext(), FlashCardActivity.class);
+                        nextScreen.putExtra("item", title);
+                        getContext().startActivity(nextScreen);
+                    } else {
+                        Toast.makeText(getContext(), R.string.error_set_exists, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
     private void updateData() {

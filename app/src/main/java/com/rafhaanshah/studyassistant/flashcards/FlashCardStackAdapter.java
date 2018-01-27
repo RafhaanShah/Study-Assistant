@@ -38,8 +38,8 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position));
-        arr.setValueAt(position, frag);
+        FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position), position);
+        //arr.setValueAt(position, frag);
         return frag;
     }
 

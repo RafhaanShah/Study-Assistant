@@ -10,6 +10,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,28 +85,40 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
-                new AlertDialog.Builder(context)
-                        .setTitle(context.getString(R.string.rename_file))
-                        .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                File newFile = new File(directory.getAbsolutePath() + File.separator + input.getText().toString() + ".pdf");
-                                if (newFile.exists()) {
-                                    Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
-                                } else if (!lec.renameTo(newFile)) {
-                                    Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
-                                } else {
-                                    lectureFragment.updateData(true);
-                                }
-                            }
-                        })
-                        .setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setIcon(R.drawable.ic_create_black_24dp)
-                        .setView(input)
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(context.getString(R.string.rename_file));
+                builder.setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-                        .show();
+                    }
+                });
+                builder.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.setIcon(R.drawable.ic_create_black_24dp);
+                builder.setView(input);
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String text = input.getText().toString().trim();
+                        if (TextUtils.isEmpty(text)) {
+                            Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
+                        } else {
+                            File newFile = new File(directory.getAbsolutePath() + File.separator + text + ".pdf");
+                            if (newFile.exists()) {
+                                Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
+                            } else if (!lec.renameTo(newFile)) {
+                                Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
+                            } else {
+                                lectureFragment.updateData(true);
+                                dialog.dismiss();
+                            }
+                        }
+                    }
+                });
                 return true;
             }
         });

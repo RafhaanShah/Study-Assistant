@@ -26,6 +26,8 @@
     <string name="error_invalid_file">Error: Not a PDF</string>
     <string name="error_inaccessible_file">"Error: File may not be accessible"</string>
     <string name="error_file_added">Error: File already added</string>
+    <string name="error_set_exists">Error: Set with that name already exists</string>
+    <string name="error_blank">Error: Enter some text</string>
     <string name="rename_file">Rename File</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
@@ -43,4 +45,8 @@
     <string name="event">Event</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>
+    <string name="new_flash">New Flash Card Set</string>
+    <string name="show_answer">Show Answer</string>
+    <string name="hint_card">Enter your question or note</string>
+    <string name="hint_answer">Enter your answer or leave blank</string>
 </resources>

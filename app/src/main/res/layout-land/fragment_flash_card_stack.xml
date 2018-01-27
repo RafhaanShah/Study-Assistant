@@ -1,42 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView
         android:layout_width="555dp"
         android:layout_height="250dp"
         android:layout_centerInParent="true"
-        android:background="@color/colorAccent">
+        android:elevation="20dp"
+        app:cardCornerRadius="12dp">
 
-        <EditText
-            android:id="@+id/cardText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:text="Card Text" />
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true">
 
-        <EditText
-            android:id="@+id/answerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cardText"
-            android:layout_centerHorizontal="true"
-            android:text="Answer Text" />
+            <TextView
+                android:id="@+id/cardText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center" />
 
-        <Button
-            android:id="@+id/cardButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/answerText"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:onClick="buttonPressed"
-            android:text="Button" />
+            <TextView
+                android:id="@+id/answerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardText"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:visibility="invisible" />
 
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/cardEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
+                android:hint="@string/hint_card"
+                android:inputType="textCapSentences"
+                android:selectAllOnFocus="true"
+                android:textAlignment="center"
+                android:visibility="invisible" />
 
+            <EditText
+                android:id="@+id/answerEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardEdit"
+                android:layout_centerHorizontal="true"
+                android:hint="@string/hint_answer"
+                android:inputType="textCapSentences"
+                android:selectAllOnFocus="true"
+                android:textAlignment="center"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/cardButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:onClick="buttonPressed"
+                android:text="@string/show_answer" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

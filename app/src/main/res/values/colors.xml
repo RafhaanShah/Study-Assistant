@@ -8,5 +8,6 @@
     <color name="scheduleOrange">#FFA000</color>
     <color name="scheduleBlue">#2196F3</color>
     <color name="dividerGrey">#E0E0E0</color>#
-    <color name="materialPurple">#9C27B0</color>
+    <color name="materialPurple">#9C27B0</color>#F5F5F5
+    <color name="textGrey">#F5F5F5</color>
 </resources>

@@ -1,6 +1,7 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -29,6 +30,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    @NonNull
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         FlashCardStackFragment frag = (FlashCardStackFragment) super.instantiateItem(container, position);
@@ -44,7 +46,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object item) {
+    public int getItemPosition(@NonNull Object item) {
         return POSITION_NONE;
     }
 

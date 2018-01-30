@@ -46,7 +46,9 @@
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>
     <string name="new_flash">New Flash Card Set</string>
-    <string name="show_answer">Show Answer</string>
+    <string name="flip">Flip Card</string>
     <string name="hint_card">Enter your question or note</string>
     <string name="hint_answer">Enter your answer or leave blank</string>
+    <string name="hint_edit_card">Click the edit button to edit this card</string>
+    <string name="hint_edit_answer">Click the edit button to edit this answer</string>
 </resources>

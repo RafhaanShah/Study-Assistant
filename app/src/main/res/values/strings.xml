@@ -14,7 +14,7 @@
     <string name="additional_notes">Additional Notes</string>
     <string name="save">Save</string>
     <string name="mark_completed">Mark Completed</string>
-    <string name="mark_incompleted">Mark Incomplete</string>
+    <string name="mark_incomplete">Mark Incomplete</string>
     <string name="confirm_delete">Confirm Delete</string>
     <string name="delete_lecture">Are you sure you want to delete this lecture file?</string>
     <string name="delete_event">Are you sure you want to delete this event?</string>
@@ -46,9 +46,6 @@
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>
     <string name="new_flash">New Flash Card Set</string>
-    <string name="flip">Flip Card</string>
-    <string name="hint_card">Enter your question or note</string>
-    <string name="hint_answer">Enter your answer or leave blank</string>
+    <string name="hint_card">Enter some text for this card</string>
     <string name="hint_edit_card">Click the edit button to edit this card</string>
-    <string name="hint_edit_answer">Click the edit button to edit this answer</string>
 </resources>

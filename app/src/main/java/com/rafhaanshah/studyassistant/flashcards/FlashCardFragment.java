@@ -153,14 +153,14 @@ public class FlashCardFragment extends Fragment {
 
                     if (dX > 0) {
                         icon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_delete_white_24dp);
-                        p.setColor(ContextCompat.getColor(getContext(), R.color.scheduleRed));
+                        p.setColor(ContextCompat.getColor(getContext(), R.color.materialRed));
                         c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom(), p);
                         c.drawBitmap(icon,
                                 (float) itemView.getLeft() + Math.round(16 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT)),
                                 (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2, p);
                     } else {
                         icon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_delete_white_24dp);
-                        p.setColor(ContextCompat.getColor(getContext(), R.color.scheduleRed));
+                        p.setColor(ContextCompat.getColor(getContext(), R.color.materialRed));
                         c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom(), p);
                         c.drawBitmap(icon,
                                 (float) itemView.getRight() - Math.round(16 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT)) - icon.getWidth(),

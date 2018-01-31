@@ -125,7 +125,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         if (oldItem.isCompleted()) {
             Button button = findViewById(R.id.finishButton);
-            button.setText(getString(R.string.mark_incompleted));
+            button.setText(getString(R.string.mark_incomplete));
         }
 
         Spinner spinner = findViewById(R.id.spinner);

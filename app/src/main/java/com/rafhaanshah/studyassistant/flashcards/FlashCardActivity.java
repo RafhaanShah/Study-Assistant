@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,14 +61,14 @@ public class FlashCardActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        finish();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.flash_card_stack_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.flash_card_stack_menu, menu);
+    public boolean onSupportNavigateUp() {
+        finish();
         return true;
     }
 
@@ -89,7 +90,7 @@ public class FlashCardActivity extends AppCompatActivity {
 
     private void addFlashCard() {
         final int pos = mPager.getCurrentItem();
-        FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(pos);
+        FlashCardStackFragment frag = getFrag();
         if (frag.isEditing()) {
             save(frag, pos);
         }
@@ -104,8 +105,7 @@ public class FlashCardActivity extends AppCompatActivity {
         mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
         mPager.setAdapter(mAdapter);
         mPager.setCurrentItem(current + 1, true);
-        //TODO: uncomment this
-        //editFlashCard();
+        editFlashCard();
     }
 
     private void deleteFlashCard() {
@@ -136,7 +136,7 @@ public class FlashCardActivity extends AppCompatActivity {
     }
 
     private void editFlashCard() {
-        FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(mPager.getCurrentItem());
+        FlashCardStackFragment frag = getFrag();
         if (frag.isEditing()) {
             save(frag, mPager.getCurrentItem());
         } else {
@@ -144,52 +144,53 @@ public class FlashCardActivity extends AppCompatActivity {
         }
     }
 
-    public void save(FlashCardStackFragment frag, int pos) {
-        if (!frag.isCardFlipped()) {
-            saveCard(frag, pos);
+    private void save(FlashCardStackFragment frag, int pos) {
+        String text = frag.getText();
+        boolean flipped = frag.isCardFlipped();
+        if (!TextUtils.isEmpty(text)) {
+            if (!flipped) {
+                saveCard(frag, pos, text);
+            } else {
+                saveAnswer(frag, pos, text);
+            }
+            mAdapter.updateData();
+            if (flipped) {
+                getFrag().flipCard();
+            }
         } else {
-            saveAnswer(frag, pos);
+            frag.editCard();
         }
     }
 
     public void buttonPressed(View v) {
-        final int pos = mPager.getCurrentItem();
-        FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(pos);
-        save(frag, pos);
+        save(getFrag(), mPager.getCurrentItem());
     }
-
 
     public void cardPressed(View v) {
-
-        final int pos = mPager.getCurrentItem();
-        FlashCardStackFragment frag = (FlashCardStackFragment) mAdapter.getFragment(pos);
-        frag.flipCard();
+        getFrag().flipCard();
     }
 
-    private void saveCard(FlashCardStackFragment frag, final int pos) {
-        final String text = frag.getText();
+    private FlashCardStackFragment getFrag() {
+        final int pos = mPager.getCurrentItem();
+        return (FlashCardStackFragment) mAdapter.getFragment(pos);
+    }
 
+    private void saveCard(FlashCardStackFragment frag, final int pos, final String text) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
                 item.getCards().set(pos, text);
             }
         });
-
-        mAdapter.updateData();
     }
 
-    private void saveAnswer(FlashCardStackFragment frag, final int pos) {
-        final String text = frag.getText();
-
+    private void saveAnswer(FlashCardStackFragment frag, final int pos, final String text) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
                 item.getAnswers().set(pos, text);
             }
         });
-
-        mAdapter.updateData();
     }
 
     /*private class FlashCardStackTransformer implements ViewPager.PageTransformer {

@@ -1,12 +1,13 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,6 @@ public class FlashCardStackFragment extends Fragment {
     private CardFragment currentFragment;
 
     public static FlashCardStackFragment newInstance(String cardText, String answerText, int pos) {
-        Log.v("CARDS", "frag instance");
         FlashCardStackFragment fcs = new FlashCardStackFragment();
         Bundle bundle = new Bundle(2);
         bundle.putString("cardText", cardText);
@@ -34,10 +34,26 @@ public class FlashCardStackFragment extends Fragment {
         return fcs;
     }
 
+    //TODO: Move to helper class
+    private static int darken(int color, double fraction) {
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+        red = darkenColor(red, fraction);
+        green = darkenColor(green, fraction);
+        blue = darkenColor(blue, fraction);
+        int alpha = Color.alpha(color);
+
+        return Color.argb(alpha, red, green, blue);
+    }
+
+    private static int darkenColor(int color, double fraction) {
+        return (int) Math.max(color - (color * fraction), 0);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("CARDS", "frag oncreate");
         card = getArguments().getString("cardText");
         answer = getArguments().getString("answerText");
         position = getArguments().getInt("position");
@@ -47,7 +63,6 @@ public class FlashCardStackFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.v("CARDS", "frag create view");
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
 
         currentFragment = CardFragment.newInstance(card, colour);
@@ -56,54 +71,35 @@ public class FlashCardStackFragment extends Fragment {
                 .add(R.id.container, currentFragment)
                 .commit();
         //TODO: fix horizontal layout
-        /*
-        cardTextView = inflatedView.findViewById(R.id.cardText);
-        answerTextView = inflatedView.findViewById(R.id.answerText);
-        cardEditText = inflatedView.findViewById(R.id.cardEdit);
-        answerEditText = inflatedView.findViewById(R.id.answerEdit);
-        button = inflatedView.findViewById(R.id.cardButton);
-
-        cardTextView.setText(card);
-        answerTextView.setText(answer);
-        cardEditText.setText(card);
-        answerEditText.setText(answer);
-
-        if (answer.equals("")) {
-            button.setVisibility(View.INVISIBLE);
-        }
-
-
-        inflatedView.findViewById(R.id.relativeLayout).setBackgroundColor(color);
-        if (card.equals("")) {
-            editCard();
-        }
-        */
-
         return inflatedView;
     }
 
-    public void getColour() {
+    private void getColour() {
         switch (position % 5) {
             case 0:
-                colour = ContextCompat.getColor(getContext(), R.color.scheduleRed);
+                colour = ContextCompat.getColor(getContext(), R.color.materialRed);
                 break;
             case 1:
-                colour = ContextCompat.getColor(getContext(), R.color.scheduleBlue);
+                colour = ContextCompat.getColor(getContext(), R.color.materialBlue);
                 break;
             case 2:
-                colour = ContextCompat.getColor(getContext(), R.color.scheduleOrange);
+                colour = ContextCompat.getColor(getContext(), R.color.materialOrange);
                 break;
             case 3:
                 colour = ContextCompat.getColor(getContext(), R.color.materialPurple);
                 break;
             case 4:
-                colour = ContextCompat.getColor(getContext(), R.color.scheduleGreen);
+                colour = ContextCompat.getColor(getContext(), R.color.materialGreen);
                 break;
         }
     }
 
     public boolean isCardFlipped() {
         return cardFlipped;
+    }
+
+    public boolean isEditing() {
+        return currentFragment.isEditing();
     }
 
     public String getText() {
@@ -114,16 +110,12 @@ public class FlashCardStackFragment extends Fragment {
         currentFragment.editCard();
     }
 
-    public boolean isEditing() {
-        return currentFragment.isEditing();
-    }
-
     public void flipCard() {
         Fragment newFragment;
         if (cardFlipped) {
             newFragment = CardFragment.newInstance(card, colour);
         } else {
-            newFragment = CardFragment.newInstance(answer, colour);
+            newFragment = CardFragment.newInstance(answer, darken(colour, 0.2));
         }
 
         getChildFragmentManager()
@@ -148,7 +140,6 @@ public class FlashCardStackFragment extends Fragment {
         private CardView card;
 
         public static CardFragment newInstance(String str, int col) {
-            Log.v("CARDS", "front instance");
             CardFragment frag = new CardFragment();
             Bundle bundle = new Bundle(2);
             bundle.putString("text", str);
@@ -159,16 +150,13 @@ public class FlashCardStackFragment extends Fragment {
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
-            Log.v("CARDS", "front oncreate");
             super.onCreate(savedInstanceState);
             text = getArguments().getString("text");
             colour = getArguments().getInt("col");
         }
 
         @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            Log.v("CARDS", "front create view");
+        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View inflatedView = inflater.inflate(R.layout.fragment_card, container, false);
             inflatedView.setCameraDistance(getResources().getDisplayMetrics().density * 10000);
 
@@ -176,9 +164,8 @@ public class FlashCardStackFragment extends Fragment {
         }
 
         @Override
-        public void onViewCreated(View inflatedView, Bundle savedInstanceState) {
+        public void onViewCreated(@NonNull View inflatedView, Bundle savedInstanceState) {
             super.onViewCreated(inflatedView, savedInstanceState);
-            Log.v("CARDS", "front view created");
 
             textView = inflatedView.findViewById(R.id.text);
             editText = inflatedView.findViewById(R.id.edit);
@@ -187,23 +174,35 @@ public class FlashCardStackFragment extends Fragment {
 
             textView.setText(text);
             editText.setText(text);
+            editText.setSelectAllOnFocus(true);
             card.setCardBackgroundColor(colour);
+
+            if (TextUtils.isEmpty(text)) {
+                editCard();
+            }
         }
 
-        public void editCard() {
-            editing = true;
-            card.setClickable(false);
-            button.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.INVISIBLE);
-            editText.setVisibility(View.VISIBLE);
-            editText.requestFocus();
+        private void editCard() {
+            if (!editing) {
+                editing = true;
+                //card.setClickable(false);
+                button.setVisibility(View.VISIBLE);
+                textView.setVisibility(View.INVISIBLE);
+                editText.setVisibility(View.VISIBLE);
+                editText.requestFocus();
+            } else {
+                editing = false;
+                button.setVisibility(View.INVISIBLE);
+                textView.setVisibility(View.VISIBLE);
+                editText.setVisibility(View.INVISIBLE);
+            }
         }
 
-        public boolean isEditing() {
+        private boolean isEditing() {
             return editing;
         }
 
-        public String getText() {
+        private String getText() {
             return editText.getText().toString().trim();
         }
     }

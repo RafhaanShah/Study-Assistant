@@ -39,14 +39,14 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
         String showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS);
-        int colour = ContextCompat.getColor(context, R.color.scheduleGreen);
+        int colour = ContextCompat.getColor(context, R.color.materialGreen);
 
         if (item.isCompleted()) {
-            colour = ContextCompat.getColor(context, R.color.scheduleBlue);
+            colour = ContextCompat.getColor(context, R.color.materialBlue);
         } else if (eventTime < currentTime) {
-            colour = ContextCompat.getColor(context, R.color.scheduleRed);
+            colour = ContextCompat.getColor(context, R.color.materialRed);
         } else if (eventTime < (currentTime + (86400000 * 3))) {
-            colour = ContextCompat.getColor(context, R.color.scheduleOrange);
+            colour = ContextCompat.getColor(context, R.color.materialOrange);
         }
 
         GradientDrawable shape = new GradientDrawable();

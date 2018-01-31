@@ -123,10 +123,10 @@ public class ScheduleFragment extends Fragment {
                     }
 
                     if (item.isCompleted()) {
-                        col = (ContextCompat.getColor(getContext(), R.color.scheduleRed));
+                        col = (ContextCompat.getColor(getContext(), R.color.materialRed));
                         icon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_undo_white_24dp);
                     } else {
-                        col = (ContextCompat.getColor(getContext(), R.color.scheduleGreen));
+                        col = (ContextCompat.getColor(getContext(), R.color.materialGreen));
                         icon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_check_white_24dp);
                     }
 

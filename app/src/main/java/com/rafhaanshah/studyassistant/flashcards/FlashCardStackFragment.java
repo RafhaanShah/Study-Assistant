@@ -1,6 +1,5 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +21,7 @@ public class FlashCardStackFragment extends Fragment {
     private String card, answer;
     private int position, colour;
     private boolean cardFlipped;
-    private Fragment currentFragment;
+    private CardFragment currentFragment;
 
     public static FlashCardStackFragment newInstance(String cardText, String answerText, int pos) {
         Log.v("CARDS", "frag instance");
@@ -43,13 +42,6 @@ public class FlashCardStackFragment extends Fragment {
         answer = getArguments().getString("answerText");
         position = getArguments().getInt("position");
         getColour();
-        if (savedInstanceState == null) {
-            currentFragment = CardFrontFragment.newInstance(card, colour);
-            getChildFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.container, currentFragment)
-                    .commit();
-        }
     }
 
     @Nullable
@@ -58,6 +50,11 @@ public class FlashCardStackFragment extends Fragment {
         Log.v("CARDS", "frag create view");
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
 
+        currentFragment = CardFragment.newInstance(card, colour);
+        getChildFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, currentFragment)
+                .commit();
         //TODO: fix horizontal layout
         /*
         cardTextView = inflatedView.findViewById(R.id.cardText);
@@ -110,41 +107,23 @@ public class FlashCardStackFragment extends Fragment {
     }
 
     public String getText() {
-        if (!cardFlipped) {
-            CardFrontFragment frag = (CardFrontFragment) currentFragment;
-            return frag.getText();
-        } else {
-            CardBackFragment frag = (CardBackFragment) currentFragment;
-            return frag.getText();
-        }
+        return currentFragment.getText();
     }
 
     public void editCard() {
-        if (!cardFlipped) {
-            CardFrontFragment frag = (CardFrontFragment) currentFragment;
-            frag.editCard();
-        } else {
-            CardBackFragment frag = (CardBackFragment) currentFragment;
-            frag.editCard();
-        }
+        currentFragment.editCard();
     }
 
     public boolean isEditing() {
-        if (!cardFlipped) {
-            CardFrontFragment frag = (CardFrontFragment) currentFragment;
-            return frag.isEditing();
-        } else {
-            CardBackFragment frag = (CardBackFragment) currentFragment;
-            return frag.isEditing();
-        }
+        return currentFragment.isEditing();
     }
 
     public void flipCard() {
         Fragment newFragment;
         if (cardFlipped) {
-            newFragment = CardFrontFragment.newInstance(card, colour);
+            newFragment = CardFragment.newInstance(card, colour);
         } else {
-            newFragment = CardBackFragment.newInstance(answer, colour);
+            newFragment = CardFragment.newInstance(answer, colour);
         }
 
         getChildFragmentManager()
@@ -156,10 +135,10 @@ public class FlashCardStackFragment extends Fragment {
                 .commit();
 
         cardFlipped = !cardFlipped;
-        currentFragment = newFragment;
+        currentFragment = (CardFragment) newFragment;
     }
 
-    public static class CardFrontFragment extends Fragment {
+    public static class CardFragment extends Fragment {
 
         private String text;
         private TextView textView, editText;
@@ -168,9 +147,9 @@ public class FlashCardStackFragment extends Fragment {
         private int colour;
         private CardView card;
 
-        public static CardFrontFragment newInstance(String str, int col) {
+        public static CardFragment newInstance(String str, int col) {
             Log.v("CARDS", "front instance");
-            CardFrontFragment frag = new CardFrontFragment();
+            CardFragment frag = new CardFragment();
             Bundle bundle = new Bundle(2);
             bundle.putString("text", str);
             bundle.putInt("col", col);
@@ -190,7 +169,7 @@ public class FlashCardStackFragment extends Fragment {
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             Log.v("CARDS", "front create view");
-            View inflatedView = inflater.inflate(R.layout.fragment_card_front, container, false);
+            View inflatedView = inflater.inflate(R.layout.fragment_card, container, false);
             inflatedView.setCameraDistance(getResources().getDisplayMetrics().density * 10000);
 
             return inflatedView;
@@ -229,74 +208,4 @@ public class FlashCardStackFragment extends Fragment {
         }
     }
 
-    public static class CardBackFragment extends Fragment {
-
-        private String text;
-        private TextView textView, editText;
-        private Button button;
-        private boolean editing;
-        private int colour;
-        private CardView card;
-
-        public static CardBackFragment newInstance(String str, int col) {
-            Log.v("CARDS", "back instance");
-            CardBackFragment frag = new CardBackFragment();
-            Bundle bundle = new Bundle(2);
-            bundle.putString("text", str);
-            bundle.putInt("col", col);
-            frag.setArguments(bundle);
-            return frag;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            Log.v("CARDS", "back oncreate");
-            super.onCreate(savedInstanceState);
-            text = getArguments().getString("text");
-            colour = getArguments().getInt("col");
-        }
-
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            Log.v("CARDS", "back create view");
-            View inflatedView = inflater.inflate(R.layout.fragment_card_back, container, false);
-            inflatedView.setCameraDistance(getResources().getDisplayMetrics().density * 10000);
-
-            return inflatedView;
-        }
-
-        @Override
-        public void onViewCreated(View inflatedView, Bundle savedInstanceState) {
-            super.onViewCreated(inflatedView, savedInstanceState);
-            Log.v("CARDS", "back view created");
-
-
-            textView = inflatedView.findViewById(R.id.text);
-            editText = inflatedView.findViewById(R.id.edit);
-            button = inflatedView.findViewById(R.id.cardButton);
-            card = inflatedView.findViewById(R.id.cardView);
-
-            textView.setText(text);
-            editText.setText(text);
-            card.setCardBackgroundColor(Color.YELLOW);
-        }
-
-        public void editCard() {
-            editing = true;
-            card.setClickable(false);
-            button.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.INVISIBLE);
-            editText.setVisibility(View.VISIBLE);
-            editText.requestFocus();
-        }
-
-        public String getText() {
-            return editText.getText().toString().trim();
-        }
-
-        public boolean isEditing() {
-            return editing;
-        }
-    }
 }

@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Study Assistant</string>
-    <string name="menu_schedule">Schedule</string>
-    <string name="menu_flash_cards">Flash Cards</string>
-    <string name="menu_lectures">Lectures</string>
+    <string name="menu_schedule">My Schedule</string>
+    <string name="menu_flash_cards">My Flash Cards</string>
+    <string name="menu_lectures">My Lectures</string>
     <string name="menu_sort">Sort</string>
     <string name="menu_delete">Delete</string>
-    <string name="menu_history">History</string>
+    <string name="menu_history">My History</string>
     <string name="title">Title</string>
     <string name="pick_date">Pick Date</string>
     <string name="pick_time">Pick Time</string>
@@ -29,6 +29,7 @@
     <string name="error_set_exists">Error: Set with that name already exists</string>
     <string name="error_blank">Error: Enter some text</string>
     <string name="rename_file">Rename File</string>
+    <string name="rename_flash_card_set">Rename Flash Card Set</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="error_rename">File with that name already exists</string>
@@ -42,6 +43,7 @@
     <string name="coursework">Coursework Assignment</string>
     <string name="class_test">Class Test</string>
     <string name="exam">Exam</string>
+    <string name="card">Card</string>
     <string name="event">Event</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>

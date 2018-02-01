@@ -1,6 +1,5 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 public class FlashCardStackFragment extends Fragment {
@@ -34,23 +34,6 @@ public class FlashCardStackFragment extends Fragment {
         return fcs;
     }
 
-    //TODO: Move to helper class
-    private static int darken(int color, double fraction) {
-        int red = Color.red(color);
-        int green = Color.green(color);
-        int blue = Color.blue(color);
-        red = darkenColor(red, fraction);
-        green = darkenColor(green, fraction);
-        blue = darkenColor(blue, fraction);
-        int alpha = Color.alpha(color);
-
-        return Color.argb(alpha, red, green, blue);
-    }
-
-    private static int darkenColor(int color, double fraction) {
-        return (int) Math.max(color - (color * fraction), 0);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,15 +45,18 @@ public class FlashCardStackFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
 
         currentFragment = CardFragment.newInstance(card, colour);
         getChildFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(
+                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
                 .add(R.id.container, currentFragment)
                 .commit();
-        //TODO: fix horizontal layout
+
         return inflatedView;
     }
 
@@ -115,7 +101,7 @@ public class FlashCardStackFragment extends Fragment {
         if (cardFlipped) {
             newFragment = CardFragment.newInstance(card, colour);
         } else {
-            newFragment = CardFragment.newInstance(answer, darken(colour, 0.2));
+            newFragment = CardFragment.newInstance(answer, HelperUtils.darkenColor(colour, 0.2));
         }
 
         getChildFragmentManager()
@@ -185,7 +171,6 @@ public class FlashCardStackFragment extends Fragment {
         private void editCard() {
             if (!editing) {
                 editing = true;
-                //card.setClickable(false);
                 button.setVisibility(View.VISIBLE);
                 textView.setVisibility(View.INVISIBLE);
                 editText.setVisibility(View.VISIBLE);

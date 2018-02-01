@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import io.realm.RealmList;
 
@@ -16,11 +15,9 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
     private RealmList<String> answerTexts;
     private SparseArray<FlashCardStackFragment> arr;
     private FlashCardSet item;
-    private FragmentManager manager;
 
-    public FlashCardStackAdapter(FragmentManager fm, FlashCardSet set) {
+    FlashCardStackAdapter(FragmentManager fm, FlashCardSet set) {
         super(fm);
-        manager = fm;
         item = set;
         cardTexts = set.getCards();
         answerTexts = set.getAnswers();
@@ -30,6 +27,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    /*
     @NonNull
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
@@ -37,11 +35,12 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
         arr.setValueAt(position, frag);
         return frag;
     }
+    */
 
     @Override
     public Fragment getItem(int position) {
         FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position), position);
-        //arr.setValueAt(position, frag);
+        arr.setValueAt(position, frag);
         return frag;
     }
 
@@ -55,7 +54,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
     }
 
 
-    public Fragment getFragment(int position) {
+    Fragment getFragment(int position) {
         return arr.get(position);
     }
 
@@ -68,7 +67,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-    public void updateData() {
+    void updateData() {
         cardTexts = item.getCards();
         answerTexts = item.getAnswers();
         notifyDataSetChanged();

@@ -22,7 +22,7 @@
                 android:layout_height="50dp"
                 android:hint="@string/title"
                 android:inputType="textCapWords"
-                android:maxLength="35"
+                android:maxLength="30"
                 android:paddingTop="10dp" />
 
             <Spinner

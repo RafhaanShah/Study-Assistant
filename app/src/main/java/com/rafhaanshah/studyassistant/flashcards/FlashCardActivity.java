@@ -57,7 +57,8 @@ public class FlashCardActivity extends AppCompatActivity {
     }
 
     private void updateTitle() {
-        setTitle(title + " - " + String.valueOf(current + 1) + "/" + String.valueOf(total));
+        //setTitle(title + " - " + String.valueOf(current + 1) + "/" + String.valueOf(total));
+        setTitle(getString(R.string.card) + " " + String.valueOf(current + 1) + "/" + String.valueOf(total));
     }
 
     @Override
@@ -147,11 +148,11 @@ public class FlashCardActivity extends AppCompatActivity {
     private void save(FlashCardStackFragment frag, int pos) {
         String text = frag.getText();
         boolean flipped = frag.isCardFlipped();
-        if (!TextUtils.isEmpty(text)) {
+        if (!TextUtils.isEmpty(text) && !item.getCards().get(pos).equals(text) && !item.getAnswers().get(pos).equals(text)) {
             if (!flipped) {
-                saveCard(frag, pos, text);
+                saveCard(pos, text);
             } else {
-                saveAnswer(frag, pos, text);
+                saveAnswer(pos, text);
             }
             mAdapter.updateData();
             if (flipped) {
@@ -175,7 +176,7 @@ public class FlashCardActivity extends AppCompatActivity {
         return (FlashCardStackFragment) mAdapter.getFragment(pos);
     }
 
-    private void saveCard(FlashCardStackFragment frag, final int pos, final String text) {
+    private void saveCard(final int pos, final String text) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
@@ -184,7 +185,7 @@ public class FlashCardActivity extends AppCompatActivity {
         });
     }
 
-    private void saveAnswer(FlashCardStackFragment frag, final int pos, final String text) {
+    private void saveAnswer(final int pos, final String text) {
         Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {

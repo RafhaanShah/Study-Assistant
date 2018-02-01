@@ -182,7 +182,7 @@ public class FlashCardFragment extends Fragment {
         if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         final EditText input = new EditText(getContext());
-        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

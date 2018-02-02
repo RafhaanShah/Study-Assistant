@@ -9,14 +9,14 @@ import android.util.SparseArray;
 
 import io.realm.RealmList;
 
-public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
+public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
 
     private RealmList<String> cardTexts;
     private RealmList<String> answerTexts;
-    private SparseArray<FlashCardStackFragment> arr;
+    private SparseArray<FlashCardSetFragment> arr;
     private FlashCardSet item;
 
-    FlashCardStackAdapter(FragmentManager fm, FlashCardSet set) {
+    FlashCardSetAdapter(FragmentManager fm, FlashCardSet set) {
         super(fm);
         item = set;
         cardTexts = set.getCards();
@@ -39,7 +39,7 @@ public class FlashCardStackAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        FlashCardStackFragment frag = FlashCardStackFragment.newInstance(cardTexts.get(position), answerTexts.get(position), position);
+        FlashCardSetFragment frag = FlashCardSetFragment.newInstance(cardTexts.get(position), answerTexts.get(position), position);
         arr.setValueAt(position, frag);
         return frag;
     }

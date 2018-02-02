@@ -3,7 +3,6 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@drawable/divider"
     android:clickable="true"
     android:focusable="true">
 

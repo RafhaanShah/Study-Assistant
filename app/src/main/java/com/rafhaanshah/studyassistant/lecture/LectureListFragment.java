@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -28,15 +29,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class LectureFragment extends Fragment {
+public class LectureListFragment extends Fragment {
 
     private static int sorting;
     private LectureRecyclerAdapter recyclerAdapter;
     private ArrayList<File> items;
     private File directory;
 
-    public static LectureFragment newInstance(int i) {
-        LectureFragment lcf = new LectureFragment();
+    public static LectureListFragment newInstance(int i) {
+        LectureListFragment lcf = new LectureListFragment();
         Bundle bundle = new Bundle(1);
         bundle.putInt("sorting", i);
         lcf.setArguments(bundle);
@@ -52,7 +53,7 @@ public class LectureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_lecture, container, false);
+        return inflater.inflate(R.layout.fragment_lecture_list, container, false);
     }
 
     @Override
@@ -67,6 +68,10 @@ public class LectureFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         updateData(sorting, false);
 

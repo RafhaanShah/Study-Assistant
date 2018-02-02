@@ -14,11 +14,11 @@ import com.rafhaanshah.studyassistant.R;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 
-public class FlashCardActivity extends AppCompatActivity {
+public class FlashCardSetActivity extends AppCompatActivity {
 
     FlashCardSet item;
     private ViewPager mPager;
-    private FlashCardStackAdapter mAdapter;
+    private FlashCardSetAdapter mAdapter;
     private Realm realm;
     private int total, current;
     private String title;
@@ -39,7 +39,7 @@ public class FlashCardActivity extends AppCompatActivity {
         total = item.getCards().size();
 
         mPager = findViewById(R.id.viewPager);
-        mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
+        mAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), item);
 
         //mPager.setPageTransformer(true, new FlashCardStackTransformer());
         mPager.setOffscreenPageLimit(10);
@@ -91,7 +91,7 @@ public class FlashCardActivity extends AppCompatActivity {
 
     private void addFlashCard() {
         final int pos = mPager.getCurrentItem();
-        FlashCardStackFragment frag = getFrag();
+        FlashCardSetFragment frag = getFrag();
         if (frag.isEditing()) {
             save(frag, pos);
         }
@@ -103,10 +103,10 @@ public class FlashCardActivity extends AppCompatActivity {
                 item.getAnswers().add(current + 1, "");
             }
         });
-        mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
-        mPager.setAdapter(mAdapter);
+        //mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
+        //mPager.setAdapter(mAdapter);
+        mAdapter.updateData();
         mPager.setCurrentItem(current + 1, true);
-        editFlashCard();
     }
 
     private void deleteFlashCard() {
@@ -130,14 +130,15 @@ public class FlashCardActivity extends AppCompatActivity {
                 current -= 1;
             }
             updateTitle();
-            mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
-            mPager.setAdapter(mAdapter);
+            //mAdapter = new FlashCardStackAdapter(getSupportFragmentManager(), item);
+            //mPager.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
             mPager.setCurrentItem(current, true);
         }
     }
 
     private void editFlashCard() {
-        FlashCardStackFragment frag = getFrag();
+        FlashCardSetFragment frag = getFrag();
         if (frag.isEditing()) {
             save(frag, mPager.getCurrentItem());
         } else {
@@ -145,7 +146,7 @@ public class FlashCardActivity extends AppCompatActivity {
         }
     }
 
-    private void save(FlashCardStackFragment frag, int pos) {
+    private void save(FlashCardSetFragment frag, int pos) {
         String text = frag.getText();
         boolean flipped = frag.isCardFlipped();
         if (!TextUtils.isEmpty(text) && !item.getCards().get(pos).equals(text) && !item.getAnswers().get(pos).equals(text)) {
@@ -171,9 +172,9 @@ public class FlashCardActivity extends AppCompatActivity {
         getFrag().flipCard();
     }
 
-    private FlashCardStackFragment getFrag() {
+    private FlashCardSetFragment getFrag() {
         final int pos = mPager.getCurrentItem();
-        return (FlashCardStackFragment) mAdapter.getFragment(pos);
+        return (FlashCardSetFragment) mAdapter.getFragment(pos);
     }
 
     private void saveCard(final int pos, final String text) {

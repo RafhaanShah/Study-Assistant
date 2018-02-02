@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
-public class FlashCardStackFragment extends Fragment {
+public class FlashCardSetFragment extends Fragment {
 
 
     private String card, answer;
@@ -24,8 +24,8 @@ public class FlashCardStackFragment extends Fragment {
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
-    public static FlashCardStackFragment newInstance(String cardText, String answerText, int pos) {
-        FlashCardStackFragment fcs = new FlashCardStackFragment();
+    public static FlashCardSetFragment newInstance(String cardText, String answerText, int pos) {
+        FlashCardSetFragment fcs = new FlashCardSetFragment();
         Bundle bundle = new Bundle(2);
         bundle.putString("cardText", cardText);
         bundle.putString("answerText", answerText);
@@ -143,7 +143,7 @@ public class FlashCardStackFragment extends Fragment {
 
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View inflatedView = inflater.inflate(R.layout.fragment_card, container, false);
+            View inflatedView = inflater.inflate(R.layout.fragment_flash_card, container, false);
             inflatedView.setCameraDistance(getResources().getDisplayMetrics().density * 10000);
 
             return inflatedView;

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -35,17 +37,17 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmList;
 import io.realm.Sort;
 
-public class FlashCardFragment extends Fragment {
+public class FlashCardSetListFragment extends Fragment {
 
     private Realm realm;
     private RealmList<FlashCardSet> items;
     private RealmChangeListener realmListener;
-    private FlashCardRecyclerAdapter recyclerAdapter;
+    private FlashCardSetRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private boolean dataChanged;
 
-    public static FlashCardFragment newInstance() {
-        FlashCardFragment fragment = new FlashCardFragment();
+    public static FlashCardSetListFragment newInstance() {
+        FlashCardSetListFragment fragment = new FlashCardSetListFragment();
         return fragment;
     }
 
@@ -74,7 +76,7 @@ public class FlashCardFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_flash_card, container, false);
+        return inflater.inflate(R.layout.fragment_flash_card_set_list, container, false);
     }
 
     @Override
@@ -84,8 +86,12 @@ public class FlashCardFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerAdapter = new FlashCardRecyclerAdapter(items);
+        recyclerAdapter = new FlashCardSetRecyclerAdapter(items);
         recyclerView.setAdapter(recyclerAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         updateData();
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -198,6 +204,13 @@ public class FlashCardFragment extends Fragment {
         builder.setIcon(R.drawable.ic_create_black_24dp);
         builder.setView(input);
         final AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+            }
+        });
         dialog.show();
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
@@ -224,7 +237,7 @@ public class FlashCardFragment extends Fragment {
 
                         });
                         dialog.dismiss();
-                        Intent nextScreen = new Intent(getContext(), FlashCardActivity.class);
+                        Intent nextScreen = new Intent(getContext(), FlashCardSetActivity.class);
                         nextScreen.putExtra("item", title);
                         getContext().startActivity(nextScreen);
                     } else {

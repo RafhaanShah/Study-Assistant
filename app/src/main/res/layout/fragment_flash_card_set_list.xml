@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.rafhaanshah.studyassistant.lecture.LectureFragment">
+    tools:context="com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -22,8 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:onClick="newLectureItem"
+        android:onClick="newFlashCardItem"
         android:src="@drawable/ic_add_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>
-

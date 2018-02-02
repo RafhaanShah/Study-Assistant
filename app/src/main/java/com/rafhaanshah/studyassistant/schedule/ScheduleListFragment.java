@@ -25,7 +25,7 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleListFragment extends Fragment {
 
     private Realm realm;
     private RealmResults<ScheduleItem> items, oldItems;
@@ -34,8 +34,8 @@ public class ScheduleFragment extends Fragment {
     private RecyclerView recyclerView;
     private boolean history, dataChanged;
 
-    public static ScheduleFragment newInstance() {
-        return new ScheduleFragment();
+    public static ScheduleListFragment newInstance() {
+        return new ScheduleListFragment();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ScheduleFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_schedule, container, false);
+        return inflater.inflate(R.layout.fragment_schedule_list, container, false);
     }
 
     @Override

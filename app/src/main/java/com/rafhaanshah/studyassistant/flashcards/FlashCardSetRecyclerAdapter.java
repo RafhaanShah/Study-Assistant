@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -24,18 +25,18 @@ import com.rafhaanshah.studyassistant.R;
 import io.realm.Realm;
 import io.realm.RealmList;
 
-public class FlashCardRecyclerAdapter extends RecyclerView.Adapter<FlashCardRecyclerAdapter.ViewHolder> {
+public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> {
     private RealmList<FlashCardSet> values;
     private Context context;
 
-    FlashCardRecyclerAdapter(RealmList<FlashCardSet> data) {
+    FlashCardSetRecyclerAdapter(RealmList<FlashCardSet> data) {
         values = data;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.flash_card_set_item, parent, false);
+        View v = inflater.inflate(R.layout.item_flash_card_set, parent, false);
         context = v.getContext();
         return new ViewHolder(v);
     }
@@ -47,7 +48,7 @@ public class FlashCardRecyclerAdapter extends RecyclerView.Adapter<FlashCardRecy
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nextScreen = new Intent(v.getContext(), FlashCardActivity.class);
+                Intent nextScreen = new Intent(v.getContext(), FlashCardSetActivity.class);
                 nextScreen.putExtra("item", item.getTitle());
                 v.getContext().startActivity(nextScreen);
             }
@@ -79,6 +80,12 @@ public class FlashCardRecyclerAdapter extends RecyclerView.Adapter<FlashCardRecy
                 builder.setIcon(R.drawable.ic_create_black_24dp);
                 builder.setView(input);
                 final AlertDialog dialog = builder.create();
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface arg0) {
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    }
+                });
                 dialog.show();
 
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {

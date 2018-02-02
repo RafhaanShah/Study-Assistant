@@ -34,7 +34,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".flashcards.FlashCardActivity" />
+        <activity android:name=".flashcards.FlashCardSetActivity" />
     </application>
 
 </manifest>

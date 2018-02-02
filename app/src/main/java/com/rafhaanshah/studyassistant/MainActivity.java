@@ -19,10 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.flashcards.FlashCardFragment;
-import com.rafhaanshah.studyassistant.lecture.LectureFragment;
-import com.rafhaanshah.studyassistant.schedule.ScheduleFragment;
+import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
+import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
+import com.rafhaanshah.studyassistant.schedule.ScheduleListFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,15 +48,15 @@ public class MainActivity extends AppCompatActivity {
             selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_schedule:
-                    selectedFragment = ScheduleFragment.newInstance();
+                    selectedFragment = ScheduleListFragment.newInstance();
                     scheduleSelected();
                     break;
                 case R.id.navigation_flash_cards:
-                    selectedFragment = FlashCardFragment.newInstance();
+                    selectedFragment = FlashCardSetListFragment.newInstance();
                     flashCardSelected();
                     break;
                 case R.id.navigation_lectures:
-                    selectedFragment = LectureFragment.newInstance(lectureSorting);
+                    selectedFragment = LectureListFragment.newInstance(lectureSorting);
                     lectureSelected();
                     break;
             }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
 
         if (savedInstanceState == null) {
-            selectedFragment = ScheduleFragment.newInstance();
+            selectedFragment = ScheduleListFragment.newInstance();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, selectedFragment);
             transaction.commit();
@@ -95,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
-        if (selectedFragment.getClass() == ScheduleFragment.class) {
+        if (selectedFragment.getClass() == ScheduleListFragment.class) {
             scheduleSelected();
-        } else if (selectedFragment.getClass() == FlashCardFragment.class) {
+        } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
             flashCardSelected();
-        } else if (selectedFragment.getClass() == LectureFragment.class) {
+        } else if (selectedFragment.getClass() == LectureListFragment.class) {
             lectureSelected();
         }
         return true;
@@ -139,25 +139,25 @@ public class MainActivity extends AppCompatActivity {
             scheduleHistory = true;
             actionBar.setTitle(getString(R.string.menu_history));
         }
-        ScheduleFragment scheduleFragment = (ScheduleFragment) selectedFragment;
-        scheduleFragment.showData(scheduleHistory);
+        ScheduleListFragment scheduleListFragment = (ScheduleListFragment) selectedFragment;
+        scheduleListFragment.showData(scheduleHistory);
     }
 
     private void lectureSortButtonPressed() {
-        LectureFragment lectureFragment = (LectureFragment) selectedFragment;
+        LectureListFragment lectureListFragment = (LectureListFragment) selectedFragment;
         switch (lectureSorting) {
             case 0:
-                lectureFragment.updateData(1, false);
+                lectureListFragment.updateData(1, false);
                 lectureSorting = 1;
                 Toast.makeText(getApplicationContext(), getString(R.string.sort_date), Toast.LENGTH_SHORT).show();
                 break;
             case 1:
-                lectureFragment.updateData(2, false);
+                lectureListFragment.updateData(2, false);
                 lectureSorting = 2;
                 Toast.makeText(getApplicationContext(), getString(R.string.sort_size), Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                lectureFragment.updateData(0, false);
+                lectureListFragment.updateData(0, false);
                 lectureSorting = 0;
                 Toast.makeText(getApplicationContext(), getString(R.string.sort_title), Toast.LENGTH_SHORT).show();
                 break;
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newFlashCardItem(View v) {
-        FlashCardFragment flashCardFragment = (FlashCardFragment) selectedFragment;
+        FlashCardSetListFragment flashCardFragment = (FlashCardSetListFragment) selectedFragment;
         flashCardFragment.newSet();
     }
 
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_inaccessible_file), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } finally {
-                LectureFragment frag = (LectureFragment) selectedFragment;
+                LectureListFragment frag = (LectureListFragment) selectedFragment;
                 frag.updateData(lectureSorting, true);
             }
         }

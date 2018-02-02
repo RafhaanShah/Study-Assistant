@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
@@ -32,17 +33,17 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     private ArrayList<File> values;
     private Context context;
     private File directory;
-    private LectureFragment lectureFragment;
+    private LectureListFragment lectureListFragment;
 
-    LectureRecyclerAdapter(ArrayList<File> data, LectureFragment fragment) {
+    LectureRecyclerAdapter(ArrayList<File> data, LectureListFragment fragment) {
         values = data;
-        lectureFragment = fragment;
+        lectureListFragment = fragment;
     }
 
     @Override
     public LectureRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.lecture_item, parent, false);
+        View v = inflater.inflate(R.layout.item_lecture, parent, false);
         context = v.getContext();
         directory = new File(context.getFilesDir().getAbsolutePath() + File.separator + "lectures");
         return new LectureRecyclerAdapter.ViewHolder(v);
@@ -99,6 +100,12 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 builder.setIcon(R.drawable.ic_create_black_24dp);
                 builder.setView(input);
                 final AlertDialog dialog = builder.create();
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface arg0) {
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    }
+                });
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -113,7 +120,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                             } else if (!lec.renameTo(newFile)) {
                                 Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
                             } else {
-                                lectureFragment.updateData(true);
+                                lectureListFragment.updateData(true);
                                 dialog.dismiss();
                             }
                         }

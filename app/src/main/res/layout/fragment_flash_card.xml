@@ -6,7 +6,6 @@
     android:layout_gravity="center"
     android:elevation="20dp"
     android:onClick="cardPressed"
-    app:cardBackgroundColor="@color/colorAccent"
     app:cardCornerRadius="12dp">
 
     <RelativeLayout
@@ -23,7 +22,6 @@
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:hint="@string/hint_edit_card"
-            android:paddingBottom="20dp"
             android:textAlignment="center"
             android:textColor="@color/textGrey"
             android:textSize="20sp" />
@@ -37,23 +35,11 @@
             android:layout_marginStart="20dp"
             android:hint="@string/hint_card"
             android:inputType="textCapSentences|textMultiLine"
-            android:maxLength="240"
-            android:paddingBottom="20dp"
+            android:maxLength="250"
             android:selectAllOnFocus="true"
             android:textAlignment="center"
             android:textColor="@color/textGrey"
             android:textSize="20sp"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/cardButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:onClick="buttonPressed"
-            android:text="@string/save"
             android:visibility="invisible" />
 
     </RelativeLayout>

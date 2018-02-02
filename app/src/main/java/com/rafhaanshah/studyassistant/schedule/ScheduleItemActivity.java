@@ -164,7 +164,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         if (newItem) {
             return false;
         } else {
-            getMenuInflater().inflate(R.menu.schedule_item_menu, menu);
+            getMenuInflater().inflate(R.menu.schedule_item_activity_menu, menu);
             return true;
         }
     }

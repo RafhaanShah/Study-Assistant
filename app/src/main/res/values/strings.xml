@@ -27,6 +27,7 @@
     <string name="error_inaccessible_file">"Error: File may not be accessible"</string>
     <string name="error_file_added">Error: File already added</string>
     <string name="error_set_exists">Error: Set with that name already exists</string>
+    <string name="error_out_of_bounds">Error: That card number does not exist</string>
     <string name="error_blank">Error: Enter some text</string>
     <string name="rename_file">Rename File</string>
     <string name="rename_flash_card_set">Rename Flash Card Set</string>
@@ -43,10 +44,16 @@
     <string name="coursework">Coursework Assignment</string>
     <string name="class_test">Class Test</string>
     <string name="exam">Exam</string>
+    <string name="search">Search</string>
+    <string name="go_to_card">Go To Card Number:</string>
+    <string name="max_cards">Maximum number of cards for this set reached</string>
     <string name="card">Card</string>
     <string name="event">Event</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>
+    <string name="empty_schedule">You have no events! Press the button on the bottom right to add a new one.</string>
+    <string name="empty_flash_cards">There are no flash card sets! Press the button on the bottom right to get started.</string>
+    <string name="empty_lectures">No lecture files added! Press the button on the bottom right to retrieve one from your files.</string>
     <string name="new_flash">New Flash Card Set</string>
     <string name="hint_card">Enter some text for this card</string>
     <string name="hint_edit_card">Click the edit button to edit this card</string>

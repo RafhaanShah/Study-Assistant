@@ -113,9 +113,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("sorting", lectureSorting);
-        editor.apply();
+        if (lectureSorting != preferences.getInt("sorting", 0)) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt("sorting", lectureSorting);
+            editor.apply();
+        }
     }
 
     @Override
@@ -234,18 +236,18 @@ public class MainActivity extends AppCompatActivity {
         menu.clear();
         scheduleHistory = false;
         actionBar.setTitle(getString(R.string.menu_schedule));
-        getMenuInflater().inflate(R.menu.schedule_menu, menu);
+        getMenuInflater().inflate(R.menu.schedule_list_fragment_menu, menu);
     }
 
     private void flashCardSelected() {
         menu.clear();
         actionBar.setTitle(getString(R.string.menu_flash_cards));
-        //getMenuInflater().inflate(R.menu.flash_card_menu, menu);
+        //getMenuInflater().inflate(R.menu.flash_card_list_fragment_menu, menu);
     }
 
     private void lectureSelected() {
         menu.clear();
         actionBar.setTitle(getString(R.string.menu_lectures));
-        getMenuInflater().inflate(R.menu.lecture_menu, menu);
+        getMenuInflater().inflate(R.menu.lecture_list_fragment_menu, menu);
     }
 }

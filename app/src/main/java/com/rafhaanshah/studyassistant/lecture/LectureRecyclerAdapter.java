@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
@@ -83,7 +82,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 final EditText input = new EditText(context);
                 input.setText(holder.lectureTitle.getText());
                 input.setSelectAllOnFocus(true);
-                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
                 input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -100,12 +99,6 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 builder.setIcon(R.drawable.ic_create_black_24dp);
                 builder.setView(input);
                 final AlertDialog dialog = builder.create();
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface arg0) {
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-                    }
-                });
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override

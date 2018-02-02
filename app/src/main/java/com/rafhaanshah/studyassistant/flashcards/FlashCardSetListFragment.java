@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
@@ -45,6 +45,7 @@ public class FlashCardSetListFragment extends Fragment {
     private FlashCardSetRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private boolean dataChanged;
+    private TextView emptyText;
 
     public static FlashCardSetListFragment newInstance() {
         FlashCardSetListFragment fragment = new FlashCardSetListFragment();
@@ -83,6 +84,7 @@ public class FlashCardSetListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.recyclerView);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
+        emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -204,15 +206,7 @@ public class FlashCardSetListFragment extends Fragment {
         builder.setIcon(R.drawable.ic_create_black_24dp);
         builder.setView(input);
         final AlertDialog dialog = builder.create();
-
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-            }
-        });
         dialog.show();
-
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,9 +243,13 @@ public class FlashCardSetListFragment extends Fragment {
     }
 
     private void updateData() {
-
         items.clear();
         items.addAll(realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING));
+        if (items.isEmpty()) {
+            emptyText.setVisibility(View.VISIBLE);
+        } else if (emptyText.getVisibility() == View.VISIBLE) {
+            emptyText.setVisibility(View.GONE);
+        }
         recyclerAdapter.updateData(items);
     }
 

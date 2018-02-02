@@ -17,6 +17,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
 
@@ -33,6 +34,7 @@ public class ScheduleListFragment extends Fragment {
     private ScheduleRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private boolean history, dataChanged;
+    private TextView emptyText;
 
     public static ScheduleListFragment newInstance() {
         return new ScheduleListFragment();
@@ -61,6 +63,7 @@ public class ScheduleListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.recyclerView);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
+        emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -183,8 +186,18 @@ public class ScheduleListFragment extends Fragment {
         history = showHistory;
         if (history) {
             recyclerAdapter.updateData(oldItems);
+            if (oldItems.isEmpty()) {
+                emptyText.setVisibility(View.VISIBLE);
+            } else if (emptyText.getVisibility() == View.VISIBLE) {
+                emptyText.setVisibility(View.GONE);
+            }
         } else {
             recyclerAdapter.updateData(items);
+            if (items.isEmpty()) {
+                emptyText.setVisibility(View.VISIBLE);
+            } else if (emptyText.getVisibility() == View.VISIBLE) {
+                emptyText.setVisibility(View.GONE);
+            }
         }
     }
 }

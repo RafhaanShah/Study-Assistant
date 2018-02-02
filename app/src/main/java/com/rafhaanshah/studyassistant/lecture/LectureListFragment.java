@@ -19,6 +19,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
 
@@ -35,6 +36,7 @@ public class LectureListFragment extends Fragment {
     private LectureRecyclerAdapter recyclerAdapter;
     private ArrayList<File> items;
     private File directory;
+    private TextView emptyText;
 
     public static LectureListFragment newInstance(int i) {
         LectureListFragment lcf = new LectureListFragment();
@@ -62,6 +64,7 @@ public class LectureListFragment extends Fragment {
         getData();
 
         final FloatingActionButton fab = view.findViewById(R.id.fab);
+        emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         recyclerAdapter = new LectureRecyclerAdapter(items, this);
@@ -106,6 +109,9 @@ public class LectureListFragment extends Fragment {
                         .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 file.delete();
+                                if (items.isEmpty()) {
+                                    emptyText.setVisibility(View.VISIBLE);
+                                }
                             }
                         })
                         .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -172,33 +178,40 @@ public class LectureListFragment extends Fragment {
             getData();
         }
         sorting = i;
-        switch (i) {
-            case 0:
-                Collections.sort(items, new Comparator<File>() {
-                    @Override
-                    public int compare(File a, File b) {
-                        return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-                    }
-                });
-                break;
-            case 1:
-                Collections.sort(items, new Comparator<File>() {
-                    @Override
-                    public int compare(File a, File b) {
-                        Long lng = (b.lastModified() - a.lastModified());
-                        return lng.intValue();
-                    }
-                });
-                break;
-            case 2:
-                Collections.sort(items, new Comparator<File>() {
-                    @Override
-                    public int compare(File a, File b) {
-                        Long lng = (b.length() - a.length());
-                        return lng.intValue();
-                    }
-                });
-                break;
+        if (!items.isEmpty()) {
+            switch (i) {
+                case 0:
+                    Collections.sort(items, new Comparator<File>() {
+                        @Override
+                        public int compare(File a, File b) {
+                            return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
+                        }
+                    });
+                    break;
+                case 1:
+                    Collections.sort(items, new Comparator<File>() {
+                        @Override
+                        public int compare(File a, File b) {
+                            Long lng = (b.lastModified() - a.lastModified());
+                            return lng.intValue();
+                        }
+                    });
+                    break;
+                case 2:
+                    Collections.sort(items, new Comparator<File>() {
+                        @Override
+                        public int compare(File a, File b) {
+                            Long lng = (b.length() - a.length());
+                            return lng.intValue();
+                        }
+                    });
+                    break;
+            }
+            if (emptyText.getVisibility() == View.VISIBLE) {
+                emptyText.setVisibility(View.GONE);
+            }
+        } else {
+            emptyText.setVisibility(View.VISIBLE);
         }
         recyclerAdapter.updateData(items);
     }

@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.HelperUtils;
@@ -120,7 +119,6 @@ public class FlashCardSetFragment extends Fragment {
 
         private String text;
         private TextView textView, editText;
-        private Button button;
         private boolean editing;
         private int colour;
         private CardView card;
@@ -155,7 +153,6 @@ public class FlashCardSetFragment extends Fragment {
 
             textView = inflatedView.findViewById(R.id.text);
             editText = inflatedView.findViewById(R.id.edit);
-            button = inflatedView.findViewById(R.id.cardButton);
             card = inflatedView.findViewById(R.id.cardView);
 
             textView.setText(text);
@@ -171,15 +168,14 @@ public class FlashCardSetFragment extends Fragment {
         private void editCard() {
             if (!editing) {
                 editing = true;
-                button.setVisibility(View.VISIBLE);
                 textView.setVisibility(View.INVISIBLE);
                 editText.setVisibility(View.VISIBLE);
                 editText.requestFocus();
             } else {
                 editing = false;
-                button.setVisibility(View.INVISIBLE);
                 textView.setVisibility(View.VISIBLE);
                 editText.setVisibility(View.INVISIBLE);
+
             }
         }
 

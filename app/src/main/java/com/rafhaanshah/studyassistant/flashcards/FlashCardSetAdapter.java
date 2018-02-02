@@ -6,8 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
-
-import java.util.ArrayList;
+import android.util.SparseArray;
 
 import io.realm.RealmList;
 
@@ -15,7 +14,7 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
 
     private RealmList<String> cardTexts;
     private RealmList<String> answerTexts;
-    private ArrayList<FlashCardSetFragment> arr;
+    private SparseArray<FlashCardSetFragment> arr;
     private FlashCardSet item;
 
     FlashCardSetAdapter(FragmentManager fm, FlashCardSet set) {
@@ -23,10 +22,7 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
         item = set;
         cardTexts = set.getCards();
         answerTexts = set.getAnswers();
-        arr = new ArrayList<>(cardTexts.size());
-        for (int i = 0; i < cardTexts.size(); i++) {
-            arr.add(null);
-        }
+        arr = new SparseArray<>(cardTexts.size());
     }
 
     /*
@@ -39,33 +35,37 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
     }
     */
 
+    // This is called to create new fragments
     @Override
     public Fragment getItem(int position) {
-        Log.v("UPDATE2", String.valueOf(position) + " " + String.valueOf(arr.size()));
         FlashCardSetFragment frag = FlashCardSetFragment.newInstance(cardTexts.get(position), answerTexts.get(position), position);
-        while (position > arr.size() - 1) {
-            arr.add(null);
-            Log.v("UPDATE999", "WHILE");
-        }
-        Log.v("UPDATE3", String.valueOf(position) + " " + String.valueOf(arr.size()));
-        arr.set(position, frag);
+        arr.append(position, frag);
         return frag;
     }
 
+    // This updates fragments when they have changed
     @Override
     public int getItemPosition(@NonNull Object item) {
+        int i = arr.indexOfValue((FlashCardSetFragment) item);
+        Log.v("GET", String.valueOf(i));
+        if (((FlashCardSetFragment) item).getText().equals(cardTexts.get(i))) {
+            Log.v("GET", "UNCHANGED");
+            return POSITION_UNCHANGED;
+        }
+        Log.v("GET", "NONE");
         return POSITION_NONE;
     }
 
+
+    // This fixes fragments being lost on rotation
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
     }
 
-
+    // Returns the fragment at a position
     FlashCardSetFragment getFragment(int position) {
-        Log.v("UPDATE4", String.valueOf(position) + " " + String.valueOf(arr.size()));
         if (arr.get(position) == null) {
-            Log.v("UPDATE5", "NULL");
+            getItem(position);
         }
         return arr.get(position);
     }
@@ -82,7 +82,6 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
     void updateData() {
         cardTexts = item.getCards();
         answerTexts = item.getAnswers();
-        Log.v("UPDATE1", String.valueOf(cardTexts.size()) + " " + String.valueOf(arr.size()));
         notifyDataSetChanged();
     }
 }

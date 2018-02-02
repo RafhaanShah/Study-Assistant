@@ -91,6 +91,14 @@ public class FlashCardSetFragment extends Fragment {
         return currentFragment.getText();
     }
 
+    public void setText(String text) {
+        if (!cardFlipped) {
+            answer = text;
+        } else {
+            card = text;
+        }
+    }
+
     public void editCard() {
         currentFragment.editCard();
     }
@@ -148,6 +156,13 @@ public class FlashCardSetFragment extends Fragment {
         }
 
         @Override
+        public void onDestroy() {
+            FlashCardSetFragment frag = (FlashCardSetFragment) getParentFragment();
+            frag.setText(editText.getText().toString().trim());
+            super.onDestroy();
+        }
+
+        @Override
         public void onViewCreated(@NonNull View inflatedView, Bundle savedInstanceState) {
             super.onViewCreated(inflatedView, savedInstanceState);
 
@@ -187,5 +202,4 @@ public class FlashCardSetFragment extends Fragment {
             return editText.getText().toString().trim();
         }
     }
-
 }

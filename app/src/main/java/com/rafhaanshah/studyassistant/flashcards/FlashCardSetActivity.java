@@ -50,19 +50,21 @@ public class FlashCardSetActivity extends AppCompatActivity {
         mAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), item);
 
         //mPager.setPageTransformer(true, new FlashCardStackTransformer());
-        mPager.setOffscreenPageLimit(10);
+        mPager.setOffscreenPageLimit(5);
         mPager.setAdapter(mAdapter);
 
         mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
+                /* TODO: Fix this
                 FlashCardSetFragment frag = mAdapter.getFragment(current);
                 if (frag.isEditing()) {
                     save(frag, current);
                 }
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) imm.hideSoftInputFromWindow(mPager.getWindowToken(), 0);
+                */
                 current = position;
                 updateTitle();
             }
@@ -181,8 +183,8 @@ public class FlashCardSetActivity extends AppCompatActivity {
         mAdapter.updateData();
         mPager.setCurrentItem(current + 1, true);
 
-        final InputMethodManager imm = (InputMethodManager) FlashCardSetActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        //final InputMethodManager imm = (InputMethodManager) FlashCardSetActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        //if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
     }
 
     private void deleteFlashCard() {
@@ -219,12 +221,13 @@ public class FlashCardSetActivity extends AppCompatActivity {
             save(frag, mPager.getCurrentItem());
         } else {
             frag.editCard();
-            final InputMethodManager imm = (InputMethodManager) FlashCardSetActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+            //final InputMethodManager imm = (InputMethodManager) FlashCardSetActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            //if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
     }
 
     private void save(FlashCardSetFragment frag, int pos) {
+        // TODO: Clean this up
         String text = frag.getText();
         boolean flipped = frag.isCardFlipped();
         if (!TextUtils.isEmpty(text) && !item.getCards().get(pos).equals(text) && !item.getAnswers().get(pos).equals(text)) {
@@ -240,21 +243,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
         } else {
             frag.editCard();
         }
-    }
-
-    public void cardPressed(View v) {
-        FlashCardSetFragment frag = getFrag();
-        if (frag.isEditing()) {
-            save(frag, mPager.getCurrentItem());
-        }
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        getFrag().flipCard();
-    }
-
-    private FlashCardSetFragment getFrag() {
-        final int pos = mPager.getCurrentItem();
-        return mAdapter.getFragment(pos);
     }
 
     private void saveCard(final int pos, final String text) {
@@ -273,6 +261,21 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 item.getAnswers().set(pos, text);
             }
         });
+    }
+
+    public void cardPressed(View v) {
+        FlashCardSetFragment frag = getFrag();
+        if (frag.isEditing()) {
+            save(frag, mPager.getCurrentItem());
+        }
+        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        getFrag().flipCard();
+    }
+
+    private FlashCardSetFragment getFrag() {
+        final int pos = mPager.getCurrentItem();
+        return mAdapter.getFragment(pos);
     }
 
     /*private class FlashCardStackTransformer implements ViewPager.PageTransformer {

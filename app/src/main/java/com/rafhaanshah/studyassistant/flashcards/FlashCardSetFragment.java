@@ -6,7 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +81,10 @@ public class FlashCardSetFragment extends Fragment {
         }
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     public boolean isCardFlipped() {
         return cardFlipped;
     }
@@ -91,11 +97,11 @@ public class FlashCardSetFragment extends Fragment {
         return currentFragment.getText();
     }
 
-    public void setText(String text) {
-        if (!cardFlipped) {
-            answer = text;
+    public void setText() {
+        if (cardFlipped) {
+            answer = getText();
         } else {
-            card = text;
+            card = getText();
         }
     }
 
@@ -104,11 +110,12 @@ public class FlashCardSetFragment extends Fragment {
     }
 
     public void flipCard() {
+        setText();
         Fragment newFragment;
         if (cardFlipped) {
             newFragment = CardFragment.newInstance(card, colour);
         } else {
-            newFragment = CardFragment.newInstance(answer, HelperUtils.darkenColor(colour, 0.2));
+            newFragment = CardFragment.newInstance(answer, HelperUtils.darkenColor(colour, 0.25));
         }
 
         getChildFragmentManager()
@@ -156,13 +163,6 @@ public class FlashCardSetFragment extends Fragment {
         }
 
         @Override
-        public void onDestroy() {
-            FlashCardSetFragment frag = (FlashCardSetFragment) getParentFragment();
-            frag.setText(editText.getText().toString().trim());
-            super.onDestroy();
-        }
-
-        @Override
         public void onViewCreated(@NonNull View inflatedView, Bundle savedInstanceState) {
             super.onViewCreated(inflatedView, savedInstanceState);
 
@@ -174,6 +174,24 @@ public class FlashCardSetFragment extends Fragment {
             editText.setText(text);
             editText.setSelectAllOnFocus(true);
             card.setCardBackgroundColor(colour);
+
+            editText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    text = charSequence.toString().trim();
+                    textView.setText(text);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
 
             if (TextUtils.isEmpty(text)) {
                 editCard();
@@ -190,16 +208,16 @@ public class FlashCardSetFragment extends Fragment {
                 editing = false;
                 textView.setVisibility(View.VISIBLE);
                 editText.setVisibility(View.INVISIBLE);
-
             }
         }
+
 
         private boolean isEditing() {
             return editing;
         }
 
         private String getText() {
-            return editText.getText().toString().trim();
+            return text;
         }
     }
 }

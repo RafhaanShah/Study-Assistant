@@ -1,7 +1,6 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,14 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Realm;
@@ -29,7 +27,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
     private ViewPager mPager;
     private FlashCardSetAdapter mAdapter;
     private Realm realm;
-    private String title;
     private int lastPage;
 
     @Override
@@ -40,7 +37,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        title = getIntent().getStringExtra("item");
+        String title = getIntent().getStringExtra("item");
 
         realm = Realm.getDefaultInstance();
         RealmQuery query = Realm.getDefaultInstance().where(FlashCardSet.class).equalTo("title", title);
@@ -50,16 +47,18 @@ public class FlashCardSetActivity extends AppCompatActivity {
         mAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), item);
 
         //mPager.setPageTransformer(true, new FlashCardStackTransformer());
-        mPager.setOffscreenPageLimit(5);
+        mPager.setOffscreenPageLimit(2);
         mPager.setAdapter(mAdapter);
 
         mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
-                //Log.v("PAGE", "CHANGED TO " + String.valueOf(position) + " LAST " + String.valueOf(lastPage));
                 if (mAdapter.getFragment(lastPage) != null) {
                     saveFlashCard(mAdapter.getFragment(lastPage), lastPage);
+                }
+                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+                    editFlashCard();
                 }
                 lastPage = position;
                 updateTitle();
@@ -109,8 +108,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     private void jumpToFlashCard() {
-        final InputMethodManager imm = (InputMethodManager) FlashCardSetActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
 
         final EditText input = new EditText(FlashCardSetActivity.this);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -141,11 +139,11 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 } else {
                     if (Integer.valueOf(text) <= item.getCards().size() && Integer.valueOf(text) > 0) {
                         mPager.setCurrentItem(Integer.valueOf(text) - 1, true);
-                        if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         dialog.dismiss();
                     } else {
                         Toast.makeText(FlashCardSetActivity.this, FlashCardSetActivity.this.getString(R.string.error_out_of_bounds), Toast.LENGTH_LONG).show();
                         input.requestFocus();
+                        input.selectAll();
                     }
                 }
             }
@@ -153,7 +151,10 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     private void addFlashCard() {
-        Log.v("PAGE", "ADD CALLED");
+        if (item.getCards().size() > 99) {
+            Toast.makeText(getApplicationContext(), getString(R.string.max_cards), Toast.LENGTH_SHORT).show();
+            return;
+        }
         saveFlashCard(getFragment(), mPager.getCurrentItem());
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -168,7 +169,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     private void deleteFlashCard() {
-        Log.v("PAGE", "DELETE CALLED " + String.valueOf(mPager.getCurrentItem()));
         final int current = mPager.getCurrentItem();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -187,24 +187,15 @@ public class FlashCardSetActivity extends AppCompatActivity {
         } else {
             mAdapter.removeFragment(current);
             mAdapter.notifyDataSetChanged();
-            /*
-            if (current == 0) {
-                mPager.setCurrentItem(current + 1, true);
-            } else {
-                mPager.setCurrentItem(current - 1, true);
-            }
-            */
             updateTitle();
         }
     }
 
     private void editFlashCard() {
-        //Log.v("PAGE", "EDIT CALLED ");
         getFragment().editCard();
     }
 
     private void saveFlashCard(FlashCardSetFragment frag, int pos) {
-        //Log.v("PAGE", "SAVE CALLED " + String.valueOf(pos));
         if (frag.isCardFlipped()) {
             saveAnswerText(pos, frag.getText());
         } else {

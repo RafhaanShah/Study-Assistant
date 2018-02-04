@@ -3,7 +3,6 @@ package com.rafhaanshah.studyassistant.schedule;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,7 +11,6 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,6 +22,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 import java.text.DateFormat;
@@ -78,6 +77,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.weight = 2;
             saveButton.setLayoutParams(params);
+            findViewById(R.id.titleText).requestFocus();
         } else {
             newItem = false;
             setFields(Integer.valueOf(item));
@@ -276,8 +276,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void pickDate(View v) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, v);
 
         if (newItem) {
             final Calendar c = Calendar.getInstance();
@@ -308,8 +307,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void pickTime(View v) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, v);
 
         if (newItem) {
             final Calendar c = Calendar.getInstance();

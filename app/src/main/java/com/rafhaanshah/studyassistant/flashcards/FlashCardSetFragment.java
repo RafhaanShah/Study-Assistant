@@ -49,7 +49,7 @@ public class FlashCardSetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
 
-        currentFragment = CardFragment.newInstance(card, colour);
+        currentFragment = CardFragment.newInstance(card, colour, false);
         getChildFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(
@@ -113,9 +113,9 @@ public class FlashCardSetFragment extends Fragment {
         setText();
         Fragment newFragment;
         if (cardFlipped) {
-            newFragment = CardFragment.newInstance(card, colour);
+            newFragment = CardFragment.newInstance(card, colour, true);
         } else {
-            newFragment = CardFragment.newInstance(answer, HelperUtils.darkenColor(colour, 0.25));
+            newFragment = CardFragment.newInstance(answer, HelperUtils.darkenColor(colour, 0.25), true);
         }
 
         getChildFragmentManager()
@@ -134,15 +134,16 @@ public class FlashCardSetFragment extends Fragment {
 
         private String text;
         private TextView textView, editText;
-        private boolean editing;
+        private boolean editing, flip;
         private int colour;
         private CardView card;
 
-        public static CardFragment newInstance(String str, int col) {
+        public static CardFragment newInstance(String str, int col, boolean flip) {
             CardFragment frag = new CardFragment();
-            Bundle bundle = new Bundle(2);
+            Bundle bundle = new Bundle(3);
             bundle.putString("text", str);
             bundle.putInt("col", col);
+            bundle.putBoolean("flip", flip);
             frag.setArguments(bundle);
             return frag;
         }
@@ -152,6 +153,7 @@ public class FlashCardSetFragment extends Fragment {
             super.onCreate(savedInstanceState);
             text = getArguments().getString("text");
             colour = getArguments().getInt("col");
+            flip = getArguments().getBoolean("flip");
         }
 
         @Override
@@ -193,7 +195,19 @@ public class FlashCardSetFragment extends Fragment {
                 }
             });
 
-            if (TextUtils.isEmpty(text)) {
+
+            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean focused) {
+                    if (focused) {
+                        HelperUtils.showSoftKeyboard(getContext());
+                    } else {
+                        HelperUtils.hideSoftKeyboard(getContext(), view);
+                    }
+                }
+            });
+
+            if (flip && TextUtils.isEmpty(text)) {
                 editCard();
             }
         }

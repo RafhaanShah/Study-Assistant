@@ -55,8 +55,8 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 if (mAdapter.getFragment(lastPage) != null) {
                     saveFlashCard(mAdapter.getFragment(lastPage), lastPage);
                 }
-                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
-                    editFlashCard();
+                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText()) && getFragment().isEditing()) {
+                    HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
                 }
                 lastPage = position;
                 updateTitle();
@@ -166,6 +166,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         mAdapter.addFragment(mPager.getCurrentItem() + 1);
         mAdapter.notifyDataSetChanged();
         mPager.setCurrentItem(mPager.getCurrentItem() + 1, true);
+        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
     }
 
     private void deleteFlashCard() {
@@ -193,6 +194,9 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     private void editFlashCard() {
         getFragment().editCard();
+        if (getFragment().isEditing()) {
+            HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
+        }
     }
 
     private void saveFlashCard(FlashCardSetFragment frag, int pos) {

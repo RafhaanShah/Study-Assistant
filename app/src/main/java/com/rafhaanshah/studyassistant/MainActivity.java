@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void newFlashCardItem(View v) {
         FlashCardSetListFragment flashCardFragment = (FlashCardSetListFragment) selectedFragment;
-        flashCardFragment.newSet();
+        flashCardFragment.newFlashCardSet();
     }
 
     @Override

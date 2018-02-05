@@ -83,7 +83,9 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        saveFlashCard(getFragment(), mPager.getCurrentItem());
+        if (mPager.getAdapter() != null) {
+            saveFlashCard(getFragment(), mPager.getCurrentItem());
+        }
         super.onDestroy();
         realm.close();
     }
@@ -236,6 +238,9 @@ public class FlashCardSetActivity extends AppCompatActivity {
         saveFlashCard(getFragment(), mPager.getCurrentItem());
         getFragment().setText();
         getFragment().flipCard();
+        if (getFragment().isEditing()) {
+            HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
+        }
     }
 
     private FlashCardSetFragment getFragment() {

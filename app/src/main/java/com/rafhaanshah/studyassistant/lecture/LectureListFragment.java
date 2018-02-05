@@ -34,6 +34,7 @@ public class LectureListFragment extends Fragment {
 
     private static int sorting;
     private LectureRecyclerAdapter recyclerAdapter;
+    private RecyclerView recyclerView;
     private ArrayList<File> items;
     private File directory;
     private TextView emptyText;
@@ -68,7 +69,7 @@ public class LectureListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         recyclerAdapter = new LectureRecyclerAdapter(items, this);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
 
@@ -89,7 +90,11 @@ public class LectureListFragment extends Fragment {
                 }
             }
         });
+        setOnTouchHelper();
+        super.onViewCreated(view, savedInstanceState);
+    }
 
+    private void setOnTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -160,8 +165,6 @@ public class LectureListFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     private void getData() {

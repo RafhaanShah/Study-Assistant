@@ -57,7 +57,7 @@ public class FlashCardSetListFragment extends Fragment {
         realmListener = new RealmChangeListener() {
             @Override
             public void onChange(Object o) {
-                dataChanged = true;
+                updateData();
             }
         };
         realm.addChangeListener(realmListener);
@@ -66,9 +66,8 @@ public class FlashCardSetListFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (dataChanged) {
-            updateData();
-        }
+        realm.addChangeListener(realmListener);
+        updateData();
         super.onResume();
     }
 
@@ -106,6 +105,11 @@ public class FlashCardSetListFragment extends Fragment {
             }
         });
 
+        setOnTouchHelper();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void setOnTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -179,11 +183,9 @@ public class FlashCardSetListFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
-    public void newSet() {
+    public void newFlashCardSet() {
         HelperUtils.showSoftKeyboard(getContext());
 
         final EditText input = new EditText(getContext());
@@ -256,4 +258,12 @@ public class FlashCardSetListFragment extends Fragment {
         realm.removeChangeListener(realmListener);
         realm.close();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        realm.removeChangeListener(realmListener);
+    }
+
+
 }

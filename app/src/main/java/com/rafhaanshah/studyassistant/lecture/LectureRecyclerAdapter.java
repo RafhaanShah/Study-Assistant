@@ -7,11 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -49,13 +52,12 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     @Override
-    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
         final File lec = values.get(position);
         String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
-
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,51 +79,97 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
-                HelperUtils.showSoftKeyboard(context);
-
-                final EditText input = new EditText(context);
-                input.setText(holder.lectureTitle.getText());
-                input.setSelectAllOnFocus(true);
-                input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
-                input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle(context.getString(R.string.rename_file));
-                builder.setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                builder.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                builder.setIcon(R.drawable.ic_create_black_24dp);
-                builder.setView(input);
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String text = input.getText().toString().trim();
-                        if (TextUtils.isEmpty(text)) {
-                            Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
-                        } else {
-                            File newFile = new File(directory.getAbsolutePath() + File.separator + text + ".pdf");
-                            if (newFile.exists()) {
-                                Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
-                            } else if (!lec.renameTo(newFile)) {
-                                Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
-                            } else {
-                                lectureListFragment.updateData();
-                                dialog.dismiss();
-                            }
-                        }
-                    }
-                });
+                showPopupMenu(holder, lec);
                 return true;
             }
         });
+    }
+
+    private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec) {
+        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.RIGHT);
+        popup.inflate(R.menu.popup_menu);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.popup_edit:
+                        renameLecture(holder, lec);
+                        return true;
+                    case R.id.popup_delete:
+                        deleteLecture(lec);
+                        return true;
+                }
+                return false;
+            }
+        });
+        popup.show();
+    }
+
+    private void renameLecture(ViewHolder holder, final File lec) {
+        HelperUtils.showSoftKeyboard(context);
+
+        final EditText input = new EditText(context);
+        input.setText(holder.lectureTitle.getText());
+        input.setSelectAllOnFocus(true);
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.rename_file));
+        builder.setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.setIcon(R.drawable.ic_create_black_24dp);
+        builder.setView(input);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = input.getText().toString().trim();
+                if (TextUtils.isEmpty(text)) {
+                    Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
+                } else {
+                    File newFile = new File(directory.getAbsolutePath() + File.separator + text + ".pdf");
+                    if (newFile.exists()) {
+                        Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
+                    } else if (!lec.renameTo(newFile)) {
+                        Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
+                    } else {
+                        lectureListFragment.updateData();
+                        dialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
+    private void deleteLecture(final File lec) {
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.confirm_delete))
+                .setMessage(context.getString(R.string.delete_lecture))
+                .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        lec.delete();
+                        lectureListFragment.updateData();
+                    }
+                })
+                .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(R.drawable.ic_delete_black_24dp)
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                    }
+                })
+                .show();
     }
 
     @Override

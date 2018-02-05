@@ -207,8 +207,13 @@ public class FlashCardSetFragment extends Fragment {
                 }
             });
 
-            if (flip && TextUtils.isEmpty(text)) {
-                editCard();
+            if (TextUtils.isEmpty(text)) {
+                if (flip) {
+                    editCard();
+                } else {
+                    textView.setVisibility(View.INVISIBLE);
+                    editText.setVisibility(View.VISIBLE);
+                }
             }
         }
 

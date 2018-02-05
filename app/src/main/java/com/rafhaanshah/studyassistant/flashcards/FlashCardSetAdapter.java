@@ -69,8 +69,4 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
             return 0;
         }
     }
-
-    void updateData() {
-        notifyDataSetChanged();
-    }
 }

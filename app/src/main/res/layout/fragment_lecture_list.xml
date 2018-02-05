@@ -20,8 +20,11 @@
         android:id="@+id/emptyText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/empty_text_margin"
+        android:layout_marginStart="@dimen/empty_text_margin"
         android:gravity="center"
         android:text="@string/empty_lectures"
+        android:textSize="@dimen/text_size"
         android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton

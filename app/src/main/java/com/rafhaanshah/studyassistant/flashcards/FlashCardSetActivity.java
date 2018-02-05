@@ -83,6 +83,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        saveFlashCard(getFragment(), mPager.getCurrentItem());
         super.onDestroy();
         realm.close();
     }
@@ -163,7 +164,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
             }
         });
         mAdapter.addFragment(mPager.getCurrentItem() + 1);
-        mAdapter.updateData();
+        mAdapter.notifyDataSetChanged();
         mPager.setCurrentItem(mPager.getCurrentItem() + 1, true);
     }
 

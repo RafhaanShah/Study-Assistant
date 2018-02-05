@@ -12,7 +12,8 @@
     android:minHeight="60dp"
     card_view:cardBackgroundColor="@android:color/transparent"
     card_view:cardCornerRadius="4dp"
-    card_view:cardElevation="2dp">
+    card_view:cardElevation="@dimen/card_elevation"
+    card_view:cardMaxElevation="@dimen/card_max_elevation">
 
     <RelativeLayout
         android:id="@+id/itemView"

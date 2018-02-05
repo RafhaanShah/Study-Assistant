@@ -216,7 +216,7 @@ public class LectureListFragment extends Fragment {
         recyclerAdapter.updateData(items);
     }
 
-    public void updateData(boolean update) {
-        updateData(sorting, update);
+    public void updateData() {
+        updateData(sorting, true);
     }
 }

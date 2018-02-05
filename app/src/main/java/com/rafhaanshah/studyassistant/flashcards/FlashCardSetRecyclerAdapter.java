@@ -27,9 +27,11 @@ import io.realm.RealmList;
 public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> {
     private RealmList<FlashCardSet> values;
     private Context context;
+    private Realm realm;
 
-    FlashCardSetRecyclerAdapter(RealmList<FlashCardSet> data) {
+    FlashCardSetRecyclerAdapter(RealmList<FlashCardSet> data, Realm getRealm) {
         values = data;
+        realm = getRealm;
     }
 
     @Override
@@ -41,7 +43,8 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, int pos) {
+        final int position = pos;
         final FlashCardSet item = values.get(position);
         holder.flashCardSetTitle.setText(item.getTitle());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +58,6 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
-                final Realm realm = Realm.getDefaultInstance();
                 HelperUtils.showSoftKeyboard(context);
 
                 final EditText input = new EditText(context);

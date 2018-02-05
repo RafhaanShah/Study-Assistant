@@ -19,7 +19,6 @@ import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 
 public class FlashCardSetActivity extends AppCompatActivity {
 
@@ -40,8 +39,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra("item");
 
         realm = Realm.getDefaultInstance();
-        RealmQuery query = Realm.getDefaultInstance().where(FlashCardSet.class).equalTo("title", title);
-        item = (FlashCardSet) query.findFirst();
+        item = realm.where(FlashCardSet.class).equalTo("title", title).findFirst();
 
         mPager = findViewById(R.id.viewPager);
         mAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), item);
@@ -86,6 +84,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        realm.close();
     }
 
     @Override
@@ -208,7 +207,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     private void saveCardText(final int pos, final String text) {
         if (pos < item.getCards().size() && !text.equals(item.getCards().get(pos))) {
-            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(@NonNull Realm realm) {
                     item.getCards().set(pos, text);
@@ -219,7 +218,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     private void saveAnswerText(final int pos, final String text) {
         if (pos < item.getAnswers().size() && !text.equals(item.getAnswers().get(pos))) {
-            Realm.getDefaultInstance().executeTransaction(new Realm.Transaction() {
+            realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(@NonNull Realm realm) {
                     item.getAnswers().set(pos, text);

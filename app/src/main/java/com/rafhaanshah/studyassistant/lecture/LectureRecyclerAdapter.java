@@ -51,8 +51,9 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     @Override
     public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
         final File lec = values.get(position);
+        String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
-        holder.lectureSize.setText(new DecimalFormat("#.##").format((double) lec.length() / 1000000) + " MB");
+        holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
 
 
@@ -112,7 +113,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                             } else if (!lec.renameTo(newFile)) {
                                 Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
                             } else {
-                                lectureListFragment.updateData(true);
+                                lectureListFragment.updateData();
                                 dialog.dismiss();
                             }
                         }

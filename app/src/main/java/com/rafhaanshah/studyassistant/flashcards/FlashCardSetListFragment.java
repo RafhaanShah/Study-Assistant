@@ -47,8 +47,7 @@ public class FlashCardSetListFragment extends Fragment {
     private TextView emptyText;
 
     public static FlashCardSetListFragment newInstance() {
-        FlashCardSetListFragment fragment = new FlashCardSetListFragment();
-        return fragment;
+        return new FlashCardSetListFragment();
     }
 
     @Override
@@ -75,19 +74,19 @@ public class FlashCardSetListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_flash_card_set_list, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.recyclerView);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
         emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerAdapter = new FlashCardSetRecyclerAdapter(items);
+        recyclerAdapter = new FlashCardSetRecyclerAdapter(items, realm);
         recyclerView.setAdapter(recyclerAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
@@ -217,8 +216,8 @@ public class FlashCardSetListFragment extends Fragment {
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(@NonNull Realm realm) {
-                                RealmList<String> cards = new RealmList<String>();
-                                RealmList<String> ans = new RealmList<String>();
+                                RealmList<String> cards = new RealmList<>();
+                                RealmList<String> ans = new RealmList<>();
                                 cards.add("");
                                 ans.add("");
                                 FlashCardSet item = realm.createObject(FlashCardSet.class);

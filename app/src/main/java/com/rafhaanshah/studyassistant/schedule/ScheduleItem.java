@@ -16,11 +16,11 @@ public class ScheduleItem extends RealmObject {
         this.ID = ID;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 
@@ -40,7 +40,7 @@ public class ScheduleItem extends RealmObject {
         this.notes = notes;
     }
 
-    public Long getTime() {
+    Long getTime() {
         return time;
     }
 

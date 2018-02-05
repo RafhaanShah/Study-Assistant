@@ -34,8 +34,8 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
     // This updates fragments when they have changed
     @Override
     public int getItemPosition(@NonNull Object item) {
-        int index = arr.indexOf(item);
         FlashCardSetFragment frag = (FlashCardSetFragment) item;
+        int index = arr.indexOf(frag);
         if (index != ((FlashCardSetFragment) item).getPosition()) {
             return POSITION_NONE;
         } else {

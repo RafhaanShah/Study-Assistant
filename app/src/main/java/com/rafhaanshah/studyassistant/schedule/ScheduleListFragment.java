@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
@@ -198,6 +200,21 @@ public class ScheduleListFragment extends Fragment {
             } else if (emptyText.getVisibility() == View.VISIBLE) {
                 emptyText.setVisibility(View.GONE);
             }
+        }
+    }
+
+    public void filter(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            dataChanged = false;
+            if (history) {
+                oldItems = realm.where(ScheduleItem.class).equalTo("completed", true).contains("title", text, Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
+            } else {
+                items = realm.where(ScheduleItem.class).equalTo("completed", false).contains("title", text, Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
+            }
+            updateData();
+        } else {
+            dataChanged = true;
+            updateData();
         }
     }
 }

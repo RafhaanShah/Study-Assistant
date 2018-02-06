@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private File directory;
     private int lectureSorting;
     private SharedPreferences preferences;
+    private SearchView searchView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -102,6 +104,31 @@ public class MainActivity extends AppCompatActivity {
         } else if (selectedFragment.getClass() == LectureListFragment.class) {
             lectureSelected();
         }
+        final MenuItem searchItem = menu.findItem(R.id.searchButton);
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (getCurrentFocus() != null) {
+                    HelperUtils.hideSoftKeyboard(MainActivity.this, getCurrentFocus());
+                    getCurrentFocus().clearFocus();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (selectedFragment.getClass() == ScheduleListFragment.class) {
+                    ScheduleListFragment frag = (ScheduleListFragment) selectedFragment;
+                    frag.filter(query);
+                } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
+
+                } else if (selectedFragment.getClass() == LectureListFragment.class) {
+
+                }
+                return false;
+            }
+        });
         return true;
     }
 
@@ -128,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.lectureSortButton:
                 lectureSortButtonPressed();
+                return true;
+            case R.id.filterButton:
+                filterButtonPressed();
                 return true;
         }
         return false;
@@ -166,9 +196,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void filterButtonPressed() {
+    }
+
     public void newScheduleItem(View v) {
         Intent nextScreen = new Intent(getApplicationContext(), ScheduleItemActivity.class);
         startActivity(nextScreen);
+    }
+
+    public void newFlashCardItem(View v) {
+        FlashCardSetListFragment flashCardFragment = (FlashCardSetListFragment) selectedFragment;
+        flashCardFragment.newFlashCardSet();
     }
 
     public void newLectureItem(View v) {
@@ -176,18 +214,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent()
                 .setType("application/pdf")
                 .setAction(Intent.ACTION_GET_CONTENT);
-
         try {
             startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), 100);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-    }
-
-    public void newFlashCardItem(View v) {
-        FlashCardSetListFragment flashCardFragment = (FlashCardSetListFragment) selectedFragment;
-        flashCardFragment.newFlashCardSet();
     }
 
     @Override
@@ -204,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (!fileName.toLowerCase().endsWith(".pdf")) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_invalid_file), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -242,12 +274,21 @@ public class MainActivity extends AppCompatActivity {
     private void flashCardSelected() {
         menu.clear();
         actionBar.setTitle(getString(R.string.menu_flash_cards));
-        //getMenuInflater().inflate(R.menu.flash_card_list_fragment_menu, menu);
+        getMenuInflater().inflate(R.menu.flash_card_list_fragment_menu, menu);
     }
 
     private void lectureSelected() {
         menu.clear();
         actionBar.setTitle(getString(R.string.menu_lectures));
         getMenuInflater().inflate(R.menu.lecture_list_fragment_menu, menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!searchView.isIconified()) {
+            searchView.onActionViewCollapsed();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

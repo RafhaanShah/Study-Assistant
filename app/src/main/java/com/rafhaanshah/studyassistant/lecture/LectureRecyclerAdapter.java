@@ -87,7 +87,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
     private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec) {
         PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.RIGHT);
-        popup.inflate(R.menu.popup_menu);
+        popup.inflate(R.menu.menu_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {

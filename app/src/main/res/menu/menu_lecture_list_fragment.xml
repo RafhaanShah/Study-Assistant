@@ -4,22 +4,16 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/searchButton"
+        android:id="@+id/menu_btn_search"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/filterButton"
-        android:icon="@drawable/ic_filter_white_24dp"
-        android:title="@string/search"
+        android:id="@+id/menu_btn_lecture_sort"
+        android:icon="@drawable/ic_sort_white_24dp"
+        android:title="@string/menu_sort"
         app:showAsAction="always" />
-
-    <item
-        android:id="@+id/historyButton"
-        android:icon="@drawable/ic_history_white_24dp"
-        android:title="@string/menu_history"
-        app:showAsAction="ifRoom" />
 
 </menu>

@@ -71,7 +71,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.flash_card_set_activity_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_flash_card_set_activity, menu);
         return true;
     }
 
@@ -93,16 +93,16 @@ public class FlashCardSetActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.editFlashCardButton:
+            case R.id.menu_btn_edit_flash_card:
                 editFlashCard();
                 return true;
-            case R.id.deleteFlashCardButton:
+            case R.id.menu_btn_delete_flash_card:
                 deleteFlashCard();
                 return true;
-            case R.id.addFlashCardButton:
+            case R.id.menu_btn_add_flash_card:
                 addFlashCard();
                 return true;
-            case R.id.searchFlashCardButton:
+            case R.id.menu_btn_search_flash_card:
                 jumpToFlashCard();
                 return true;
         }

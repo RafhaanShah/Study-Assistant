@@ -164,7 +164,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         if (newItem) {
             return false;
         } else {
-            getMenuInflater().inflate(R.menu.schedule_item_activity_menu, menu);
+            getMenuInflater().inflate(R.menu.menu_schedule_item_activity, menu);
             return true;
         }
     }
@@ -172,7 +172,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.deleteButton:
+            case R.id.menu_btn_delete_event:
                 new AlertDialog.Builder(this)
                         .setTitle(getString(R.string.confirm_delete))
                         .setMessage(getString(R.string.delete_event))

@@ -104,9 +104,14 @@ public class MainActivity extends AppCompatActivity {
         } else if (selectedFragment.getClass() == LectureListFragment.class) {
             lectureSelected();
         }
-        final MenuItem searchItem = menu.findItem(R.id.searchButton);
+        return true;
+    }
+
+    private void setMenu() {
+        final MenuItem searchItem = menu.findItem(R.id.menu_btn_search);
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (getCurrentFocus() != null) {
@@ -122,19 +127,22 @@ public class MainActivity extends AppCompatActivity {
                     ScheduleListFragment frag = (ScheduleListFragment) selectedFragment;
                     frag.filter(query);
                 } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
-
+                    FlashCardSetListFragment frag = (FlashCardSetListFragment) selectedFragment;
+                    frag.filter(query);
                 } else if (selectedFragment.getClass() == LectureListFragment.class) {
 
                 }
                 return false;
             }
         });
-        return true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (searchView != null && !searchView.isIconified()) {
+            searchView.onActionViewCollapsed();
+        }
     }
 
     @Override
@@ -150,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.historyButton:
+            case R.id.menu_btn_history:
                 historyButtonPressed();
                 return true;
-            case R.id.lectureSortButton:
+            case R.id.menu_btn_lecture_sort:
                 lectureSortButtonPressed();
                 return true;
-            case R.id.filterButton:
+            case R.id.menu_btn_filter:
                 filterButtonPressed();
                 return true;
         }
@@ -172,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setTitle(getString(R.string.menu_history));
         }
         ScheduleListFragment scheduleListFragment = (ScheduleListFragment) selectedFragment;
-        scheduleListFragment.showData(scheduleHistory);
+        scheduleListFragment.updateData(scheduleHistory);
     }
 
     private void lectureSortButtonPressed() {
@@ -268,19 +276,22 @@ public class MainActivity extends AppCompatActivity {
         menu.clear();
         scheduleHistory = false;
         actionBar.setTitle(getString(R.string.menu_schedule));
-        getMenuInflater().inflate(R.menu.schedule_list_fragment_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_schedule_list_fragment, menu);
+        setMenu();
     }
 
     private void flashCardSelected() {
         menu.clear();
         actionBar.setTitle(getString(R.string.menu_flash_cards));
-        getMenuInflater().inflate(R.menu.flash_card_list_fragment_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_flash_card_list, menu);
+        setMenu();
     }
 
     private void lectureSelected() {
         menu.clear();
         actionBar.setTitle(getString(R.string.menu_lectures));
-        getMenuInflater().inflate(R.menu.lecture_list_fragment_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_lecture_list_fragment, menu);
+        setMenu();
     }
 
     @Override

@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,16 +21,12 @@ import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
 
-import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmResults;
-import io.realm.Sort;
 
 public class ScheduleListFragment extends Fragment {
 
     private Realm realm;
-    private RealmResults<ScheduleItem> items, oldItems;
     private RealmChangeListener realmListener;
     private ScheduleRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
@@ -69,7 +64,7 @@ public class ScheduleListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerAdapter = new ScheduleRecyclerAdapter(items);
+        recyclerAdapter = new ScheduleRecyclerAdapter(realm);
         recyclerView.setAdapter(recyclerAdapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -84,6 +79,11 @@ public class ScheduleListFragment extends Fragment {
             }
         });
 
+        setItemTouchHelper();
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void setItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -93,39 +93,16 @@ public class ScheduleListFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                final int position = viewHolder.getAdapterPosition();
-                final ScheduleItem item;
-                if (!history) {
-                    item = items.get(position);
-                } else {
-                    item = oldItems.get(position);
-                }
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(@NonNull Realm realm) {
-                        if (item.isCompleted()) {
-                            item.setCompleted(false);
-                        } else {
-                            item.setCompleted(true);
-                        }
-                    }
-                });
-                updateData();
+                recyclerAdapter.completeItem(viewHolder.getAdapterPosition());
             }
 
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     View itemView = viewHolder.itemView;
                     final int position = viewHolder.getAdapterPosition();
-                    final ScheduleItem item;
+                    final ScheduleItem item = recyclerAdapter.getItem(position);
                     int col;
                     Bitmap icon;
-
-                    if (!history) {
-                        item = items.get(position);
-                    } else {
-                        item = oldItems.get(position);
-                    }
 
                     if (item.isCompleted()) {
                         col = (ContextCompat.getColor(getContext(), R.color.materialRed));
@@ -158,23 +135,14 @@ public class ScheduleListFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateData();
-    }
-
-    private void updateData() {
         if (dataChanged) {
-            dataChanged = false;
-            items = realm.where(ScheduleItem.class).equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
-            oldItems = realm.where(ScheduleItem.class).equalTo("completed", true).findAllSorted("time", Sort.DESCENDING);
+            updateData(history);
         }
-        showData(history);
     }
 
     @Override
@@ -184,37 +152,23 @@ public class ScheduleListFragment extends Fragment {
         realm.close();
     }
 
-    public void showData(boolean showHistory) {
+    public void updateData(boolean showHistory) {
         history = showHistory;
-        if (history) {
-            recyclerAdapter.updateData(oldItems);
-            if (oldItems.isEmpty()) {
-                emptyText.setVisibility(View.VISIBLE);
-            } else if (emptyText.getVisibility() == View.VISIBLE) {
-                emptyText.setVisibility(View.GONE);
-            }
+        if (dataChanged) {
+            dataChanged = false;
+            recyclerAdapter.updateData(history, true);
         } else {
-            recyclerAdapter.updateData(items);
-            if (items.isEmpty()) {
-                emptyText.setVisibility(View.VISIBLE);
-            } else if (emptyText.getVisibility() == View.VISIBLE) {
-                emptyText.setVisibility(View.GONE);
-            }
+            recyclerAdapter.updateData(history, false);
+        }
+
+        if (recyclerAdapter.getItemCount() == 0) {
+            emptyText.setVisibility(View.VISIBLE);
+        } else if (emptyText.getVisibility() == View.VISIBLE) {
+            emptyText.setVisibility(View.GONE);
         }
     }
 
-    public void filter(String text) {
-        if (!TextUtils.isEmpty(text)) {
-            dataChanged = false;
-            if (history) {
-                oldItems = realm.where(ScheduleItem.class).equalTo("completed", true).contains("title", text, Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
-            } else {
-                items = realm.where(ScheduleItem.class).equalTo("completed", false).contains("title", text, Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
-            }
-            updateData();
-        } else {
-            dataChanged = true;
-            updateData();
-        }
+    public void filter(String query) {
+        recyclerAdapter.filter(query);
     }
 }

@@ -105,11 +105,11 @@ public class FlashCardSetListFragment extends Fragment {
             }
         });
 
-        setOnTouchHelper();
+        setItemTouchHelper();
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void setOnTouchHelper() {
+    private void setItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -265,5 +265,8 @@ public class FlashCardSetListFragment extends Fragment {
         realm.removeChangeListener(realmListener);
     }
 
+    public void filter(String query) {
+        recyclerAdapter.getFilter().filter(query);
+    }
 
 }

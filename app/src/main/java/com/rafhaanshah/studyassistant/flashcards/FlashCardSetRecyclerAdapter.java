@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +29,7 @@ import com.rafhaanshah.studyassistant.R;
 import io.realm.Realm;
 import io.realm.RealmList;
 
-public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> {
+public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> implements Filterable {
     private RealmList<FlashCardSet> values;
     private Context context;
     private Realm realm;
@@ -71,7 +73,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     private void showPopupMenu(ViewHolder holder, final FlashCardSet item, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.RIGHT);
-        popup.inflate(R.menu.popup_menu);
+        popup.inflate(R.menu.menu_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -176,6 +178,22 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         notifyDataSetChanged();
     }
 
+    @Override
+    public Filter getFilter() {
+        return new FlashCardSetFilter(this);
+    }
+
+    public void filterResults(String query) {
+        RealmList<FlashCardSet> set = new RealmList<>();
+        if (!TextUtils.isEmpty(query)) {
+            set.addAll(realm.where(FlashCardSet.class).contains("title", query).findAllSorted("title"));
+            updateData(set);
+        } else {
+            set.addAll(realm.where(FlashCardSet.class).findAllSorted("title"));
+            updateData(set);
+        }
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView flashCardSetTitle;
         private RelativeLayout relativeLayout;
@@ -186,4 +204,24 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             relativeLayout = v.findViewById(R.id.relativeLayout);
         }
     }
+
+    private class FlashCardSetFilter extends Filter {
+        private final FlashCardSetRecyclerAdapter adapter;
+
+        private FlashCardSetFilter(FlashCardSetRecyclerAdapter adapter) {
+            super();
+            this.adapter = adapter;
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            return new FilterResults();
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            adapter.filterResults(constraint.toString());
+        }
+    }
+
 }

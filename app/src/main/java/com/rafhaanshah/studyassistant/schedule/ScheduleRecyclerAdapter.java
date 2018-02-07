@@ -6,11 +6,13 @@ import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -20,12 +22,12 @@ import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecyclerAdapter.ViewHolder> {
     private RealmResults<ScheduleItem> scheduleItems;
-    private RealmResults<ScheduleItem> completeItems;
     private RealmResults<ScheduleItem> currentItems;
     private boolean history;
     private Context context;
@@ -33,9 +35,14 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     ScheduleRecyclerAdapter(Realm getRealm) {
         realm = getRealm;
-        scheduleItems = realm.where(ScheduleItem.class).equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
-        completeItems = realm.where(ScheduleItem.class).equalTo("completed", true).findAllSorted("time", Sort.DESCENDING);
-        currentItems = scheduleItems;
+        scheduleItems = realm.where(ScheduleItem.class).findAll();
+        currentItems = scheduleItems.where().equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
+        scheduleItems.addChangeListener(new RealmChangeListener<RealmResults<ScheduleItem>>() {
+            @Override
+            public void onChange(@NonNull RealmResults<ScheduleItem> scheduleItems) {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -47,7 +54,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ScheduleItem item = currentItems.get(position);
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
@@ -78,6 +85,31 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 v.getContext().startActivity(nextScreen);
             }
         });
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View v) {
+                showPopupMenu(holder, item, position);
+                return true;
+            }
+        });
+    }
+
+    private void showPopupMenu(ViewHolder holder, final ScheduleItem item, final int position) {
+        PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.RIGHT);
+        popup.inflate(R.menu.menu_popup);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.popup_edit:
+                        return true;
+                    case R.id.popup_delete:
+                        return true;
+                }
+                return false;
+            }
+        });
+        popup.show();
     }
 
     @Override
@@ -85,16 +117,12 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         return currentItems.size();
     }
 
-    void updateData(boolean hist, boolean upd) {
-        if (upd) {
-            scheduleItems = realm.where(ScheduleItem.class).equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
-            completeItems = realm.where(ScheduleItem.class).equalTo("completed", true).findAllSorted("time", Sort.DESCENDING);
-        }
+    void updateData(boolean hist) {
         history = hist;
         if (history) {
-            currentItems = completeItems;
+            currentItems = scheduleItems.where().equalTo("completed", true).findAllSorted("time", Sort.DESCENDING);
         } else {
-            currentItems = scheduleItems;
+            currentItems = scheduleItems.where().equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
         }
         notifyDataSetChanged();
     }
@@ -102,14 +130,13 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
             if (history) {
-                currentItems = completeItems.where().contains("title", query, Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
+                currentItems = scheduleItems.where().equalTo("completed", true).contains("title", query, Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
             } else {
-                currentItems = scheduleItems.where().contains("title", query, Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
+                currentItems = scheduleItems.where().equalTo("completed", false).contains("title", query, Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
             }
-            Log.v("Filter", String.valueOf(currentItems.size()));
             notifyDataSetChanged();
         } else {
-            updateData(history, true);
+            updateData(history);
         }
     }
 
@@ -129,7 +156,11 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 }
             }
         });
-        updateData(history, true);
+        updateData(history);
+    }
+
+    void removeListener() {
+        scheduleItems.removeAllChangeListeners();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

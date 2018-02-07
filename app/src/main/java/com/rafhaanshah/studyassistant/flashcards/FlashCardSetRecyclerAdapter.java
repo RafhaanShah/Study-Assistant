@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,17 +24,26 @@ import android.widget.Toast;
 import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
+import io.realm.Case;
 import io.realm.Realm;
-import io.realm.RealmList;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
+import io.realm.Sort;
 
-public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> implements Filterable {
-    private RealmList<FlashCardSet> values;
+public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> {
+    private RealmResults<FlashCardSet> flashCardSets;
     private Context context;
     private Realm realm;
 
-    FlashCardSetRecyclerAdapter(RealmList<FlashCardSet> data, Realm getRealm) {
-        values = data;
+    FlashCardSetRecyclerAdapter(Realm getRealm) {
         realm = getRealm;
+        flashCardSets = realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING);
+        flashCardSets.addChangeListener(new RealmChangeListener<RealmResults<FlashCardSet>>() {
+            @Override
+            public void onChange(@NonNull RealmResults<FlashCardSet> flashCardSets) {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -48,9 +55,8 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int pos) {
-        final int position = pos;
-        final FlashCardSet item = values.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final FlashCardSet item = flashCardSets.get(position);
 
         holder.flashCardSetTitle.setText(item.getTitle());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +85,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_edit:
-                        renameFlashCardSet(item, position);
+                        renameFlashCardSet(item);
                         return true;
                     case R.id.popup_delete:
                         deleteFlashCardSet(item, position);
@@ -91,7 +97,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         popup.show();
     }
 
-    private void deleteFlashCardSet(final FlashCardSet item, final int position) {
+    void deleteFlashCardSet(final FlashCardSet item, final int position) {
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_set))
@@ -107,19 +113,21 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 })
                 .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        notifyItemChanged(position);
                     }
                 })
                 .setIcon(R.drawable.ic_delete_black_24dp)
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
+                        notifyItemChanged(position);
                     }
                 })
                 .show();
     }
 
 
-    private void renameFlashCardSet(final FlashCardSet item, final int position) {
+    private void renameFlashCardSet(final FlashCardSet item) {
         HelperUtils.showSoftKeyboard(context);
 
         final EditText input = new EditText(context);
@@ -167,31 +175,31 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         });
     }
 
-
     @Override
     public int getItemCount() {
-        return values.size();
+        return flashCardSets.size();
     }
 
-    void updateData(RealmList<FlashCardSet> items) {
-        values = items;
+    private void resetList() {
+        flashCardSets = realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING);
         notifyDataSetChanged();
     }
 
-    @Override
-    public Filter getFilter() {
-        return new FlashCardSetFilter(this);
+    void filter(String query) {
+        if (!TextUtils.isEmpty(query)) {
+            flashCardSets = flashCardSets.where().contains("title", query, Case.INSENSITIVE).findAllSorted("title", Sort.ASCENDING);
+            notifyDataSetChanged();
+        } else {
+            resetList();
+        }
     }
 
-    public void filterResults(String query) {
-        RealmList<FlashCardSet> set = new RealmList<>();
-        if (!TextUtils.isEmpty(query)) {
-            set.addAll(realm.where(FlashCardSet.class).contains("title", query).findAllSorted("title"));
-            updateData(set);
-        } else {
-            set.addAll(realm.where(FlashCardSet.class).findAllSorted("title"));
-            updateData(set);
-        }
+    void removeListener() {
+        flashCardSets.removeAllChangeListeners();
+    }
+
+    FlashCardSet getItem(int position) {
+        return flashCardSets.get(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -204,24 +212,4 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             relativeLayout = v.findViewById(R.id.relativeLayout);
         }
     }
-
-    private class FlashCardSetFilter extends Filter {
-        private final FlashCardSetRecyclerAdapter adapter;
-
-        private FlashCardSetFilter(FlashCardSetRecyclerAdapter adapter) {
-            super();
-            this.adapter = adapter;
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            return new FilterResults();
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            adapter.filterResults(constraint.toString());
-        }
-    }
-
 }

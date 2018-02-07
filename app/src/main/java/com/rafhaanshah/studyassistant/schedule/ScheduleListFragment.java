@@ -22,15 +22,12 @@ import android.widget.TextView;
 import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 
 public class ScheduleListFragment extends Fragment {
 
     private Realm realm;
-    private RealmChangeListener realmListener;
     private ScheduleRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
-    private boolean history, dataChanged;
     private TextView emptyText;
 
     public static ScheduleListFragment newInstance() {
@@ -40,15 +37,7 @@ public class ScheduleListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataChanged = true;
         realm = Realm.getDefaultInstance();
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange(Object o) {
-                dataChanged = true;
-            }
-        };
-        realm.addChangeListener(realmListener);
     }
 
     @Override
@@ -83,6 +72,19 @@ public class ScheduleListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        recyclerAdapter.removeListener();
+        realm.close();
+    }
+
     private void setItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -94,17 +96,18 @@ public class ScheduleListFragment extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 recyclerAdapter.completeItem(viewHolder.getAdapterPosition());
+                updateView();
             }
 
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     View itemView = viewHolder.itemView;
                     final int position = viewHolder.getAdapterPosition();
-                    final ScheduleItem item = recyclerAdapter.getItem(position);
+                    final boolean completed = recyclerAdapter.getItem(position).isCompleted();
                     int col;
                     Bitmap icon;
 
-                    if (item.isCompleted()) {
+                    if (completed) {
                         col = (ContextCompat.getColor(getContext(), R.color.materialRed));
                         icon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_undo_white_24dp);
                     } else {
@@ -137,30 +140,12 @@ public class ScheduleListFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (dataChanged) {
-            updateData(history);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.removeChangeListener(realmListener);
-        realm.close();
-    }
-
     public void updateData(boolean showHistory) {
-        history = showHistory;
-        if (dataChanged) {
-            dataChanged = false;
-            recyclerAdapter.updateData(history, true);
-        } else {
-            recyclerAdapter.updateData(history, false);
-        }
+        recyclerAdapter.updateData(showHistory);
+        updateView();
+    }
 
+    private void updateView() {
         if (recyclerAdapter.getItemCount() == 0) {
             emptyText.setVisibility(View.VISIBLE);
         } else if (emptyText.getVisibility() == View.VISIBLE) {

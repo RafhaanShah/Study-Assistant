@@ -32,19 +32,14 @@ import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmList;
-import io.realm.Sort;
 
 public class FlashCardSetListFragment extends Fragment {
 
-    private Realm realm;
-    private RealmList<FlashCardSet> items;
-    private RealmChangeListener realmListener;
     private FlashCardSetRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
-    private boolean dataChanged;
     private TextView emptyText;
+    private Realm realm;
 
     public static FlashCardSetListFragment newInstance() {
         return new FlashCardSetListFragment();
@@ -54,23 +49,7 @@ public class FlashCardSetListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange(Object o) {
-                updateData();
-            }
-        };
-        realm.addChangeListener(realmListener);
-        items = new RealmList<>();
     }
-
-    @Override
-    public void onResume() {
-        realm.addChangeListener(realmListener);
-        updateData();
-        super.onResume();
-    }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,14 +64,11 @@ public class FlashCardSetListFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerAdapter = new FlashCardSetRecyclerAdapter(items, realm);
+        recyclerAdapter = new FlashCardSetRecyclerAdapter(realm);
         recyclerView.setAdapter(recyclerAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
-
-        updateData();
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -109,6 +85,19 @@ public class FlashCardSetListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        updateView();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        recyclerAdapter.removeListener();
+        realm.close();
+    }
+
     private void setItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -119,39 +108,8 @@ public class FlashCardSetListFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                final int position = viewHolder.getAdapterPosition();
-                final FlashCardSet set = items.get(position);
-                items.remove(position);
-                recyclerAdapter.notifyItemRemoved(position);
-                new AlertDialog.Builder(getContext())
-                        .setTitle(getString(R.string.confirm_delete))
-                        .setMessage(getString(R.string.delete_set))
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                realm.executeTransaction(new Realm.Transaction() {
-                                    @Override
-                                    public void execute(@NonNull Realm realm) {
-                                        set.deleteFromRealm();
-                                        updateData();
-                                    }
-                                });
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                items.add(position, set);
-                                recyclerAdapter.notifyItemInserted(position);
-                            }
-                        })
-                        .setIcon(R.drawable.ic_delete_black_24dp)
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                items.add(position, set);
-                                recyclerAdapter.notifyItemInserted(position);
-                            }
-                        })
-                        .show();
+                final int pos = viewHolder.getAdapterPosition();
+                recyclerAdapter.deleteFlashCardSet(recyclerAdapter.getItem(pos), pos);
             }
 
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
@@ -229,6 +187,7 @@ public class FlashCardSetListFragment extends Fragment {
                             }
 
                         });
+                        updateView();
                         dialog.dismiss();
                         Intent nextScreen = new Intent(getContext(), FlashCardSetActivity.class);
                         nextScreen.putExtra("item", title);
@@ -241,32 +200,15 @@ public class FlashCardSetListFragment extends Fragment {
         });
     }
 
-    private void updateData() {
-        items.clear();
-        items.addAll(realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING));
-        if (items.isEmpty()) {
+    private void updateView() {
+        if (recyclerAdapter.getItemCount() == 0) {
             emptyText.setVisibility(View.VISIBLE);
         } else if (emptyText.getVisibility() == View.VISIBLE) {
             emptyText.setVisibility(View.GONE);
         }
-        recyclerAdapter.updateData(items);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.removeChangeListener(realmListener);
-        realm.close();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        realm.removeChangeListener(realmListener);
     }
 
     public void filter(String query) {
-        recyclerAdapter.getFilter().filter(query);
+        recyclerAdapter.filter(query);
     }
-
 }

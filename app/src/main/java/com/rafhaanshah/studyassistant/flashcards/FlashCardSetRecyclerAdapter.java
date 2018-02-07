@@ -55,7 +55,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final FlashCardSet item = flashCardSets.get(position);
 
         holder.flashCardSetTitle.setText(item.getTitle());
@@ -71,14 +71,14 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
-                showPopupMenu(holder, item, position);
+                showPopupMenu(holder, item, holder.getAdapterPosition());
                 return true;
             }
         });
     }
 
     private void showPopupMenu(ViewHolder holder, final FlashCardSet item, final int position) {
-        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.RIGHT);
+        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
         popup.inflate(R.menu.menu_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -187,7 +187,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            flashCardSets = flashCardSets.where().contains("title", query, Case.INSENSITIVE).findAllSorted("title", Sort.ASCENDING);
+            flashCardSets = flashCardSets.where().contains("title", query.toLowerCase(), Case.INSENSITIVE).findAllSorted("title", Sort.ASCENDING);
             notifyDataSetChanged();
         } else {
             resetList();

@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Case;
@@ -54,7 +55,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final ScheduleItem item = currentItems.get(position);
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
@@ -65,7 +66,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             colour = ContextCompat.getColor(context, R.color.materialBlue);
         } else if (eventTime < currentTime) {
             colour = ContextCompat.getColor(context, R.color.materialRed);
-        } else if (eventTime < (currentTime + (86400000 * 3))) {
+        } else if (eventTime < (currentTime + (HelperUtils.ONE_DAY_MS * 3))) {
             colour = ContextCompat.getColor(context, R.color.materialOrange);
         }
 
@@ -88,14 +89,14 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
-                showPopupMenu(holder, item, position);
+                showPopupMenu(holder, item, holder.getAdapterPosition());
                 return true;
             }
         });
     }
 
     private void showPopupMenu(ViewHolder holder, final ScheduleItem item, final int position) {
-        PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.RIGHT);
+        PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.END);
         popup.inflate(R.menu.menu_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -130,9 +131,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
             if (history) {
-                currentItems = scheduleItems.where().equalTo("completed", true).contains("title", query, Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
+                currentItems = scheduleItems.where().equalTo("completed", true).contains("title", query.toLowerCase(), Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
             } else {
-                currentItems = scheduleItems.where().equalTo("completed", false).contains("title", query, Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
+                currentItems = scheduleItems.where().equalTo("completed", false).contains("title", query.toLowerCase(), Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
             }
             notifyDataSetChanged();
         } else {

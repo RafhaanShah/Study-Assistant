@@ -130,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
                     FlashCardSetListFragment frag = (FlashCardSetListFragment) selectedFragment;
                     frag.filter(query);
                 } else if (selectedFragment.getClass() == LectureListFragment.class) {
-
+                    LectureListFragment frag = (LectureListFragment) selectedFragment;
+                    frag.filter(query);
                 }
                 return false;
             }

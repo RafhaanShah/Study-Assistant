@@ -6,7 +6,14 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class HelperUtils {
+
+    public static int ONE_DAY_MS = 86400000;
 
     private HelperUtils() {
     }
@@ -45,4 +52,16 @@ public class HelperUtils {
         }
     }
 
+    public static ArrayList<File> getLectureFiles(Context context) {
+        return new ArrayList<>(Arrays.asList(getLectureDirectory(context).listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".pdf");
+            }
+        })));
+    }
+
+    public static File getLectureDirectory(Context context) {
+        return new File(context.getFilesDir().getAbsolutePath() + File.separator + "lectures");
+    }
 }

@@ -29,31 +29,33 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<File> values;
+    private ArrayList<File> files;
+    private ArrayList<File> unFilteredFiles;
     private Context context;
-    private File directory;
-    private LectureListFragment lectureListFragment;
+    private int sorting;
 
-    LectureRecyclerAdapter(ArrayList<File> data, LectureListFragment fragment) {
-        values = data;
-        lectureListFragment = fragment;
+    LectureRecyclerAdapter(int sort, ArrayList<File> newFiles) {
+        sorting = sort;
+        files = newFiles;
+        unFilteredFiles = new ArrayList<>(0);
     }
 
     @Override
-    public LectureRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.item_lecture, parent, false);
         context = v.getContext();
-        directory = new File(context.getFilesDir().getAbsolutePath() + File.separator + "lectures");
         return new LectureRecyclerAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
-        final File lec = values.get(position);
+    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
+        final File lec = files.get(position);
         String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
@@ -79,24 +81,24 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
-                showPopupMenu(holder, lec);
+                showPopupMenu(holder, lec, holder.getAdapterPosition());
                 return true;
             }
         });
     }
 
-    private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec) {
-        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.RIGHT);
+    private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec, final int position) {
+        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
         popup.inflate(R.menu.menu_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_edit:
-                        renameLecture(holder, lec);
+                        renameLecture(holder, lec, position);
                         return true;
                     case R.id.popup_delete:
-                        deleteLecture(lec);
+                        deleteLecture(position);
                         return true;
                 }
                 return false;
@@ -105,7 +107,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         popup.show();
     }
 
-    private void renameLecture(ViewHolder holder, final File lec) {
+    private void renameLecture(ViewHolder holder, final File lec, final int position) {
         HelperUtils.showSoftKeyboard(context);
 
         final EditText input = new EditText(context);
@@ -135,13 +137,13 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 if (TextUtils.isEmpty(text)) {
                     Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
                 } else {
-                    File newFile = new File(directory.getAbsolutePath() + File.separator + text + ".pdf");
+                    File newFile = new File(HelperUtils.getLectureDirectory(context) + File.separator + text + ".pdf");
                     if (newFile.exists()) {
                         Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
                     } else if (!lec.renameTo(newFile)) {
                         Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
                     } else {
-                        lectureListFragment.updateData();
+                        updateData(sorting, HelperUtils.getLectureFiles(context));
                         dialog.dismiss();
                     }
                 }
@@ -149,24 +151,28 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         });
     }
 
-    private void deleteLecture(final File lec) {
+    void deleteLecture(final int position) {
+        final File lec = files.get(position);
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_lecture))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        files.remove(position);
+                        notifyItemRemoved(position);
                         lec.delete();
-                        lectureListFragment.updateData();
                     }
                 })
                 .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        notifyItemChanged(position);
                     }
                 })
                 .setIcon(R.drawable.ic_delete_black_24dp)
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
+                        notifyItemChanged(position);
                     }
                 })
                 .show();
@@ -174,12 +180,66 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
     @Override
     public int getItemCount() {
-        return values.size();
+        return files.size();
     }
 
-    void updateData(ArrayList<File> items) {
-        values = items;
+    void updateData(int sort, ArrayList<File> newFiles) {
+        if (newFiles != null) {
+            files = newFiles;
+        }
+        sortData(sort);
         notifyDataSetChanged();
+    }
+
+    private void sortData(int sorting) {
+        switch (sorting) {
+            case 0:
+                Collections.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File a, File b) {
+                        return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
+                    }
+                });
+                break;
+            case 1:
+                Collections.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File a, File b) {
+                        Long lng = (b.lastModified() - a.lastModified());
+                        return lng.intValue();
+                    }
+                });
+                break;
+            case 2:
+                Collections.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File a, File b) {
+                        Long lng = (b.length() - a.length());
+                        return lng.intValue();
+                    }
+                });
+                break;
+        }
+    }
+
+    void filter(String query) {
+        if (unFilteredFiles.size() == 0) {
+            unFilteredFiles = files;
+        }
+        if (!TextUtils.isEmpty(query)) {
+            ArrayList<File> filteredFiles = new ArrayList<>();
+            for (File f : unFilteredFiles) {
+                if (f.getName().toLowerCase().contains(query.toLowerCase())) {
+                    filteredFiles.add(f);
+                }
+            }
+            files = filteredFiles;
+            notifyDataSetChanged();
+        } else {
+            files = unFilteredFiles;
+            unFilteredFiles.clear();
+            notifyDataSetChanged();
+        }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,12 +1,11 @@
 package com.rafhaanshah.studyassistant.lecture;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -21,30 +20,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class LectureListFragment extends Fragment {
 
     private static int sorting;
     private LectureRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
-    private ArrayList<File> items;
-    private File directory;
     private TextView emptyText;
 
     public static LectureListFragment newInstance(int i) {
-        LectureListFragment lcf = new LectureListFragment();
+        LectureListFragment llf = new LectureListFragment();
         Bundle bundle = new Bundle(1);
         bundle.putInt("sorting", i);
-        lcf.setArguments(bundle);
-        return lcf;
+        llf.setArguments(bundle);
+        return llf;
     }
 
     @Override
@@ -54,30 +45,25 @@ public class LectureListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_lecture_list, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        directory = new File(getContext().getFilesDir().getAbsolutePath() + File.separator + "lectures");
-        getData();
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         final FloatingActionButton fab = view.findViewById(R.id.fab);
         emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        recyclerAdapter = new LectureRecyclerAdapter(items, this);
+        recyclerAdapter = new LectureRecyclerAdapter(sorting, HelperUtils.getLectureFiles(getContext()));
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setLayoutManager(layoutManager);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
-
-        updateData(sorting, false);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -94,6 +80,12 @@ public class LectureListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        updateView();
+        super.onResume();
+    }
+
     private void setOnTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -104,36 +96,7 @@ public class LectureListFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                final int position = viewHolder.getAdapterPosition();
-                final File file = items.get(position);
-                items.remove(position);
-                recyclerAdapter.notifyItemRemoved(position);
-                new AlertDialog.Builder(getContext())
-                        .setTitle(getString(R.string.confirm_delete))
-                        .setMessage(getString(R.string.delete_lecture))
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                file.delete();
-                                if (items.isEmpty()) {
-                                    emptyText.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                items.add(position, file);
-                                recyclerAdapter.notifyItemInserted(position);
-                            }
-                        })
-                        .setIcon(R.drawable.ic_delete_black_24dp)
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                items.add(position, file);
-                                recyclerAdapter.notifyItemInserted(position);
-                            }
-                        })
-                        .show();
+                recyclerAdapter.deleteLecture(viewHolder.getAdapterPosition());
             }
 
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
@@ -167,59 +130,25 @@ public class LectureListFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private void getData() {
-        items = new ArrayList<>(Arrays.asList(directory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".pdf");
-            }
-        })));
+    public void filter(String query) {
+        recyclerAdapter.filter(query);
     }
 
-    public void updateData(int i, boolean update) {
+    public void updateData(int sort, boolean update) {
+        sorting = sort;
         if (update) {
-            getData();
-        }
-        sorting = i;
-        if (!items.isEmpty()) {
-            switch (i) {
-                case 0:
-                    Collections.sort(items, new Comparator<File>() {
-                        @Override
-                        public int compare(File a, File b) {
-                            return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-                        }
-                    });
-                    break;
-                case 1:
-                    Collections.sort(items, new Comparator<File>() {
-                        @Override
-                        public int compare(File a, File b) {
-                            Long lng = (b.lastModified() - a.lastModified());
-                            return lng.intValue();
-                        }
-                    });
-                    break;
-                case 2:
-                    Collections.sort(items, new Comparator<File>() {
-                        @Override
-                        public int compare(File a, File b) {
-                            Long lng = (b.length() - a.length());
-                            return lng.intValue();
-                        }
-                    });
-                    break;
-            }
-            if (emptyText.getVisibility() == View.VISIBLE) {
-                emptyText.setVisibility(View.GONE);
-            }
+            recyclerAdapter.updateData(sort, HelperUtils.getLectureFiles(getContext()));
         } else {
-            emptyText.setVisibility(View.VISIBLE);
+            recyclerAdapter.updateData(sort, null);
         }
-        recyclerAdapter.updateData(items);
+        updateView();
     }
 
-    public void updateData() {
-        updateData(sorting, true);
+    private void updateView() {
+        if (recyclerAdapter.getItemCount() == 0) {
+            emptyText.setVisibility(View.VISIBLE);
+        } else if (emptyText.getVisibility() == View.VISIBLE) {
+            emptyText.setVisibility(View.GONE);
+        }
     }
 }

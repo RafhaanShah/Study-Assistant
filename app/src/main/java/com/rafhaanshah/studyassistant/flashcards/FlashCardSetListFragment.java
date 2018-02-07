@@ -62,10 +62,9 @@ public class FlashCardSetListFragment extends Fragment {
         final FloatingActionButton fab = view.findViewById(R.id.fab);
         emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-
         recyclerAdapter = new FlashCardSetRecyclerAdapter(realm);
         recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);

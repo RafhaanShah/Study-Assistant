@@ -51,10 +51,10 @@ public class ScheduleListFragment extends Fragment {
         final FloatingActionButton fab = view.findViewById(R.id.fab);
         emptyText = view.findViewById(R.id.emptyText);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-
         recyclerAdapter = new ScheduleRecyclerAdapter(realm);
         recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

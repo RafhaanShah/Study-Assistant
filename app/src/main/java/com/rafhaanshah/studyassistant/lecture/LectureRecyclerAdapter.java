@@ -42,15 +42,15 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     LectureRecyclerAdapter(int sort, ArrayList<File> newFiles) {
         sorting = sort;
         files = newFiles;
-        unFilteredFiles = new ArrayList<>(0);
+        unFilteredFiles = files;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.item_lecture, parent, false);
-        context = v.getContext();
-        return new LectureRecyclerAdapter.ViewHolder(v);
+        View view = inflater.inflate(R.layout.item_lecture, parent, false);
+        context = view.getContext();
+        return new LectureRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".com.rafhaanshah.studyassistant.GenericFileProvider", lec);
                 intent.setDataAndType(uri, "application/pdf");
@@ -80,7 +80,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(final View v) {
+            public boolean onLongClick(final View view) {
                 showPopupMenu(holder, lec, holder.getAdapterPosition());
                 return true;
             }
@@ -89,7 +89,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
     private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
-        popup.inflate(R.menu.menu_popup);
+        popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -132,7 +132,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 String text = input.getText().toString().trim();
                 if (TextUtils.isEmpty(text)) {
                     Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
@@ -186,6 +186,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     void updateData(int sort, ArrayList<File> newFiles) {
         if (newFiles != null) {
             files = newFiles;
+            unFilteredFiles = files;
         }
         sortData(sort);
         notifyDataSetChanged();
@@ -223,9 +224,6 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     void filter(String query) {
-        if (unFilteredFiles.size() == 0) {
-            unFilteredFiles = files;
-        }
         if (!TextUtils.isEmpty(query)) {
             ArrayList<File> filteredFiles = new ArrayList<>();
             for (File f : unFilteredFiles) {
@@ -237,7 +235,6 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             notifyDataSetChanged();
         } else {
             files = unFilteredFiles;
-            unFilteredFiles.clear();
             notifyDataSetChanged();
         }
     }
@@ -248,12 +245,12 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         private TextView lectureDate;
         private RelativeLayout relativeLayout;
 
-        ViewHolder(View v) {
-            super(v);
-            lectureTitle = v.findViewById(R.id.lectureTitle);
-            lectureSize = v.findViewById(R.id.lectureSize);
-            lectureDate = v.findViewById(R.id.lectureDate);
-            relativeLayout = v.findViewById(R.id.relativeLayout);
+        ViewHolder(View view) {
+            super(view);
+            lectureTitle = view.findViewById(R.id.tv_lecture_title);
+            lectureSize = view.findViewById(R.id.tv_lecture_size);
+            lectureDate = view.findViewById(R.id.lectureDate);
+            relativeLayout = view.findViewById(R.id.flash_card_relative_layout);
         }
     }
 }

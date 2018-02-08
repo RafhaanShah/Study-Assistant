@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/titleText"
+                android:id="@+id/et_title"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="@string/title"
@@ -37,7 +37,7 @@
                 android:paddingTop="20dp">
 
                 <Button
-                    android:id="@+id/dateButton"
+                    android:id="@+id/btn_date"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:layout_alignParentStart="true"
@@ -46,7 +46,7 @@
                     android:text="@string/pick_date" />
 
                 <Button
-                    android:id="@+id/timeButton"
+                    android:id="@+id/btn_time"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:layout_alignParentBottom="true"
@@ -55,7 +55,7 @@
                     android:text="@string/pick_time" />
 
                 <TextView
-                    android:id="@+id/dateText"
+                    android:id="@+id/tv_date"
                     android:layout_width="250dp"
                     android:layout_height="50dp"
                     android:layout_alignParentEnd="true"
@@ -64,7 +64,7 @@
                     android:hint="@string/date" />
 
                 <TextView
-                    android:id="@+id/timeText"
+                    android:id="@+id/tv_time"
                     android:layout_width="250dp"
                     android:layout_height="50dp"
                     android:layout_alignParentBottom="true"
@@ -75,7 +75,7 @@
             </RelativeLayout>
 
             <EditText
-                android:id="@+id/notesText"
+                android:id="@+id/et_notes"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:hint="@string/additional_notes"
@@ -92,7 +92,7 @@
                 android:weightSum="2">
 
                 <Button
-                    android:id="@+id/saveButton"
+                    android:id="@+id/btn_save"
                     style="?android:buttonBarButtonStyle"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
@@ -101,7 +101,7 @@
                     android:text="@string/save" />
 
                 <Button
-                    android:id="@+id/finishButton"
+                    android:id="@+id/btn_finish"
                     style="?android:buttonBarButtonStyle"
                     android:layout_width="100dp"
                     android:layout_height="50dp"

@@ -20,26 +20,26 @@ import com.rafhaanshah.studyassistant.R;
 public class FlashCardSetFragment extends Fragment {
 
 
-    private String card, answer;
+    private String cardText, answerText;
     private int position, colour;
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
-    public static FlashCardSetFragment newInstance(String cardText, String answerText, int pos) {
-        FlashCardSetFragment fcs = new FlashCardSetFragment();
+    public static FlashCardSetFragment newInstance(String card, String answer, int pos) {
+        FlashCardSetFragment flashCardSetFragment = new FlashCardSetFragment();
         Bundle bundle = new Bundle(2);
-        bundle.putString("cardText", cardText);
-        bundle.putString("answerText", answerText);
+        bundle.putString("cardText", card);
+        bundle.putString("answerText", answer);
         bundle.putInt("position", pos);
-        fcs.setArguments(bundle);
-        return fcs;
+        flashCardSetFragment.setArguments(bundle);
+        return flashCardSetFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        card = getArguments().getString("cardText");
-        answer = getArguments().getString("answerText");
+        cardText = getArguments().getString("cardText");
+        answerText = getArguments().getString("answerText");
         position = getArguments().getInt("position");
         getColour();
     }
@@ -49,7 +49,7 @@ public class FlashCardSetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
 
-        currentFragment = CardFragment.newInstance(card, colour);
+        currentFragment = CardFragment.newInstance(cardText, colour);
         getChildFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(
@@ -99,9 +99,9 @@ public class FlashCardSetFragment extends Fragment {
 
     public void setText() {
         if (cardFlipped) {
-            answer = getText();
+            answerText = getText();
         } else {
-            card = getText();
+            cardText = getText();
         }
     }
 
@@ -113,9 +113,9 @@ public class FlashCardSetFragment extends Fragment {
         setText();
         Fragment newFragment;
         if (cardFlipped) {
-            newFragment = CardFragment.newInstance(card, colour);
+            newFragment = CardFragment.newInstance(cardText, colour);
         } else {
-            newFragment = CardFragment.newInstance(answer, HelperUtils.darkenColor(colour, 0.25));
+            newFragment = CardFragment.newInstance(answerText, HelperUtils.darkenColor(colour, 0.25));
         }
 
         getChildFragmentManager()
@@ -166,9 +166,9 @@ public class FlashCardSetFragment extends Fragment {
         public void onViewCreated(@NonNull View inflatedView, Bundle savedInstanceState) {
             super.onViewCreated(inflatedView, savedInstanceState);
 
-            textView = inflatedView.findViewById(R.id.text);
-            editText = inflatedView.findViewById(R.id.edit);
-            card = inflatedView.findViewById(R.id.cardView);
+            textView = inflatedView.findViewById(R.id.tv_flash_card);
+            editText = inflatedView.findViewById(R.id.et_flash_card);
+            card = inflatedView.findViewById(R.id.card_view);
 
             textView.setText(text);
             editText.setText(text);
@@ -178,7 +178,6 @@ public class FlashCardSetFragment extends Fragment {
             editText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 }
 
                 @Override
@@ -189,7 +188,6 @@ public class FlashCardSetFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-
                 }
             });
 
@@ -219,7 +217,6 @@ public class FlashCardSetFragment extends Fragment {
                 editText.setVisibility(View.INVISIBLE);
             }
         }
-
 
         private boolean isEditing() {
             return editing;

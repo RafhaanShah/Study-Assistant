@@ -58,15 +58,20 @@ public class FlashCardSetListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = view.findViewById(R.id.recyclerView);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
-        emptyText = view.findViewById(R.id.emptyText);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        recyclerView = view.findViewById(R.id.fragment_recycler_view);
+        emptyText = view.findViewById(R.id.tv_empty);
+
         recyclerAdapter = new FlashCardSetRecyclerAdapter(realm);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
+
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -165,7 +170,7 @@ public class FlashCardSetListFragment extends Fragment {
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 final String title = input.getText().toString().trim();
                 if (TextUtils.isEmpty(title)) {
                     Toast.makeText(getContext(), R.string.error_blank, Toast.LENGTH_SHORT).show();
@@ -189,7 +194,7 @@ public class FlashCardSetListFragment extends Fragment {
                         updateView();
                         dialog.dismiss();
                         Intent nextScreen = new Intent(getContext(), FlashCardSetActivity.class);
-                        nextScreen.putExtra("item", title);
+                        nextScreen.putExtra("flashCardSet", title);
                         getContext().startActivity(nextScreen);
                     } else {
                         Toast.makeText(getContext(), R.string.error_set_exists, Toast.LENGTH_SHORT).show();

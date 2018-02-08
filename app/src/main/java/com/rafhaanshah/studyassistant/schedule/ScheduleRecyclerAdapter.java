@@ -49,9 +49,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     @Override
     public ScheduleRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.item_schedule, parent, false);
-        context = v.getContext();
-        return new ViewHolder(v);
+        View view = inflater.inflate(R.layout.item_schedule, parent, false);
+        context = view.getContext();
+        return new ViewHolder(view);
     }
 
     @Override
@@ -80,15 +80,15 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.typeText.setText(item.getType());
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent nextScreen = new Intent(v.getContext(), ScheduleItemActivity.class);
+            public void onClick(View view) {
+                Intent nextScreen = new Intent(view.getContext(), ScheduleItemActivity.class);
                 nextScreen.putExtra("item", String.valueOf(item.getID()));
-                v.getContext().startActivity(nextScreen);
+                view.getContext().startActivity(nextScreen);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(final View v) {
+            public boolean onLongClick(final View view) {
                 showPopupMenu(holder, item, holder.getAdapterPosition());
                 return true;
             }
@@ -97,7 +97,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private void showPopupMenu(ViewHolder holder, final ScheduleItem item, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.END);
-        popup.inflate(R.menu.menu_popup);
+        popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -171,13 +171,13 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         private View rectangle;
         private CardView cardView;
 
-        ViewHolder(View v) {
-            super(v);
-            titleText = v.findViewById(R.id.itemTitle);
-            timeText = v.findViewById(R.id.itemDate);
-            typeText = v.findViewById(R.id.itemType);
-            rectangle = v.findViewById(R.id.rectangle);
-            cardView = v.findViewById(R.id.cardView);
+        ViewHolder(View view) {
+            super(view);
+            titleText = view.findViewById(R.id.tv_event_title);
+            timeText = view.findViewById(R.id.tv_event_date);
+            typeText = view.findViewById(R.id.tv_event_type);
+            rectangle = view.findViewById(R.id.rectangle);
+            cardView = view.findViewById(R.id.card_view);
         }
     }
 }

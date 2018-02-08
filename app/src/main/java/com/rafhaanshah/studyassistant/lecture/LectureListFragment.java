@@ -31,11 +31,11 @@ public class LectureListFragment extends Fragment {
     private TextView emptyText;
 
     public static LectureListFragment newInstance(int i) {
-        LectureListFragment llf = new LectureListFragment();
+        LectureListFragment lectureListFragment = new LectureListFragment();
         Bundle bundle = new Bundle(1);
         bundle.putInt("sorting", i);
-        llf.setArguments(bundle);
-        return llf;
+        lectureListFragment.setArguments(bundle);
+        return lectureListFragment;
     }
 
     @Override
@@ -53,18 +53,20 @@ public class LectureListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         final FloatingActionButton fab = view.findViewById(R.id.fab);
-        emptyText = view.findViewById(R.id.emptyText);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
+        emptyText = view.findViewById(R.id.tv_empty);
+
         recyclerAdapter = new LectureRecyclerAdapter(sorting, HelperUtils.getLectureFiles(getContext()));
-        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.fragment_recycler_view);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
 
+        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

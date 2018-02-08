@@ -58,7 +58,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             getSupportActionBar().setTitle(getString(R.string.event));
         }
 
-
         realm = Realm.getDefaultInstance();
         setSpinner();
 
@@ -66,96 +65,21 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
-        timeText = findViewById(R.id.timeText);
-        dateText = findViewById(R.id.dateText);
+        timeText = findViewById(R.id.tv_time);
+        dateText = findViewById(R.id.tv_date);
 
         String item = getIntent().getStringExtra("item");
         if (item == null) {
             newItem = true;
-            findViewById(R.id.finishButton).setVisibility(View.GONE);
-            Button saveButton = findViewById(R.id.saveButton);
+            findViewById(R.id.btn_finish).setVisibility(View.GONE);
+            Button saveButton = findViewById(R.id.btn_save);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.weight = 2;
             saveButton.setLayoutParams(params);
-            findViewById(R.id.titleText).requestFocus();
+            findViewById(R.id.et_title).requestFocus();
         } else {
             newItem = false;
             setFields(Integer.valueOf(item));
-        }
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.close();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle out) {
-        super.onSaveInstanceState(out);
-        out.putString("time", timeText.getText().toString());
-        out.putString("date", dateText.getText().toString());
-        out.putString("dueTime", dueTime);
-        out.putString("dueDate", dueDate);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle in) {
-        super.onRestoreInstanceState(in);
-        timeText.setText(in.getString("time"));
-        dateText.setText(in.getString("date"));
-        dueTime = in.getString("dueTime");
-        dueDate = in.getString("dueDate");
-    }
-
-    private void setFields(int ID) {
-        RealmQuery query = realm.where(ScheduleItem.class).equalTo("ID", ID);
-        oldItem = (ScheduleItem) query.findFirst();
-
-        EditText editTitle = findViewById(R.id.titleText);
-        editTitle.setText(oldItem.getTitle());
-        EditText editNote = findViewById(R.id.notesText);
-        editNote.setText(oldItem.getNotes());
-
-        if (oldItem.isCompleted()) {
-            Button button = findViewById(R.id.finishButton);
-            button.setText(getString(R.string.mark_incomplete));
-        }
-
-        Spinner spinner = findViewById(R.id.spinner);
-        for (int i = 1; i < 4; i++) {
-            if (spinner.getItemAtPosition(i).equals(oldItem.getType())) {
-                spinner.setSelection(i);
-                break;
-            }
-        }
-
-        dueTime = timeFormat.format(new Date(oldItem.getTime()));
-        dueDate = dateFormat.format(new Date(oldItem.getTime()));
-
-        hour = Integer.parseInt(dueTime.substring(0, 2));
-        minute = Integer.parseInt(dueTime.substring(3, 5));
-
-        day = Integer.parseInt(dueDate.substring(0, 2));
-        month = Integer.parseInt(dueDate.substring(3, 5)) - 1;
-        year = Integer.parseInt(dueDate.substring(6, 10));
-
-        timeText = findViewById(R.id.timeText);
-        dateText = findViewById(R.id.dateText);
-        try {
-            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
-            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-            timeText.setText(dueTime);
-            dateText.setText(dueDate);
         }
     }
 
@@ -164,7 +88,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         if (newItem) {
             return false;
         } else {
-            getMenuInflater().inflate(R.menu.menu_schedule_item_activity, menu);
+            getMenuInflater().inflate(R.menu.activity_schedule_item, menu);
             return true;
         }
     }
@@ -199,6 +123,81 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         return false;
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putString("time", timeText.getText().toString());
+        out.putString("date", dateText.getText().toString());
+        out.putString("dueTime", dueTime);
+        out.putString("dueDate", dueDate);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle in) {
+        super.onRestoreInstanceState(in);
+        timeText.setText(in.getString("time"));
+        dateText.setText(in.getString("date"));
+        dueTime = in.getString("dueTime");
+        dueDate = in.getString("dueDate");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+    private void setFields(int ID) {
+        RealmQuery query = realm.where(ScheduleItem.class).equalTo("ID", ID);
+        oldItem = (ScheduleItem) query.findFirst();
+
+        EditText editTitle = findViewById(R.id.et_title);
+        editTitle.setText(oldItem.getTitle());
+        EditText editNote = findViewById(R.id.et_notes);
+        editNote.setText(oldItem.getNotes());
+
+        if (oldItem.isCompleted()) {
+            Button button = findViewById(R.id.btn_finish);
+            button.setText(getString(R.string.mark_incomplete));
+        }
+
+        Spinner spinner = findViewById(R.id.spinner);
+        for (int i = 1; i < 4; i++) {
+            if (spinner.getItemAtPosition(i).equals(oldItem.getType())) {
+                spinner.setSelection(i);
+                break;
+            }
+        }
+
+        dueTime = timeFormat.format(new Date(oldItem.getTime()));
+        dueDate = dateFormat.format(new Date(oldItem.getTime()));
+
+        hour = Integer.parseInt(dueTime.substring(0, 2));
+        minute = Integer.parseInt(dueTime.substring(3, 5));
+
+        day = Integer.parseInt(dueDate.substring(0, 2));
+        month = Integer.parseInt(dueDate.substring(3, 5)) - 1;
+        year = Integer.parseInt(dueDate.substring(6, 10));
+
+        timeText = findViewById(R.id.tv_time);
+        dateText = findViewById(R.id.tv_date);
+        try {
+            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
+            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+            timeText.setText(dueTime);
+            dateText.setText(dueDate);
+        }
+    }
+
     public void setSpinner() {
         Spinner spinner = findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
@@ -215,9 +214,9 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     }
 
-    public void saveItem(View v) {
-        title = ((EditText) findViewById(R.id.titleText)).getText().toString().trim();
-        notes = ((EditText) findViewById(R.id.notesText)).getText().toString().trim();
+    public void saveItem(View view) {
+        title = ((EditText) findViewById(R.id.et_title)).getText().toString().trim();
+        notes = ((EditText) findViewById(R.id.et_notes)).getText().toString().trim();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(dueDate) || TextUtils.isEmpty(dueTime)) {
             Toast.makeText(getApplicationContext(), getString(R.string.fill_event), Toast.LENGTH_SHORT).show();
@@ -252,7 +251,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         finish();
     }
 
-    public void finishItem(View v) {
+    public void finishItem(View view) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
@@ -263,7 +262,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                 }
             }
         });
-        saveItem(v);
+        saveItem(view);
     }
 
     @Override
@@ -275,8 +274,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     public void onNothingSelected(AdapterView<?> adapterView) {
     }
 
-    public void pickDate(View v) {
-        HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, v);
+    public void pickDate(View view) {
+        HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, view);
 
         if (newItem) {
             final Calendar c = Calendar.getInstance();
@@ -306,8 +305,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         datePickerDialog.show();
     }
 
-    public void pickTime(View v) {
-        HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, v);
+    public void pickTime(View view) {
+        HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, view);
 
         if (newItem) {
             final Calendar c = Calendar.getInstance();

@@ -47,15 +47,16 @@ public class ScheduleListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = view.findViewById(R.id.recyclerView);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
-        emptyText = view.findViewById(R.id.emptyText);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        emptyText = view.findViewById(R.id.tv_empty);
+
+        recyclerView = view.findViewById(R.id.fragment_recycler_view);
         recyclerAdapter = new ScheduleRecyclerAdapter(realm);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
-
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

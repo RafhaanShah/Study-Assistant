@@ -49,9 +49,9 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.item_flash_card_set, parent, false);
-        context = v.getContext();
-        return new ViewHolder(v);
+        View view = inflater.inflate(R.layout.item_flash_card_set, parent, false);
+        context = view.getContext();
+        return new ViewHolder(view);
     }
 
     @Override
@@ -61,16 +61,16 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.flashCardSetTitle.setText(item.getTitle());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent nextScreen = new Intent(v.getContext(), FlashCardSetActivity.class);
-                nextScreen.putExtra("item", item.getTitle());
-                v.getContext().startActivity(nextScreen);
+            public void onClick(View view) {
+                Intent nextScreen = new Intent(view.getContext(), FlashCardSetActivity.class);
+                nextScreen.putExtra("flashCardSet", item.getTitle());
+                view.getContext().startActivity(nextScreen);
             }
         });
 
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(final View v) {
+            public boolean onLongClick(final View view) {
                 showPopupMenu(holder, item, holder.getAdapterPosition());
                 return true;
             }
@@ -79,7 +79,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     private void showPopupMenu(ViewHolder holder, final FlashCardSet item, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
-        popup.inflate(R.menu.menu_popup);
+        popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -126,7 +126,6 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 .show();
     }
 
-
     private void renameFlashCardSet(final FlashCardSet item) {
         HelperUtils.showSoftKeyboard(context);
 
@@ -152,7 +151,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 final String title = input.getText().toString().trim();
                 if (TextUtils.isEmpty(title)) {
                     Toast.makeText(context, R.string.error_blank, Toast.LENGTH_SHORT).show();
@@ -206,10 +205,10 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         private TextView flashCardSetTitle;
         private RelativeLayout relativeLayout;
 
-        ViewHolder(View v) {
-            super(v);
-            flashCardSetTitle = v.findViewById(R.id.flashCardSetTitle);
-            relativeLayout = v.findViewById(R.id.relativeLayout);
+        ViewHolder(View view) {
+            super(view);
+            flashCardSetTitle = view.findViewById(R.id.tv_flash_card_set_title);
+            relativeLayout = view.findViewById(R.id.flash_card_relative_layout);
         }
     }
 }

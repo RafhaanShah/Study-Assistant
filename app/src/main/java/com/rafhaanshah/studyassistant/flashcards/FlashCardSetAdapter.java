@@ -10,24 +10,24 @@ import java.util.ArrayList;
 
 public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<FlashCardSetFragment> arr;
-    private FlashCardSet item;
+    private ArrayList<FlashCardSetFragment> flashCardSetFragments;
+    private FlashCardSet flashCardSet;
 
     FlashCardSetAdapter(FragmentManager fm, FlashCardSet set) {
         super(fm);
-        item = set;
-        arr = new ArrayList<>(item.getCards().size());
-        arr.add(null);
-        for (int i = 0; i < item.getCards().size(); i++) {
-            arr.add(null);
+        flashCardSet = set;
+        flashCardSetFragments = new ArrayList<>(flashCardSet.getCards().size());
+        flashCardSetFragments.add(null);
+        for (int i = 0; i < flashCardSet.getCards().size(); i++) {
+            flashCardSetFragments.add(null);
         }
     }
 
     // This is called to create new fragments
     @Override
     public Fragment getItem(int position) {
-        FlashCardSetFragment frag = FlashCardSetFragment.newInstance(item.getCards().get(position), item.getAnswers().get(position), position);
-        arr.set(position, frag);
+        FlashCardSetFragment frag = FlashCardSetFragment.newInstance(flashCardSet.getCards().get(position), flashCardSet.getAnswers().get(position), position);
+        flashCardSetFragments.set(position, frag);
         return frag;
     }
 
@@ -35,7 +35,7 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getItemPosition(@NonNull Object item) {
         FlashCardSetFragment frag = (FlashCardSetFragment) item;
-        int index = arr.indexOf(frag);
+        int index = flashCardSetFragments.indexOf(frag);
         if (index != ((FlashCardSetFragment) item).getPosition()) {
             return POSITION_NONE;
         } else {
@@ -50,21 +50,21 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
 
     // Returns the fragment at a position
     FlashCardSetFragment getFragment(int position) {
-        return arr.get(position);
+        return flashCardSetFragments.get(position);
     }
 
     void removeFragment(int position) {
-        arr.remove(position);
+        flashCardSetFragments.remove(position);
     }
 
     void addFragment(int position) {
-        arr.add(position, null);
+        flashCardSetFragments.add(position, null);
     }
 
     @Override
     public int getCount() {
-        if (item.isValid()) {
-            return item.getCards().size();
+        if (flashCardSet.isValid()) {
+            return flashCardSet.getCards().size();
         } else {
             return 0;
         }

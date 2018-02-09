@@ -157,4 +157,8 @@ public class ScheduleListFragment extends Fragment {
     public void filter(String query) {
         recyclerAdapter.filter(query);
     }
+
+    public void filterType(ScheduleItem.ScheduleItemType type) {
+        recyclerAdapter.filterType(type);
+    }
 }

@@ -47,6 +47,7 @@
     <string name="exam">Exam</string>
     <string name="search">Search</string>
     <string name="filter">Filter</string>
+    <string name="clear_filter">Clear Filters</string>
     <string name="mb">%1$s MB</string>
     <string name="go_to_card">Go To Card Number:</string>
     <string name="max_cards">Maximum number of cards for this set reached</string>

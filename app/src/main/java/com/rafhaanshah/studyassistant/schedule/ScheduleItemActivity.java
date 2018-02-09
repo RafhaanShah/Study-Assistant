@@ -47,7 +47,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     public static final String BUNDLE_DUE_DATE = "BUNDLE_DUE_DATE";
     private static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
 
-    private String title, type, dueDate, dueTime, notes;
+    private String title, dueDate, dueTime, notes;
+    private ScheduleItem.ScheduleItemType type;
     private long epochTime;
     private int day, month, year, hour, minute;
     private boolean newItem;
@@ -182,11 +183,21 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         }
 
         Spinner spinner = findViewById(R.id.spinner);
-        for (int i = 1; i < 4; i++) {
-            if (spinner.getItemAtPosition(i).equals(oldItem.getType())) {
-                spinner.setSelection(i);
+        switch (oldItem.getType()) {
+            case HOMEWORK:
+                spinner.setSelection(0);
                 break;
-            }
+            case COURSEWORK:
+                spinner.setSelection(1);
+                break;
+            case TEST:
+                spinner.setSelection(2);
+                break;
+            case EXAM:
+                spinner.setSelection(3);
+                break;
+            default:
+                spinner.setSelection(0);
         }
 
         dueTime = timeFormat.format(new Date(oldItem.getTime()));
@@ -225,7 +236,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
-
     }
 
     public void saveItem(View view) {
@@ -281,7 +291,22 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        type = adapterView.getItemAtPosition(i).toString();
+        switch (i) {
+            case 0:
+                type = ScheduleItem.ScheduleItemType.HOMEWORK;
+                break;
+            case 1:
+                type = ScheduleItem.ScheduleItemType.COURSEWORK;
+                break;
+            case 2:
+                type = ScheduleItem.ScheduleItemType.TEST;
+                break;
+            case 3:
+                type = ScheduleItem.ScheduleItemType.EXAM;
+                break;
+            default:
+                type = ScheduleItem.ScheduleItemType.HOMEWORK;
+        }
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
+import com.rafhaanshah.studyassistant.schedule.ScheduleItem;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleListFragment;
 
@@ -265,6 +267,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void filterButtonPressed() {
+        final ScheduleListFragment frag = (ScheduleListFragment) selectedFragment;
+
+        PopupMenu popup = new PopupMenu(MainActivity.this, findViewById(R.id.menu_btn_filter));
+        popup.inflate(R.menu.fragment_schedule_list_filter);
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.filter_homework:
+                        frag.filterType(ScheduleItem.ScheduleItemType.HOMEWORK);
+                        return true;
+                    case R.id.filter_coursework:
+                        frag.filterType(ScheduleItem.ScheduleItemType.COURSEWORK);
+                        return true;
+                    case R.id.filter_test:
+                        frag.filterType(ScheduleItem.ScheduleItemType.TEST);
+                        return true;
+                    case R.id.filter_exam:
+                        frag.filterType(ScheduleItem.ScheduleItemType.EXAM);
+                        return true;
+                    case R.id.filter_none:
+                        frag.filterType(null);
+                }
+                return false;
+            }
+        });
+        popup.show();
     }
 
     public void newScheduleItem(View view) {

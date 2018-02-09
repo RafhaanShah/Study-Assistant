@@ -10,9 +10,8 @@ public class ScheduleItem extends RealmObject {
     static final String ScheduleItem_NOTES = "notes";
     static final String ScheduleItem_TIME = "time";
     static final String ScheduleItem_COMPLETED = "completed";
-
     private int ID;
-    private String title, type, notes;
+    private String title, notes, type;
     private Long time;
     private boolean completed;
 
@@ -32,12 +31,12 @@ public class ScheduleItem extends RealmObject {
         this.title = title;
     }
 
-    String getType() {
-        return type;
+    ScheduleItemType getType() {
+        return ScheduleItemType.valueOf(type);
     }
 
-    void setType(String type) {
-        this.type = type;
+    void setType(ScheduleItemType type) {
+        this.type = type.name();
     }
 
     String getNotes() {
@@ -62,6 +61,10 @@ public class ScheduleItem extends RealmObject {
 
     void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public enum ScheduleItemType {
+        HOMEWORK, COURSEWORK, TEST, EXAM
     }
 }
 

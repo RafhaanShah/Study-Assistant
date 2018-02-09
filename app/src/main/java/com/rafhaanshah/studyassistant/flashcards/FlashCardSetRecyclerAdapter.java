@@ -142,7 +142,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             public void onClick(DialogInterface dialog, int which) {
             }
         });
-        builder.setIcon(R.drawable.ic_create_black_24dp);
+        builder.setIcon(R.drawable.ic_edit_black_24dp);
         builder.setView(input);
         final AlertDialog dialog = builder.create();
         dialog.show();

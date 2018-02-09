@@ -1,6 +1,8 @@
 package com.rafhaanshah.studyassistant.schedule;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -79,7 +81,24 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.rectangle.setBackground(shape);
         holder.titleText.setText(item.getTitle());
         holder.timeText.setText(showTime);
-        holder.typeText.setText(item.getType());
+
+        switch (item.getType()) {
+            case HOMEWORK:
+                holder.typeText.setText(context.getString(R.string.homework));
+                break;
+            case COURSEWORK:
+                holder.typeText.setText(context.getString(R.string.coursework));
+                break;
+            case TEST:
+                holder.typeText.setText(context.getString(R.string.class_test));
+                break;
+            case EXAM:
+                holder.typeText.setText(context.getString(R.string.exam));
+                break;
+            default:
+                holder.typeText.setText(context.getString(R.string.homework));
+        }
+
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,13 +108,13 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View view) {
-                showPopupMenu(holder, item, holder.getAdapterPosition());
+                showPopupMenu(holder, item);
                 return true;
             }
         });
     }
 
-    private void showPopupMenu(ViewHolder holder, final ScheduleItem item, final int position) {
+    private void showPopupMenu(ViewHolder holder, final ScheduleItem item) {
         PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.END);
         popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -103,14 +122,47 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_edit:
+                        editEvent(item);
                         return true;
                     case R.id.popup_delete:
+                        deleteFlashCardSet(item);
                         return true;
                 }
                 return false;
             }
         });
         popup.show();
+    }
+
+    private void editEvent(ScheduleItem item) {
+        context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
+    }
+
+    private void deleteFlashCardSet(final ScheduleItem item) {
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.confirm_delete))
+                .setMessage(context.getString(R.string.delete_event))
+                .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(@NonNull Realm realm) {
+                                item.deleteFromRealm();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .setIcon(R.drawable.ic_delete_black_24dp)
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -126,6 +178,20 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
         }
         notifyDataSetChanged();
+    }
+
+    void filterType(ScheduleItem.ScheduleItemType type) {
+        if (type != null) {
+            currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_TYPE, type.name()).findAll();
+            if (history) {
+                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, true).equalTo(ScheduleItem.ScheduleItem_TYPE, type.name(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.DESCENDING);
+            } else {
+                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).equalTo(ScheduleItem.ScheduleItem_TYPE, type.name(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
+            }
+            notifyDataSetChanged();
+        } else {
+            updateData(history);
+        }
     }
 
     void filter(String query) {

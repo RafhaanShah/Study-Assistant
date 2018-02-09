@@ -1,10 +1,10 @@
 package com.rafhaanshah.studyassistant.lecture;
 
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.PopupMenu;
@@ -34,6 +34,9 @@ import java.util.Comparator;
 
 public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecyclerAdapter.ViewHolder> {
 
+    private static final String TYPE_APPLICATION_PDF = "application/pdf";
+    private static final String DECIMAL_FORMAT = "#.##";
+
     private ArrayList<File> files;
     private ArrayList<File> unFilteredFiles;
     private Context context;
@@ -56,7 +59,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     @Override
     public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
         final File lec = files.get(position);
-        String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
+        String size = new DecimalFormat(DECIMAL_FORMAT).format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
@@ -65,16 +68,15 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".com.rafhaanshah.studyassistant.GenericFileProvider", lec);
-                intent.setDataAndType(uri, "application/pdf");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                try {
+                Uri uri = FileProvider.getUriForFile(context, context.getString(R.string.file_provider_authority), lec);
+                intent.setDataAndType(uri, TYPE_APPLICATION_PDF);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                PackageManager pm = context.getPackageManager();
+                if (intent.resolveActivity(pm) != null) {
                     context.startActivity(intent);
-                } catch (ActivityNotFoundException e) {
+                } else {
                     Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
                 }
-
             }
         });
 

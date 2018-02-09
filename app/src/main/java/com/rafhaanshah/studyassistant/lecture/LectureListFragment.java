@@ -52,6 +52,7 @@ public class LectureListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -79,13 +80,12 @@ public class LectureListFragment extends Fragment {
             }
         });
         setOnTouchHelper();
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onResume() {
-        updateView();
         super.onResume();
+        updateView();
     }
 
     private void setOnTouchHelper() {

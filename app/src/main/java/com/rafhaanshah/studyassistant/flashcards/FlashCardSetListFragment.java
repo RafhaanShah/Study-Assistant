@@ -58,6 +58,7 @@ public class FlashCardSetListFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -86,13 +87,12 @@ public class FlashCardSetListFragment extends Fragment {
         });
 
         setItemTouchHelper();
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onResume() {
-        updateView();
         super.onResume();
+        updateView();
     }
 
     @Override

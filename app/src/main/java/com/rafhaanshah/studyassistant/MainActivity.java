@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         lectureSorting = preferences.getInt("sorting", 0);
-        directory = new File(getFilesDir().getAbsolutePath() + File.separator + "lectures");
+        directory = HelperUtils.getLectureDirectory(MainActivity.this);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         setNavigationListener(navigation);
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 outStream.write(buffer);
                 initialStream.close();
                 outStream.close();
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_inaccessible_file), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } finally {

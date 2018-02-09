@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.HelperUtils;
+import com.rafhaanshah.studyassistant.MainActivity;
 import com.rafhaanshah.studyassistant.R;
 
 import java.io.File;
@@ -34,7 +35,6 @@ import java.util.Comparator;
 
 public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecyclerAdapter.ViewHolder> {
 
-    private static final String TYPE_APPLICATION_PDF = "application/pdf";
     private static final String DECIMAL_FORMAT = "#.##";
 
     private ArrayList<File> files;
@@ -45,6 +45,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     LectureRecyclerAdapter(int sort, ArrayList<File> newFiles) {
         sorting = sort;
         files = newFiles;
+        sortData(sorting, files);
         unFilteredFiles = files;
     }
 
@@ -69,7 +70,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 Uri uri = FileProvider.getUriForFile(context, context.getString(R.string.file_provider_authority), lec);
-                intent.setDataAndType(uri, TYPE_APPLICATION_PDF);
+                intent.setDataAndType(uri, MainActivity.TYPE_APPLICATION_PDF);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 PackageManager pm = context.getPackageManager();
                 if (intent.resolveActivity(pm) != null) {
@@ -190,22 +191,23 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             files = newFiles;
             unFilteredFiles = files;
         }
-        sortData(sort);
+        sortData(sorting, files);
+        sortData(sorting, unFilteredFiles);
         notifyDataSetChanged();
     }
 
-    private void sortData(int sorting) {
+    private void sortData(int sorting, ArrayList<File> unsortedFiles) {
         switch (sorting) {
-            case 0:
-                Collections.sort(files, new Comparator<File>() {
+            case MainActivity.SORT_TITLE:
+                Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
                     }
                 });
                 break;
-            case 1:
-                Collections.sort(files, new Comparator<File>() {
+            case MainActivity.SORT_DATE:
+                Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         Long lng = (b.lastModified() - a.lastModified());
@@ -213,8 +215,8 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                     }
                 });
                 break;
-            case 2:
-                Collections.sort(files, new Comparator<File>() {
+            case MainActivity.SORT_SIZE:
+                Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         Long lng = (b.length() - a.length());

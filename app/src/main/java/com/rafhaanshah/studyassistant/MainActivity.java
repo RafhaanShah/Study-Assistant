@@ -33,6 +33,16 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TYPE_APPLICATION_PDF = "application/pdf";
+    public static final int SORT_TITLE = 0;
+    public static final int SORT_DATE = 1;
+    public static final int SORT_SIZE = 2;
+    private static final int REQUEST_LECTURE = 100;
+    private static final String PREF_SORTING = "PREF_SORTING";
+    private static final String PDF = ".pdf";
+    private static final String NEW_FILE = "newfile";
+
+
     private Menu menu;
     private Fragment selectedFragment;
     private boolean scheduleHistory;
@@ -49,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        lectureSorting = preferences.getInt("sorting", 0);
+        lectureSorting = preferences.getInt(PREF_SORTING, 0);
         directory = HelperUtils.getLectureDirectory(MainActivity.this);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -78,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (lectureSorting != preferences.getInt("sorting", 0)) {
+        if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt("sorting", lectureSorting);
+            editor.putInt(PREF_SORTING, lectureSorting);
             editor.apply();
         }
     }
@@ -126,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
-            String fileName = "New File.pdf";
+            String fileName = NEW_FILE + PDF;
 
             try (Cursor cursor = getContentResolver().query(selectedFile, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if (!fileName.toLowerCase().endsWith(".pdf")) {
+            if (!fileName.toLowerCase().endsWith(PDF)) {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_invalid_file), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -238,19 +248,19 @@ public class MainActivity extends AppCompatActivity {
     private void lectureSortButtonPressed() {
         LectureListFragment lectureListFragment = (LectureListFragment) selectedFragment;
         switch (lectureSorting) {
-            case 0:
-                lectureListFragment.updateData(1, false);
-                lectureSorting = 1;
+            case SORT_TITLE:
+                lectureListFragment.updateData(SORT_DATE, false);
+                lectureSorting = SORT_DATE;
                 Toast.makeText(getApplicationContext(), getString(R.string.sort_date), Toast.LENGTH_SHORT).show();
                 break;
-            case 1:
-                lectureListFragment.updateData(2, false);
-                lectureSorting = 2;
+            case SORT_DATE:
+                lectureListFragment.updateData(SORT_SIZE, false);
+                lectureSorting = SORT_SIZE;
                 Toast.makeText(getApplicationContext(), getString(R.string.sort_size), Toast.LENGTH_SHORT).show();
                 break;
-            case 2:
-                lectureListFragment.updateData(0, false);
-                lectureSorting = 0;
+            case SORT_SIZE:
+                lectureListFragment.updateData(SORT_TITLE, false);
+                lectureSorting = SORT_TITLE;
                 Toast.makeText(getApplicationContext(), getString(R.string.sort_title), Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -272,10 +282,10 @@ public class MainActivity extends AppCompatActivity {
     public void newLectureItem(View view) {
         Toast.makeText(getApplicationContext(), getString(R.string.pdf_select), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent()
-                .setType("application/pdf")
+                .setType(TYPE_APPLICATION_PDF)
                 .setAction(Intent.ACTION_GET_CONTENT);
         try {
-            startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), 100);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
             e.printStackTrace();

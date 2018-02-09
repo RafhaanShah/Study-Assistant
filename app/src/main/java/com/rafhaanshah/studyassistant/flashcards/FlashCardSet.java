@@ -5,6 +5,10 @@ import io.realm.RealmObject;
 
 public class FlashCardSet extends RealmObject {
 
+    static final String FlashCardSet_TITLE = "title";
+    static final String FlashCardSet_CARDS = "cards";
+    static final String FlashCardSet_ANSWERS = "answers";
+
     private String title;
     private RealmList<String> cards;
     private RealmList<String> answers;

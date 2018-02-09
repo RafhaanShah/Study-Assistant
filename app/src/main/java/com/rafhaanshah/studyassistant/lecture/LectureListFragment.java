@@ -25,6 +25,8 @@ import com.rafhaanshah.studyassistant.R;
 
 public class LectureListFragment extends Fragment {
 
+    private static final String BUNDLE_SORTING = "BUNDLE_SORTING";
+
     private static int sorting;
     private LectureRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
@@ -33,7 +35,7 @@ public class LectureListFragment extends Fragment {
     public static LectureListFragment newInstance(int i) {
         LectureListFragment lectureListFragment = new LectureListFragment();
         Bundle bundle = new Bundle(1);
-        bundle.putInt("sorting", i);
+        bundle.putInt(BUNDLE_SORTING, i);
         lectureListFragment.setArguments(bundle);
         return lectureListFragment;
     }
@@ -41,7 +43,7 @@ public class LectureListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sorting = getArguments().getInt("sorting");
+        sorting = getArguments().getInt(BUNDLE_SORTING, 0);
     }
 
     @Override

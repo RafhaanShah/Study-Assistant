@@ -3,6 +3,14 @@ package com.rafhaanshah.studyassistant.schedule;
 import io.realm.RealmObject;
 
 public class ScheduleItem extends RealmObject {
+
+    static final String ScheduleItem_ID = "ID";
+    static final String ScheduleItem_TITLE = "title";
+    static final String ScheduleItem_TYPE = "type";
+    static final String ScheduleItem_NOTES = "notes";
+    static final String ScheduleItem_TIME = "time";
+    static final String ScheduleItem_COMPLETED = "completed";
+
     private int ID;
     private String title, type, notes;
     private Long time;

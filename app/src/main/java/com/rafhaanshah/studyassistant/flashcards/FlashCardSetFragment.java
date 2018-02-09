@@ -19,6 +19,9 @@ import com.rafhaanshah.studyassistant.R;
 
 public class FlashCardSetFragment extends Fragment {
 
+    private static final String BUNDLE_CARD_TEXT = "BUNDLE_CARD_TEXT";
+    private static final String BUNDLE_ANSWER_TEXT = "BUNDLE_ANSWER_TEXT";
+    private static final String BUNDLE_POSITION = "BUNDLE_POSITION";
 
     private String cardText, answerText;
     private int position, colour;
@@ -28,9 +31,9 @@ public class FlashCardSetFragment extends Fragment {
     public static FlashCardSetFragment newInstance(String card, String answer, int pos) {
         FlashCardSetFragment flashCardSetFragment = new FlashCardSetFragment();
         Bundle bundle = new Bundle(2);
-        bundle.putString("cardText", card);
-        bundle.putString("answerText", answer);
-        bundle.putInt("position", pos);
+        bundle.putString(BUNDLE_CARD_TEXT, card);
+        bundle.putString(BUNDLE_ANSWER_TEXT, answer);
+        bundle.putInt(BUNDLE_POSITION, pos);
         flashCardSetFragment.setArguments(bundle);
         return flashCardSetFragment;
     }
@@ -38,9 +41,9 @@ public class FlashCardSetFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cardText = getArguments().getString("cardText");
-        answerText = getArguments().getString("answerText");
-        position = getArguments().getInt("position");
+        cardText = getArguments().getString(BUNDLE_CARD_TEXT);
+        answerText = getArguments().getString(BUNDLE_ANSWER_TEXT);
+        position = getArguments().getInt(BUNDLE_POSITION);
         getColour();
     }
 
@@ -132,6 +135,9 @@ public class FlashCardSetFragment extends Fragment {
 
     public static class CardFragment extends Fragment {
 
+        private static final String BUNDLE_TEXT = "BUNDLE_TEXT";
+        private static final String BUNDLE_COLOUR = "BUNDLE_COLOUR";
+
         private String text;
         private TextView textView, editText;
         private boolean editing;
@@ -141,8 +147,8 @@ public class FlashCardSetFragment extends Fragment {
         public static CardFragment newInstance(String str, int col) {
             CardFragment frag = new CardFragment();
             Bundle bundle = new Bundle(2);
-            bundle.putString("text", str);
-            bundle.putInt("col", col);
+            bundle.putString(BUNDLE_TEXT, str);
+            bundle.putInt(BUNDLE_COLOUR, col);
             frag.setArguments(bundle);
             return frag;
         }
@@ -150,8 +156,8 @@ public class FlashCardSetFragment extends Fragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            text = getArguments().getString("text");
-            colour = getArguments().getInt("col");
+            text = getArguments().getString(BUNDLE_TEXT);
+            colour = getArguments().getInt(BUNDLE_COLOUR);
         }
 
         @Override

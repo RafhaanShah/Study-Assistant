@@ -35,18 +35,16 @@ import java.util.Comparator;
 
 public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecyclerAdapter.ViewHolder> {
 
-    private static final String DECIMAL_FORMAT = "#.##";
-
     private ArrayList<File> files;
     private ArrayList<File> unFilteredFiles;
     private Context context;
     private int sorting;
 
     LectureRecyclerAdapter(int sort, ArrayList<File> newFiles) {
-        sorting = sort;
         files = newFiles;
-        sortData(sorting, files);
+        sortData(sort, files);
         unFilteredFiles = files;
+        sorting = sort;
     }
 
     @Override
@@ -60,7 +58,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     @Override
     public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
         final File lec = files.get(position);
-        String size = new DecimalFormat(DECIMAL_FORMAT).format((double) lec.length() / 1000000);
+        String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
@@ -98,7 +96,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_edit:
-                        renameLecture(holder, lec, position);
+                        renameLecture(holder, lec);
                         return true;
                     case R.id.popup_delete:
                         deleteLecture(position);
@@ -110,7 +108,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         popup.show();
     }
 
-    private void renameLecture(ViewHolder holder, final File lec, final int position) {
+    private void renameLecture(ViewHolder holder, final File lec) {
         HelperUtils.showSoftKeyboard(context);
 
         final EditText input = new EditText(context);
@@ -140,7 +138,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 if (TextUtils.isEmpty(text)) {
                     Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
                 } else {
-                    File newFile = new File(HelperUtils.getLectureDirectory(context) + File.separator + text + ".pdf");
+                    File newFile = new File(HelperUtils.getLectureDirectory(context) + File.separator + text + MainActivity.PDF);
                     if (newFile.exists()) {
                         Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
                     } else if (!lec.renameTo(newFile)) {
@@ -191,13 +189,14 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             files = newFiles;
             unFilteredFiles = files;
         }
-        sortData(sorting, files);
-        sortData(sorting, unFilteredFiles);
+        sorting = sort;
+        sortData(sort, files);
+        sortData(sort, unFilteredFiles);
         notifyDataSetChanged();
     }
 
-    private void sortData(int sorting, ArrayList<File> unsortedFiles) {
-        switch (sorting) {
+    private void sortData(int sort, ArrayList<File> unsortedFiles) {
+        switch (sort) {
             case MainActivity.SORT_TITLE:
                 Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override

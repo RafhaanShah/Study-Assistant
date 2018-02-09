@@ -2,7 +2,6 @@ package com.rafhaanshah.studyassistant.flashcards;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -175,7 +174,7 @@ public class FlashCardSetListFragment extends Fragment {
                 if (TextUtils.isEmpty(title)) {
                     Toast.makeText(getContext(), R.string.error_blank, Toast.LENGTH_SHORT).show();
                 } else {
-                    FlashCardSet set = realm.where(FlashCardSet.class).equalTo("title", title).findFirst();
+                    FlashCardSet set = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
                     if (set == null) {
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
@@ -193,9 +192,7 @@ public class FlashCardSetListFragment extends Fragment {
                         });
                         updateView();
                         dialog.dismiss();
-                        Intent nextScreen = new Intent(getContext(), FlashCardSetActivity.class);
-                        nextScreen.putExtra("flashCardSet", title);
-                        getContext().startActivity(nextScreen);
+                        getContext().startActivity(FlashCardSetActivity.getStartIntent(getContext(), title));
                     } else {
                         Toast.makeText(getContext(), R.string.error_set_exists, Toast.LENGTH_SHORT).show();
                     }

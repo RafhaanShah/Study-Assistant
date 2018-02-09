@@ -4,7 +4,6 @@ package com.rafhaanshah.studyassistant.flashcards;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +36,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     FlashCardSetRecyclerAdapter(Realm getRealm) {
         realm = getRealm;
-        flashCardSets = realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING);
+        flashCardSets = realm.where(FlashCardSet.class).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
         flashCardSets.addChangeListener(new RealmChangeListener<RealmResults<FlashCardSet>>() {
             @Override
             public void onChange(@NonNull RealmResults<FlashCardSet> flashCardSets) {
@@ -62,9 +61,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent nextScreen = new Intent(view.getContext(), FlashCardSetActivity.class);
-                nextScreen.putExtra("flashCardSet", item.getTitle());
-                view.getContext().startActivity(nextScreen);
+                context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle()));
             }
         });
 
@@ -156,7 +153,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 if (TextUtils.isEmpty(title)) {
                     Toast.makeText(context, R.string.error_blank, Toast.LENGTH_SHORT).show();
                 } else {
-                    FlashCardSet set = realm.where(FlashCardSet.class).equalTo("title", title).findFirst();
+                    FlashCardSet set = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
                     if (set == null) {
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
@@ -180,13 +177,13 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     private void resetList() {
-        flashCardSets = realm.where(FlashCardSet.class).findAllSorted("title", Sort.ASCENDING);
+        flashCardSets = realm.where(FlashCardSet.class).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
         notifyDataSetChanged();
     }
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            flashCardSets = flashCardSets.where().contains("title", query.toLowerCase(), Case.INSENSITIVE).findAllSorted("title", Sort.ASCENDING);
+            flashCardSets = flashCardSets.where().contains(FlashCardSet.FlashCardSet_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
             notifyDataSetChanged();
         } else {
             resetList();

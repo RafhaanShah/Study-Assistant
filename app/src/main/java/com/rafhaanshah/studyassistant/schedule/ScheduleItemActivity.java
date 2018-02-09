@@ -3,7 +3,9 @@ package com.rafhaanshah.studyassistant.schedule;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +41,12 @@ import io.realm.RealmQuery;
 
 public class ScheduleItemActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    public static final String BUNDLE_TIME = "BUNDLE_TIME";
+    public static final String BUNDLE_DATE = "BUNDLE_DATE";
+    public static final String BUNDLE_DUE_TIME = "BUNDLE_DUE_TIME";
+    public static final String BUNDLE_DUE_DATE = "BUNDLE_DUE_DATE";
+    private static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
+
     private String title, type, dueDate, dueTime, notes;
     private long epochTime;
     private int day, month, year, hour, minute;
@@ -47,6 +55,12 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     private ScheduleItem oldItem;
     private SimpleDateFormat timeFormat, dateFormat, dateTimeFormat;
     private TextView timeText, dateText;
+
+    public static Intent getStartIntent(Context context, int ID) {
+        Intent intent = new Intent(context, ScheduleItemActivity.class);
+        intent.putExtra(EXTRA_ITEM_ID, ID);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +82,8 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         timeText = findViewById(R.id.tv_time);
         dateText = findViewById(R.id.tv_date);
 
-        String item = getIntent().getStringExtra("item");
-        if (item == null) {
+        int itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
+        if (itemID == 0) {
             newItem = true;
             findViewById(R.id.btn_finish).setVisibility(View.GONE);
             Button saveButton = findViewById(R.id.btn_save);
@@ -79,7 +93,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             findViewById(R.id.et_title).requestFocus();
         } else {
             newItem = false;
-            setFields(Integer.valueOf(item));
+            setFields(itemID);
         }
     }
 
@@ -132,19 +146,19 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     @Override
     protected void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
-        out.putString("time", timeText.getText().toString());
-        out.putString("date", dateText.getText().toString());
-        out.putString("dueTime", dueTime);
-        out.putString("dueDate", dueDate);
+        out.putString(BUNDLE_TIME, timeText.getText().toString());
+        out.putString(BUNDLE_DATE, dateText.getText().toString());
+        out.putString(BUNDLE_DUE_TIME, dueTime);
+        out.putString(BUNDLE_DUE_DATE, dueDate);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle in) {
         super.onRestoreInstanceState(in);
-        timeText.setText(in.getString("time"));
-        dateText.setText(in.getString("date"));
-        dueTime = in.getString("dueTime");
-        dueDate = in.getString("dueDate");
+        timeText.setText(in.getString(BUNDLE_TIME));
+        dateText.setText(in.getString(BUNDLE_DATE));
+        dueTime = in.getString(BUNDLE_DUE_TIME);
+        dueDate = in.getString(BUNDLE_DUE_DATE);
     }
 
     @Override
@@ -154,7 +168,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void setFields(int ID) {
-        RealmQuery query = realm.where(ScheduleItem.class).equalTo("ID", ID);
+        RealmQuery query = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, ID);
         oldItem = (ScheduleItem) query.findFirst();
 
         EditText editTitle = findViewById(R.id.et_title);
@@ -224,7 +238,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         }
         epochTime = parseDateTime(dueDate, dueTime);
 
-        Number num = realm.where(ScheduleItem.class).max("ID");
+        Number num = realm.where(ScheduleItem.class).max(ScheduleItem.ScheduleItem_ID);
         final int maxID;
         if (num != null) {
             maxID = num.intValue();

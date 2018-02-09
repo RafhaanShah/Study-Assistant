@@ -1,7 +1,9 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -22,11 +24,19 @@ import io.realm.Realm;
 
 public class FlashCardSetActivity extends AppCompatActivity {
 
-    FlashCardSet flashCardSet;
+    private static final String EXTRA_SET_TITLE = "EXTRA_SET_TITLE";
+
+    private FlashCardSet flashCardSet;
     private ViewPager viewPager;
     private FlashCardSetAdapter flashCardSetAdapter;
     private Realm realm;
     private int lastPage;
+
+    public static Intent getStartIntent(Context context, String title) {
+        Intent intent = new Intent(context, FlashCardSetActivity.class);
+        intent.putExtra(EXTRA_SET_TITLE, title);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +46,10 @@ public class FlashCardSetActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        String title = getIntent().getStringExtra("flashCardSet");
+        String title = getIntent().getStringExtra(EXTRA_SET_TITLE);
 
         realm = Realm.getDefaultInstance();
-        flashCardSet = realm.where(FlashCardSet.class).equalTo("title", title).findFirst();
+        flashCardSet = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
 
         viewPager = findViewById(R.id.view_pager);
         flashCardSetAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), flashCardSet);
@@ -106,7 +116,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     private void updateTitle() {
-        setTitle(getString(R.string.card) + " " + String.valueOf(viewPager.getCurrentItem() + 1) + "/" + String.valueOf(flashCardSet.getCards().size()));
+        setTitle(getString(R.string.card, viewPager.getCurrentItem() + 1, flashCardSet.getCards().size()));
     }
 
     private void jumpToFlashCard() {

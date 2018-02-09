@@ -1,7 +1,6 @@
 package com.rafhaanshah.studyassistant.schedule;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -18,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Case;
@@ -27,7 +25,11 @@ import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+
 public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecyclerAdapter.ViewHolder> {
+
+    private static final int ONE_DAY_MS = 86400000;
+
     private RealmResults<ScheduleItem> scheduleItems;
     private RealmResults<ScheduleItem> currentItems;
     private boolean history;
@@ -37,7 +39,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     ScheduleRecyclerAdapter(Realm getRealm) {
         realm = getRealm;
         scheduleItems = realm.where(ScheduleItem.class).findAll();
-        currentItems = scheduleItems.where().equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
+        currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
         scheduleItems.addChangeListener(new RealmChangeListener<RealmResults<ScheduleItem>>() {
             @Override
             public void onChange(@NonNull RealmResults<ScheduleItem> scheduleItems) {
@@ -66,24 +68,22 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             colour = ContextCompat.getColor(context, R.color.materialBlue);
         } else if (eventTime < currentTime) {
             colour = ContextCompat.getColor(context, R.color.materialRed);
-        } else if (eventTime < (currentTime + (HelperUtils.ONE_DAY_MS * 3))) {
+        } else if (eventTime < (currentTime + (ONE_DAY_MS * 3))) {
             colour = ContextCompat.getColor(context, R.color.materialOrange);
         }
 
         GradientDrawable shape = new GradientDrawable();
         shape.setColor(colour);
         shape.setShape(GradientDrawable.RECTANGLE);
-        holder.rectangle.setBackground(shape);
 
+        holder.rectangle.setBackground(shape);
         holder.titleText.setText(item.getTitle());
         holder.timeText.setText(showTime);
         holder.typeText.setText(item.getType());
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent nextScreen = new Intent(view.getContext(), ScheduleItemActivity.class);
-                nextScreen.putExtra("item", String.valueOf(item.getID()));
-                view.getContext().startActivity(nextScreen);
+                context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -121,9 +121,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     void updateData(boolean hist) {
         history = hist;
         if (history) {
-            currentItems = scheduleItems.where().equalTo("completed", true).findAllSorted("time", Sort.DESCENDING);
+            currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, true).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.DESCENDING);
         } else {
-            currentItems = scheduleItems.where().equalTo("completed", false).findAllSorted("time", Sort.ASCENDING);
+            currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
         }
         notifyDataSetChanged();
     }
@@ -131,9 +131,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
             if (history) {
-                currentItems = scheduleItems.where().equalTo("completed", true).contains("title", query.toLowerCase(), Case.INSENSITIVE).findAllSorted("time", Sort.DESCENDING);
+                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, true).contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.DESCENDING);
             } else {
-                currentItems = scheduleItems.where().equalTo("completed", false).contains("title", query.toLowerCase(), Case.INSENSITIVE).findAllSorted("time", Sort.ASCENDING);
+                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
             }
             notifyDataSetChanged();
         } else {

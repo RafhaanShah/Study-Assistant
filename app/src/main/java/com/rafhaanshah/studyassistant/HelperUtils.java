@@ -13,8 +13,6 @@ import java.util.Arrays;
 
 public class HelperUtils {
 
-    public static int ONE_DAY_MS = 86400000;
-
     private HelperUtils() {
     }
 
@@ -38,8 +36,8 @@ public class HelperUtils {
         try {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        } catch (Exception E) {
-
+        } catch (NullPointerException E) {
+            // Not a huge problem if keyboard is not hidden
         }
     }
 
@@ -47,8 +45,8 @@ public class HelperUtils {
         try {
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        } catch (Exception E) {
-
+        } catch (NullPointerException E) {
+            // Not a huge problem if keyboard is not automatically shown
         }
     }
 

@@ -34,14 +34,12 @@ import java.io.OutputStream;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TYPE_APPLICATION_PDF = "application/pdf";
+    public static final String PDF = ".pdf";
     public static final int SORT_TITLE = 0;
     public static final int SORT_DATE = 1;
     public static final int SORT_SIZE = 2;
     private static final int REQUEST_LECTURE = 100;
     private static final String PREF_SORTING = "PREF_SORTING";
-    private static final String PDF = ".pdf";
-    private static final String NEW_FILE = "newfile";
-
 
     private Menu menu;
     private Fragment selectedFragment;
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
-            String fileName = NEW_FILE + PDF;
+            String fileName = "temporary new file name" + PDF;
 
             try (Cursor cursor = getContentResolver().query(selectedFile, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -270,8 +268,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newScheduleItem(View view) {
-        Intent nextScreen = new Intent(getApplicationContext(), ScheduleItemActivity.class);
-        startActivity(nextScreen);
+        startActivity(ScheduleItemActivity.getStartIntent(MainActivity.this, 0));
     }
 
     public void newFlashCardItem(View view) {

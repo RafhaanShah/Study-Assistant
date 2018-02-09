@@ -50,7 +50,7 @@
     <string name="mb">%1$s MB</string>
     <string name="go_to_card">Go To Card Number:</string>
     <string name="max_cards">Maximum number of cards for this set reached</string>
-    <string name="card">Card</string>
+    <string name="card">Card %1$d/%2$d</string>
     <string name="event">Event</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>

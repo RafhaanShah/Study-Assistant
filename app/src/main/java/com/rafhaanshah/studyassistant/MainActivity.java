@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
 
         if (savedInstanceState == null) {
-            selectedFragment = ScheduleListFragment.newInstance();
+            selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.content, selectedFragment);
             transaction.commit();
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.navigation_schedule:
-                        selectedFragment = ScheduleListFragment.newInstance();
+                        selectedFragment = ScheduleListFragment.newInstance(false);
                         scheduleSelected();
                         break;
                     case R.id.navigation_flash_cards:
@@ -241,8 +241,10 @@ public class MainActivity extends AppCompatActivity {
             scheduleHistory = true;
             actionBar.setTitle(getString(R.string.menu_history));
         }
-        ScheduleListFragment scheduleListFragment = (ScheduleListFragment) selectedFragment;
-        scheduleListFragment.updateData(scheduleHistory);
+        selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content, selectedFragment);
+        transaction.commit();
     }
 
     private void lectureSortButtonPressed() {

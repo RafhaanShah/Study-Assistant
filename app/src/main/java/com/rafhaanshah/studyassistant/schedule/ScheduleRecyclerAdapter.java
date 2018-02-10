@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
@@ -33,34 +35,35 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     private static final int ONE_DAY_MS = 86400000;
 
     private RealmResults<ScheduleItem> scheduleItems;
-    private RealmResults<ScheduleItem> currentItems;
-    private boolean history;
+    private RealmResults<ScheduleItem> filteredItems;
+    private RecyclerView recyclerView;
     private Context context;
     private Realm realm;
+    private Sort sort;
 
-    ScheduleRecyclerAdapter(Realm getRealm) {
+    ScheduleRecyclerAdapter(Realm getRealm, Context getContext, RecyclerView getRecyclerView, boolean history) {
         realm = getRealm;
-        scheduleItems = realm.where(ScheduleItem.class).findAll();
-        currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
-        scheduleItems.addChangeListener(new RealmChangeListener<RealmResults<ScheduleItem>>() {
-            @Override
-            public void onChange(@NonNull RealmResults<ScheduleItem> scheduleItems) {
-                notifyDataSetChanged();
-            }
-        });
+        context = getContext;
+        if (history) {
+            sort = Sort.DESCENDING;
+        } else {
+            sort = Sort.ASCENDING;
+        }
+        recyclerView = getRecyclerView;
+        scheduleItems = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_COMPLETED, history).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
+        filteredItems = scheduleItems;
     }
 
     @Override
     public ScheduleRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_schedule, parent, false);
-        context = view.getContext();
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final ScheduleItem item = currentItems.get(position);
+        final ScheduleItem item = filteredItems.get(position);
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
         String showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS);
@@ -108,13 +111,13 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View view) {
-                showPopupMenu(holder, item);
+                showPopupMenu(holder, item, holder.getAdapterPosition());
                 return true;
             }
         });
     }
 
-    private void showPopupMenu(ViewHolder holder, final ScheduleItem item) {
+    private void showPopupMenu(ViewHolder holder, final ScheduleItem item, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.END);
         popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -125,7 +128,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                         editEvent(item);
                         return true;
                     case R.id.popup_delete:
-                        deleteFlashCardSet(item);
+                        deleteEvent(item, position);
                         return true;
                 }
                 return false;
@@ -138,7 +141,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
     }
 
-    private void deleteFlashCardSet(final ScheduleItem item) {
+    private void deleteEvent(final ScheduleItem item, final int position) {
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_event))
@@ -150,6 +153,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                                 item.deleteFromRealm();
                             }
                         });
+                        notifyItemRemoved(position);
                     }
                 })
                 .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -167,52 +171,42 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     @Override
     public int getItemCount() {
-        return currentItems.size();
+        return filteredItems.size();
     }
 
-    void updateData(boolean hist) {
-        history = hist;
-        if (history) {
-            currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, true).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.DESCENDING);
-        } else {
-            currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
-        }
+    private void resetList() {
+        filteredItems = scheduleItems;
+        animateList();
+    }
+
+    void animateList() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+        recyclerView.setLayoutAnimation(controller);
         notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+        recyclerView.animate();
     }
 
     void filterType(ScheduleItem.ScheduleItemType type) {
         if (type != null) {
-            currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_TYPE, type.name()).findAll();
-            if (history) {
-                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, true).equalTo(ScheduleItem.ScheduleItem_TYPE, type.name(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.DESCENDING);
-            } else {
-                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).equalTo(ScheduleItem.ScheduleItem_TYPE, type.name(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
-            }
-            notifyDataSetChanged();
+            filteredItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_TYPE, type.name()).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
+            animateList();
         } else {
-            updateData(history);
+            resetList();
         }
     }
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            if (history) {
-                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, true).contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.DESCENDING);
-            } else {
-                currentItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_COMPLETED, false).contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, Sort.ASCENDING);
-            }
-            notifyDataSetChanged();
+            filteredItems = scheduleItems.where().contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
+            animateList();
         } else {
-            updateData(history);
+            resetList();
         }
     }
 
-    ScheduleItem getItem(int position) {
-        return currentItems.get(position);
-    }
-
     void completeItem(int position) {
-        final ScheduleItem item = currentItems.get(position);
+        final ScheduleItem item = filteredItems.get(position);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
@@ -223,7 +217,16 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 }
             }
         });
-        updateData(history);
+        notifyItemRemoved(position);
+    }
+
+    void addListener() {
+        scheduleItems.addChangeListener(new RealmChangeListener<RealmResults<ScheduleItem>>() {
+            @Override
+            public void onChange(@NonNull RealmResults<ScheduleItem> items) {
+                notifyItemRangeChanged(0, items.size());
+            }
+        });
     }
 
     void removeListener() {

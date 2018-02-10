@@ -25,12 +25,14 @@ import io.realm.Realm;
 
 public class ScheduleListFragment extends Fragment {
 
+    private static boolean history;
     private Realm realm;
     private ScheduleRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private TextView emptyText;
 
-    public static ScheduleListFragment newInstance() {
+    public static ScheduleListFragment newInstance(boolean getHistory) {
+        history = getHistory;
         return new ScheduleListFragment();
     }
 
@@ -55,7 +57,7 @@ public class ScheduleListFragment extends Fragment {
         emptyText = view.findViewById(R.id.tv_empty);
 
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
-        recyclerAdapter = new ScheduleRecyclerAdapter(realm);
+        recyclerAdapter = new ScheduleRecyclerAdapter(realm, getContext(), recyclerView, history);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -76,14 +78,21 @@ public class ScheduleListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        recyclerAdapter.animateList();
+        recyclerAdapter.addListener();
         updateView();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        recyclerAdapter.removeListener();
         realm.close();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        recyclerAdapter.removeListener();
     }
 
     private void setItemTouchHelper() {
@@ -103,12 +112,10 @@ public class ScheduleListFragment extends Fragment {
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     View itemView = viewHolder.itemView;
-                    final int position = viewHolder.getAdapterPosition();
-                    final boolean completed = recyclerAdapter.getItem(position).isCompleted();
                     int col;
                     Bitmap icon;
 
-                    if (completed) {
+                    if (history) {
                         col = (ContextCompat.getColor(getContext(), R.color.materialRed));
                         icon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_undo_white_24dp);
                     } else {
@@ -139,11 +146,6 @@ public class ScheduleListFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-    }
-
-    public void updateData(boolean showHistory) {
-        recyclerAdapter.updateData(showHistory);
-        updateView();
     }
 
     private void updateView() {

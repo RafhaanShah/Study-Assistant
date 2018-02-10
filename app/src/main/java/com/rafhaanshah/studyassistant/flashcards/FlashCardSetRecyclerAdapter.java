@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,31 +33,29 @@ import io.realm.Sort;
 
 public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardSetRecyclerAdapter.ViewHolder> {
     private RealmResults<FlashCardSet> flashCardSets;
+    private RealmResults<FlashCardSet> filteredSets;
     private Context context;
     private Realm realm;
+    private RecyclerView recyclerView;
 
-    FlashCardSetRecyclerAdapter(Realm getRealm) {
+    FlashCardSetRecyclerAdapter(Context getContext, Realm getRealm, RecyclerView getRecyclerView) {
+        context = getContext;
         realm = getRealm;
+        recyclerView = getRecyclerView;
         flashCardSets = realm.where(FlashCardSet.class).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
-        flashCardSets.addChangeListener(new RealmChangeListener<RealmResults<FlashCardSet>>() {
-            @Override
-            public void onChange(@NonNull RealmResults<FlashCardSet> flashCardSets) {
-                notifyDataSetChanged();
-            }
-        });
+        filteredSets = flashCardSets;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_flash_card_set, parent, false);
-        context = view.getContext();
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final FlashCardSet item = flashCardSets.get(position);
+        final FlashCardSet item = filteredSets.get(position);
 
         holder.flashCardSetTitle.setText(item.getTitle());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +74,11 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         });
     }
 
+    @Override
+    public int getItemCount() {
+        return filteredSets.size();
+    }
+
     private void showPopupMenu(ViewHolder holder, final FlashCardSet item, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
         popup.inflate(R.menu.activity_main_popup);
@@ -85,7 +90,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                         renameFlashCardSet(item);
                         return true;
                     case R.id.popup_delete:
-                        deleteFlashCardSet(item, position);
+                        deleteFlashCardSet(position);
                         return true;
                 }
                 return false;
@@ -94,7 +99,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         popup.show();
     }
 
-    void deleteFlashCardSet(final FlashCardSet item, final int position) {
+    void deleteFlashCardSet(final int position) {
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_set))
@@ -103,9 +108,10 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(@NonNull Realm realm) {
-                                item.deleteFromRealm();
+                                filteredSets.get(position).deleteFromRealm();
                             }
                         });
+                        notifyItemRemoved(position);
                     }
                 })
                 .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -171,31 +177,37 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return flashCardSets.size();
-    }
-
     private void resetList() {
-        flashCardSets = realm.where(FlashCardSet.class).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
-        notifyDataSetChanged();
+        filteredSets = flashCardSets;
     }
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            flashCardSets = flashCardSets.where().contains(FlashCardSet.FlashCardSet_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
-            notifyDataSetChanged();
+            filteredSets = flashCardSets.where().contains(FlashCardSet.FlashCardSet_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(FlashCardSet.FlashCardSet_TITLE, Sort.ASCENDING);
         } else {
             resetList();
         }
+        animateList();
+    }
+
+    void animateList() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+        recyclerView.setLayoutAnimation(controller);
+        notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
+    void addListener() {
+        flashCardSets.addChangeListener(new RealmChangeListener<RealmResults<FlashCardSet>>() {
+            @Override
+            public void onChange(@NonNull RealmResults<FlashCardSet> items) {
+                notifyItemRangeChanged(0, items.size());
+            }
+        });
     }
 
     void removeListener() {
         flashCardSets.removeAllChangeListeners();
-    }
-
-    FlashCardSet getItem(int position) {
-        return flashCardSets.get(position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

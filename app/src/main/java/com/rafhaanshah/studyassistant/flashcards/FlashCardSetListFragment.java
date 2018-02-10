@@ -65,7 +65,7 @@ public class FlashCardSetListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
         emptyText = view.findViewById(R.id.tv_empty);
 
-        recyclerAdapter = new FlashCardSetRecyclerAdapter(realm);
+        recyclerAdapter = new FlashCardSetRecyclerAdapter(getContext(), realm, recyclerView);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -91,13 +91,20 @@ public class FlashCardSetListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        recyclerAdapter.animateList();
+        recyclerAdapter.addListener();
         updateView();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        recyclerAdapter.removeListener();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        recyclerAdapter.removeListener();
         realm.close();
     }
 
@@ -111,8 +118,7 @@ public class FlashCardSetListFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                final int pos = viewHolder.getAdapterPosition();
-                recyclerAdapter.deleteFlashCardSet(recyclerAdapter.getItem(pos), pos);
+                recyclerAdapter.deleteFlashCardSet(viewHolder.getAdapterPosition());
             }
 
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {

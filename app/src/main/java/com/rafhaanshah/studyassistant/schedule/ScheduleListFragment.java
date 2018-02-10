@@ -57,7 +57,7 @@ public class ScheduleListFragment extends Fragment {
         emptyText = view.findViewById(R.id.tv_empty);
 
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
-        recyclerAdapter = new ScheduleRecyclerAdapter(realm, getContext(), recyclerView, history);
+        recyclerAdapter = new ScheduleRecyclerAdapter(getContext(), realm, recyclerView, history);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -84,15 +84,15 @@ public class ScheduleListFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.close();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         recyclerAdapter.removeListener();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     private void setItemTouchHelper() {

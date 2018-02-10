@@ -3,12 +3,12 @@
     android:id="@+id/listview_background_shape">
     <stroke
         android:width="2dp"
-        android:color="#00ffffff" />
+        android:color="@android:color/transparent" />
     <padding
         android:bottom="2dp"
         android:left="2dp"
         android:right="2dp"
         android:top="2dp" />
     <corners android:radius="0dp" />
-    <solid android:color="#00ffffff" />
+    <solid android:color="@android:color/transparent" />
 </shape>

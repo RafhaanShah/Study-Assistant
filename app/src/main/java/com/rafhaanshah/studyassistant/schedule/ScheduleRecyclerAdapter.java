@@ -41,7 +41,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     private Realm realm;
     private Sort sort;
 
-    ScheduleRecyclerAdapter(Realm getRealm, Context getContext, RecyclerView getRecyclerView, boolean history) {
+    ScheduleRecyclerAdapter(Context getContext, Realm getRealm, RecyclerView getRecyclerView, boolean history) {
         realm = getRealm;
         context = getContext;
         if (history) {
@@ -176,7 +176,6 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private void resetList() {
         filteredItems = scheduleItems;
-        animateList();
     }
 
     void animateList() {
@@ -184,25 +183,24 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         recyclerView.setLayoutAnimation(controller);
         notifyDataSetChanged();
         recyclerView.scheduleLayoutAnimation();
-        recyclerView.animate();
     }
 
     void filterType(ScheduleItem.ScheduleItemType type) {
         if (type != null) {
             filteredItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_TYPE, type.name()).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
-            animateList();
         } else {
             resetList();
         }
+        animateList();
     }
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
             filteredItems = scheduleItems.where().contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
-            animateList();
         } else {
             resetList();
         }
+        animateList();
     }
 
     void completeItem(int position) {

@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,29 +37,31 @@ import java.util.Comparator;
 
 public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecyclerAdapter.ViewHolder> {
 
+    private ArrayList<File> filteredFiles;
     private ArrayList<File> files;
-    private ArrayList<File> unFilteredFiles;
+    private RecyclerView recyclerView;
     private Context context;
     private int sorting;
 
-    LectureRecyclerAdapter(int sort, ArrayList<File> newFiles) {
+    LectureRecyclerAdapter(Context getContext, RecyclerView getRecyclerView, int sort, ArrayList<File> newFiles) {
         files = newFiles;
+        recyclerView = getRecyclerView;
         sortData(sort, files);
-        unFilteredFiles = files;
+        filteredFiles = files;
         sorting = sort;
+        context = getContext;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_lecture, parent, false);
-        context = view.getContext();
         return new LectureRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
-        final File lec = files.get(position);
+        final File lec = filteredFiles.get(position);
         String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
@@ -86,6 +90,11 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 return true;
             }
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return filteredFiles.size();
     }
 
     private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec, final int position) {
@@ -153,13 +162,13 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     void deleteLecture(final int position) {
-        final File lec = files.get(position);
+        final File lec = filteredFiles.get(position);
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_lecture))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        files.remove(position);
+                        filteredFiles.remove(position);
                         notifyItemRemoved(position);
                         lec.delete();
                     }
@@ -179,26 +188,28 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 .show();
     }
 
-    @Override
-    public int getItemCount() {
-        return files.size();
-    }
-
-    void updateData(int sort, ArrayList<File> newFiles) {
-        if (newFiles != null) {
-            files = newFiles;
-            unFilteredFiles = files;
+    void updateData(int sort, ArrayList<File> newfilteredFiles) {
+        if (newfilteredFiles != null) {
+            filteredFiles = newfilteredFiles;
+            files = filteredFiles;
         }
         sorting = sort;
+        sortData(sort, filteredFiles);
         sortData(sort, files);
-        sortData(sort, unFilteredFiles);
-        notifyDataSetChanged();
+        animateList();
     }
 
-    private void sortData(int sort, ArrayList<File> unsortedFiles) {
+    void animateList() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+        recyclerView.setLayoutAnimation(controller);
+        notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
+    private void sortData(int sort, ArrayList<File> unsortedfilteredFiles) {
         switch (sort) {
             case MainActivity.SORT_TITLE:
-                Collections.sort(unsortedFiles, new Comparator<File>() {
+                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
@@ -206,7 +217,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 });
                 break;
             case MainActivity.SORT_DATE:
-                Collections.sort(unsortedFiles, new Comparator<File>() {
+                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         Long lng = (b.lastModified() - a.lastModified());
@@ -215,7 +226,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 });
                 break;
             case MainActivity.SORT_SIZE:
-                Collections.sort(unsortedFiles, new Comparator<File>() {
+                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         Long lng = (b.length() - a.length());
@@ -224,7 +235,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 });
                 break;
             default:
-                Collections.sort(unsortedFiles, new Comparator<File>() {
+                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
@@ -235,18 +246,16 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            ArrayList<File> filteredFiles = new ArrayList<>();
-            for (File f : unFilteredFiles) {
+            filteredFiles.clear();
+            for (File f : files) {
                 if (f.getName().toLowerCase().contains(query.toLowerCase())) {
                     filteredFiles.add(f);
                 }
             }
-            files = filteredFiles;
-            notifyDataSetChanged();
         } else {
-            files = unFilteredFiles;
-            notifyDataSetChanged();
+            filteredFiles = files;
         }
+        animateList();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

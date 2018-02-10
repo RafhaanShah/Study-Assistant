@@ -61,8 +61,8 @@ public class LectureListFragment extends Fragment {
 
         emptyText = view.findViewById(R.id.tv_empty);
 
-        recyclerAdapter = new LectureRecyclerAdapter(sorting, HelperUtils.getLectureFiles(getContext()));
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
+        recyclerAdapter = new LectureRecyclerAdapter(getContext(), recyclerView, sorting, HelperUtils.getLectureFiles(getContext()));
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -87,6 +87,7 @@ public class LectureListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        recyclerAdapter.animateList();
         updateView();
     }
 

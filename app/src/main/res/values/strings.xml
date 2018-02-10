@@ -52,7 +52,7 @@
     <string name="go_to_card">Go To Card Number:</string>
     <string name="max_cards">Maximum number of cards for this set reached</string>
     <string name="card">Card %1$d/%2$d</string>
-    <string name="event">Event</string>
+    <string name="edit_event">Edit Event</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>
     <string name="empty_schedule">You have no events! Press the button on the bottom right to add a new one.</string>

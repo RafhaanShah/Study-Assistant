@@ -37,8 +37,8 @@ import java.util.Comparator;
 
 public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecyclerAdapter.ViewHolder> {
 
-    private ArrayList<File> filteredFiles;
     private ArrayList<File> files;
+    private ArrayList<File> filteredFiles;
     private RecyclerView recyclerView;
     private Context context;
     private int sorting;
@@ -188,14 +188,14 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 .show();
     }
 
-    void updateData(int sort, ArrayList<File> newfilteredFiles) {
-        if (newfilteredFiles != null) {
-            filteredFiles = newfilteredFiles;
+    void updateData(int sort, ArrayList<File> newFilteredFiles) {
+        if (newFilteredFiles != null) {
+            filteredFiles = newFilteredFiles;
             files = filteredFiles;
         }
         sorting = sort;
-        sortData(sort, filteredFiles);
         sortData(sort, files);
+        filteredFiles = files;
         animateList();
     }
 
@@ -206,10 +206,10 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         recyclerView.scheduleLayoutAnimation();
     }
 
-    private void sortData(int sort, ArrayList<File> unsortedfilteredFiles) {
+    private void sortData(int sort, ArrayList<File> unsortedFiles) {
         switch (sort) {
             case MainActivity.SORT_TITLE:
-                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
+                Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
@@ -217,7 +217,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 });
                 break;
             case MainActivity.SORT_DATE:
-                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
+                Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         Long lng = (b.lastModified() - a.lastModified());
@@ -226,7 +226,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 });
                 break;
             case MainActivity.SORT_SIZE:
-                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
+                Collections.sort(unsortedFiles, new Comparator<File>() {
                     @Override
                     public int compare(File a, File b) {
                         Long lng = (b.length() - a.length());
@@ -234,19 +234,12 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                     }
                 });
                 break;
-            default:
-                Collections.sort(unsortedfilteredFiles, new Comparator<File>() {
-                    @Override
-                    public int compare(File a, File b) {
-                        return a.getName().toLowerCase().compareTo(b.getName().toLowerCase());
-                    }
-                });
         }
     }
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            filteredFiles.clear();
+            filteredFiles = new ArrayList<>(files.size());
             for (File f : files) {
                 if (f.getName().toLowerCase().contains(query.toLowerCase())) {
                     filteredFiles.add(f);

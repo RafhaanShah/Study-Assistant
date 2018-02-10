@@ -12,10 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
     private Fragment selectedFragment;
     private boolean scheduleHistory;
-    private ActionBar actionBar;
+    private Toolbar toolbar;
     private File directory;
     private int lectureSorting;
     private SharedPreferences preferences;
@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navigation = findViewById(R.id.navigation);
         setNavigationListener(navigation);
 
-        actionBar = getSupportActionBar();
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
             selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
@@ -179,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectedFragment = null;
                 switch (item.getItemId()) {
                     case R.id.navigation_schedule:
                         selectedFragment = ScheduleListFragment.newInstance(false);
@@ -194,12 +194,17 @@ public class MainActivity extends AppCompatActivity {
                         lectureSelected();
                         break;
                 }
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.content, selectedFragment);
-                transaction.commit();
+                replaceFragment();
                 return true;
             }
         });
+    }
+
+    private void replaceFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                .replace(R.id.content, selectedFragment)
+                .commit();
     }
 
     private void setMenu() {
@@ -236,15 +241,13 @@ public class MainActivity extends AppCompatActivity {
     private void historyButtonPressed() {
         if (scheduleHistory) {
             scheduleHistory = false;
-            actionBar.setTitle(getString(R.string.menu_schedule));
+            toolbar.setTitle(getString(R.string.menu_schedule));
         } else {
             scheduleHistory = true;
-            actionBar.setTitle(getString(R.string.menu_history));
+            toolbar.setTitle(getString(R.string.menu_history));
         }
         selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content, selectedFragment);
-        transaction.commit();
+        replaceFragment();
     }
 
     private void lectureSortButtonPressed() {
@@ -323,21 +326,21 @@ public class MainActivity extends AppCompatActivity {
     private void scheduleSelected() {
         menu.clear();
         scheduleHistory = false;
-        actionBar.setTitle(getString(R.string.menu_schedule));
+        toolbar.setTitle(getString(R.string.menu_schedule));
         getMenuInflater().inflate(R.menu.fragment_schedule_list, menu);
         setMenu();
     }
 
     private void flashCardSelected() {
         menu.clear();
-        actionBar.setTitle(getString(R.string.menu_flash_cards));
+        toolbar.setTitle(getString(R.string.menu_flash_cards));
         getMenuInflater().inflate(R.menu.fragment_flash_card_list, menu);
         setMenu();
     }
 
     private void lectureSelected() {
         menu.clear();
-        actionBar.setTitle(getString(R.string.menu_lectures));
+        toolbar.setTitle(getString(R.string.menu_lectures));
         getMenuInflater().inflate(R.menu.fragment_lecture_list, menu);
         setMenu();
     }

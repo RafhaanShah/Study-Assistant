@@ -8,6 +8,14 @@
     android:orientation="vertical"
     tools:context="com.rafhaanshah.studyassistant.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppTheme.Toolbar" />
+
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
@@ -20,6 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
         app:menu="@menu/activity_main_navigation" />
 
 </LinearLayout>

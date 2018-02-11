@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
@@ -43,12 +44,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_LECTURE = 100;
     private static final String PREF_SORTING = "PREF_SORTING";
 
+    private boolean scheduleHistory;
+    private int lectureSorting;
     private Menu menu;
     private Fragment selectedFragment;
-    private boolean scheduleHistory;
     private Toolbar toolbar;
+    private BottomNavigationView navigation;
     private File directory;
-    private int lectureSorting;
     private SharedPreferences preferences;
     private SearchView searchView;
 
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         lectureSorting = preferences.getInt(PREF_SORTING, 0);
         directory = HelperUtils.getLectureDirectory(MainActivity.this);
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         setNavigationListener(navigation);
 
         toolbar = findViewById(R.id.toolbar);
@@ -100,11 +102,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         if (selectedFragment.getClass() == ScheduleListFragment.class) {
-            scheduleSelected();
+            swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
         } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
-            flashCardSelected();
+            swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list);
         } else if (selectedFragment.getClass() == LectureListFragment.class) {
-            lectureSelected();
+            swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list);
         }
         return true;
     }
@@ -183,15 +185,16 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_schedule:
                         selectedFragment = ScheduleListFragment.newInstance(false);
-                        scheduleSelected();
+                        scheduleHistory = false;
+                        swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
                         break;
                     case R.id.navigation_flash_cards:
                         selectedFragment = FlashCardSetListFragment.newInstance();
-                        flashCardSelected();
+                        swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list);
                         break;
                     case R.id.navigation_lectures:
                         selectedFragment = LectureListFragment.newInstance(lectureSorting);
-                        lectureSelected();
+                        swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list);
                         break;
                 }
                 replaceFragment();
@@ -207,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void setMenu() {
+    private void setSearchView() {
         final MenuItem searchItem = menu.findItem(R.id.menu_btn_search);
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -241,12 +244,11 @@ public class MainActivity extends AppCompatActivity {
     private void historyButtonPressed() {
         if (scheduleHistory) {
             scheduleHistory = false;
-            //toolbar.setTitle(getString(R.string.menu_schedule));
-            HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_schedule), toolbar);
+            HelperUtils.fadeTextChange(getString(R.string.menu_schedule), (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
         } else {
             scheduleHistory = true;
             //toolbar.setTitle(getString(R.string.menu_history));
-            HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_history), toolbar);
+            HelperUtils.fadeTextChange(getString(R.string.menu_history), (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
         }
         selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
         replaceFragment();
@@ -325,27 +327,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void scheduleSelected() {
-        scheduleHistory = false;
-
+    private void swapToolbarMenu(final String title, final int menuLayout) {
         menu.clear();
-        HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_schedule), toolbar);
-        getMenuInflater().inflate(R.menu.fragment_schedule_list, menu);
-        setMenu();
-    }
-
-    private void flashCardSelected() {
-        menu.clear();
-        HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_flash_cards), toolbar);
-        getMenuInflater().inflate(R.menu.fragment_flash_card_list, menu);
-        setMenu();
-    }
-
-    private void lectureSelected() {
-        menu.clear();
-        HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_lectures), toolbar);
-        getMenuInflater().inflate(R.menu.fragment_lecture_list, menu);
-        setMenu();
+        HelperUtils.fadeTextChange(title, (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
+        getMenuInflater().inflate(menuLayout, menu);
+        setSearchView();
     }
 
 }

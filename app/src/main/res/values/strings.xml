@@ -4,6 +4,9 @@
     <string name="menu_schedule">My Schedule</string>
     <string name="menu_flash_cards">My Flash Cards</string>
     <string name="menu_lectures">My Lectures</string>
+    <string name="navigation_schedule">Schedule</string>
+    <string name="navigation_cards">Flash Cards</string>
+    <string name="navigation_lectures">Lectures</string>
     <string name="menu_sort">Sort</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_history">My History</string>

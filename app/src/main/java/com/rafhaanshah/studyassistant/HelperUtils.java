@@ -1,10 +1,8 @@
 package com.rafhaanshah.studyassistant;
 
-
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -17,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class HelperUtils {
+
+    private final static String LECTURE_DIRECTORY = "lectures";
 
     private HelperUtils() {
     }
@@ -59,65 +59,54 @@ public class HelperUtils {
         return new ArrayList<>(Arrays.asList(getLectureDirectory(context).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(".pdf");
+                return name.toLowerCase().endsWith(MainActivity.PDF);
             }
         })));
     }
 
     public static File getLectureDirectory(Context context) {
-        return new File(context.getFilesDir().getAbsolutePath() + File.separator + "lectures");
+        return new File(context.getFilesDir().getAbsolutePath() + File.separator + LECTURE_DIRECTORY);
     }
 
-    public static void rotateView(View item) {
-        ObjectAnimator animator = ObjectAnimator
-                .ofFloat(item, "rotation", 360);
+    public static void rotateView(View view, int duration) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ROTATION, 360);
+        animator.setDuration(duration);
         animator.start();
     }
 
-    public static void fadeOutView(View view) {
-        AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);
-        fadeOut.setDuration(250);
-        view.startAnimation(fadeOut);
+    public static void fadeOutView(View view, int duration) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1);
+        animator.setDuration(duration);
+        animator.start();
     }
 
-    public static void fadeInView(View view) {
-        AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
-        fadeIn.setDuration(250);
-        view.startAnimation(fadeIn);
+    public static void fadeInView(View view, int duration) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1, 0);
+        animator.setDuration(duration);
+        animator.start();
     }
 
-    public static void animateTitleChange(final Context context, final String newTitle, final Toolbar toolbar) {
-        View v = null;
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View child = toolbar.getChildAt(i);
-            if (child instanceof TextView) {
-                v = child;
+    public static void fadeTextChange(final String text, final TextView textView, final int duration) {
+        final AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);
+        fadeOut.setDuration(duration);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
             }
-        }
-        final View view = v;
-        if (view != null) {
-            final AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);
-            fadeOut.setDuration(context.getResources().getInteger(R.integer.animation_fade_time));
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    toolbar.setTitle(newTitle);
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                textView.setText(text);
+                final AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+                fadeIn.setDuration(duration);
+                textView.startAnimation(fadeIn);
+            }
 
-                    AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
-                    fadeIn.setDuration(context.getResources().getInteger(R.integer.animation_fade_time));
-                    view.startAnimation(fadeIn);
-                }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-            });
-            view.startAnimation(fadeOut);
-        }
+        });
+        textView.startAnimation(fadeOut);
     }
 }

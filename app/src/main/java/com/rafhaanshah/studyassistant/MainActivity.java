@@ -241,10 +241,12 @@ public class MainActivity extends AppCompatActivity {
     private void historyButtonPressed() {
         if (scheduleHistory) {
             scheduleHistory = false;
-            toolbar.setTitle(getString(R.string.menu_schedule));
+            //toolbar.setTitle(getString(R.string.menu_schedule));
+            HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_schedule), toolbar);
         } else {
             scheduleHistory = true;
-            toolbar.setTitle(getString(R.string.menu_history));
+            //toolbar.setTitle(getString(R.string.menu_history));
+            HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_history), toolbar);
         }
         selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
         replaceFragment();
@@ -324,23 +326,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scheduleSelected() {
-        menu.clear();
         scheduleHistory = false;
-        toolbar.setTitle(getString(R.string.menu_schedule));
+
+        menu.clear();
+        HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_schedule), toolbar);
         getMenuInflater().inflate(R.menu.fragment_schedule_list, menu);
         setMenu();
     }
 
     private void flashCardSelected() {
         menu.clear();
-        toolbar.setTitle(getString(R.string.menu_flash_cards));
+        HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_flash_cards), toolbar);
         getMenuInflater().inflate(R.menu.fragment_flash_card_list, menu);
         setMenu();
     }
 
     private void lectureSelected() {
         menu.clear();
-        toolbar.setTitle(getString(R.string.menu_lectures));
+        HelperUtils.animateTitleChange(MainActivity.this, getString(R.string.menu_lectures), toolbar);
         getMenuInflater().inflate(R.menu.fragment_lecture_list, menu);
         setMenu();
     }

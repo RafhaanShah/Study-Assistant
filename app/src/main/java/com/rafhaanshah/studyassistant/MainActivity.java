@@ -307,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void newScheduleItem(View view) {
         startActivity(ScheduleItemActivity.getStartIntent(MainActivity.this, 0));
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
     }
 
     public void newFlashCardItem(View view) {

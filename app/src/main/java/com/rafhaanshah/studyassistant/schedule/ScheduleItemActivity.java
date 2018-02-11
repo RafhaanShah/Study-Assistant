@@ -124,6 +124,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                                     }
                                 });
                                 finish();
+                                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                             }
                         })
                         .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -141,6 +142,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     @Override
     public boolean onSupportNavigateUp() {
         finish();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
         return true;
     }
 
@@ -273,6 +275,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             }
         });
         finish();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
     public void finishItem(View view) {

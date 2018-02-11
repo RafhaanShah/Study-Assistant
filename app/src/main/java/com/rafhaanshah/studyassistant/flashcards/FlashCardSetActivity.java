@@ -69,6 +69,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 }
                 if (getFragment() != null && TextUtils.isEmpty(getFragment().getText()) && getFragment().isEditing()) {
                     HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
+                    getFragment().setFocus();
                 }
                 lastPage = position;
                 updateTitle();
@@ -105,6 +106,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         finish();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
         return true;
     }
 
@@ -199,6 +201,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         });
         if (viewPager.getAdapter() == null) {
             finish();
+            overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
         } else {
             flashCardSetAdapter.removeFragment(current);
             flashCardSetAdapter.notifyDataSetChanged();
@@ -252,6 +255,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         getFragment().flipCard();
         if (getFragment().isEditing()) {
             HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
+            getFragment().setFocus();
         }
     }
 

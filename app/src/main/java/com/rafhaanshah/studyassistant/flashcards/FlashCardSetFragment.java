@@ -28,7 +28,7 @@ public class FlashCardSetFragment extends Fragment {
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
-    public static FlashCardSetFragment newInstance(String card, String answer, int pos) {
+    static FlashCardSetFragment newInstance(String card, String answer, int pos) {
         FlashCardSetFragment flashCardSetFragment = new FlashCardSetFragment();
         Bundle bundle = new Bundle(2);
         bundle.putString(BUNDLE_CARD_TEXT, card);
@@ -84,23 +84,23 @@ public class FlashCardSetFragment extends Fragment {
         }
     }
 
-    public int getPosition() {
+    int getPosition() {
         return position;
     }
 
-    public boolean isCardFlipped() {
+    boolean isCardFlipped() {
         return cardFlipped;
     }
 
-    public boolean isEditing() {
+    boolean isEditing() {
         return currentFragment.isEditing();
     }
 
-    public String getText() {
+    String getText() {
         return currentFragment.getText();
     }
 
-    public void setText() {
+    void setText() {
         if (cardFlipped) {
             answerText = getText();
         } else {
@@ -108,11 +108,11 @@ public class FlashCardSetFragment extends Fragment {
         }
     }
 
-    public void editCard() {
+    void editCard() {
         currentFragment.editCard();
     }
 
-    public void flipCard() {
+    void flipCard() {
         setText();
         Fragment newFragment;
         if (cardFlipped) {
@@ -133,6 +133,10 @@ public class FlashCardSetFragment extends Fragment {
         currentFragment = (CardFragment) newFragment;
     }
 
+    void setFocus() {
+        currentFragment.setFocus();
+    }
+
     public static class CardFragment extends Fragment {
 
         private static final String BUNDLE_TEXT = "BUNDLE_TEXT";
@@ -144,7 +148,7 @@ public class FlashCardSetFragment extends Fragment {
         private int colour;
         private CardView card;
 
-        public static CardFragment newInstance(String str, int col) {
+        private static CardFragment newInstance(String str, int col) {
             CardFragment frag = new CardFragment();
             Bundle bundle = new Bundle(2);
             bundle.putString(BUNDLE_TEXT, str);
@@ -164,7 +168,6 @@ public class FlashCardSetFragment extends Fragment {
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View inflatedView = inflater.inflate(R.layout.fragment_flash_card, container, false);
             inflatedView.setCameraDistance(getResources().getDisplayMetrics().density * 10000);
-
             return inflatedView;
         }
 
@@ -196,7 +199,6 @@ public class FlashCardSetFragment extends Fragment {
                 public void afterTextChanged(Editable editable) {
                 }
             });
-
 
             editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -230,6 +232,10 @@ public class FlashCardSetFragment extends Fragment {
 
         private String getText() {
             return text;
+        }
+
+        private void setFocus() {
+            editText.requestFocus();
         }
     }
 }

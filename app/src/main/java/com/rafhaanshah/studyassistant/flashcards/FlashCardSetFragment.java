@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,9 +54,6 @@ public class FlashCardSetFragment extends Fragment {
         currentFragment = CardFragment.newInstance(cardText, colour);
         getChildFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(
-                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
                 .add(R.id.container, currentFragment)
                 .commit();
 
@@ -133,10 +129,6 @@ public class FlashCardSetFragment extends Fragment {
         currentFragment = (CardFragment) newFragment;
     }
 
-    void setFocus() {
-        currentFragment.setFocus();
-    }
-
     public static class CardFragment extends Fragment {
 
         private static final String BUNDLE_TEXT = "BUNDLE_TEXT";
@@ -205,13 +197,12 @@ public class FlashCardSetFragment extends Fragment {
                 public void onFocusChange(View view, boolean focused) {
                     if (!focused) {
                         HelperUtils.hideSoftKeyboard(getContext(), view);
+                    } else {
+                        HelperUtils.showSoftKeyboard(getContext());
                     }
                 }
             });
 
-            if (TextUtils.isEmpty(text)) {
-                editCard();
-            }
         }
 
         private void editCard() {
@@ -219,6 +210,7 @@ public class FlashCardSetFragment extends Fragment {
                 editing = true;
                 textView.setVisibility(View.INVISIBLE);
                 editText.setVisibility(View.VISIBLE);
+                editText.requestFocus();
             } else {
                 editing = false;
                 textView.setVisibility(View.VISIBLE);
@@ -234,8 +226,5 @@ public class FlashCardSetFragment extends Fragment {
             return text;
         }
 
-        private void setFocus() {
-            editText.requestFocus();
-        }
     }
 }

@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
     private void setSearchView() {
         final MenuItem searchItem = menu.findItem(R.id.menu_btn_search);
         searchView = (SearchView) searchItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
@@ -307,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void newScheduleItem(View view) {
         startActivity(ScheduleItemActivity.getStartIntent(MainActivity.this, 0));
-        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+        overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 
     public void newFlashCardItem(View view) {
@@ -334,5 +335,4 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(menuLayout, menu);
         setSearchView();
     }
-
 }

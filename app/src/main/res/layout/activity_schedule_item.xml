@@ -18,11 +18,16 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical">
 
             <EditText
@@ -45,11 +50,30 @@
                 android:layout_height="120dp"
                 android:paddingTop="20dp">
 
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center"
+                    android:hint="@string/date"
+                    android:onClick="deleteEvent" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="250dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:hint="@string/time" />
+
                 <Button
                     android:id="@+id/btn_date"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:onClick="pickDate"
                     android:text="@string/pick_date" />
@@ -59,29 +83,17 @@
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
                     android:onClick="pickTime"
                     android:text="@string/pick_time" />
 
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="250dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:gravity="center"
-                    android:hint="@string/date" />
-
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="250dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center"
-                    android:hint="@string/time" />
-
             </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event_complete" />
 
             <EditText
                 android:id="@+id/et_notes"
@@ -92,33 +104,13 @@
                 android:maxLength="250"
                 android:paddingTop="20dp" />
 
-            <LinearLayout
+            <Button
+                android:id="@+id/btn_delete_event"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingTop="20dp"
-                android:weightSum="2">
-
-                <Button
-                    android:id="@+id/btn_save"
-                    style="?android:buttonBarButtonStyle"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:onClick="saveItem"
-                    android:text="@string/save" />
-
-                <Button
-                    android:id="@+id/btn_finish"
-                    style="?android:buttonBarButtonStyle"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:onClick="finishItem"
-                    android:text="@string/mark_completed" />
-
-            </LinearLayout>
+                android:onClick="deleteEvent"
+                android:text="@string/delete" />
 
         </LinearLayout>
 

@@ -8,7 +8,7 @@
     <string name="navigation_cards">Flash Cards</string>
     <string name="navigation_lectures">Lectures</string>
     <string name="menu_sort">Sort</string>
-    <string name="menu_delete">Delete</string>
+    <string name="delete">Delete</string>
     <string name="menu_history">My History</string>
     <string name="title">Title</string>
     <string name="pick_date">Pick Date</string>
@@ -56,8 +56,10 @@
     <string name="max_cards">Maximum number of cards for this set reached</string>
     <string name="card">Card %1$d/%2$d</string>
     <string name="edit_event">Edit Event</string>
+    <string name="new_event">New Event</string>
     <string name="menu_edit">Edit</string>
     <string name="menu_add">Add</string>
+    <string name="event_complete">Event Is Completed</string>
     <string name="empty_schedule">You have no events! Press the button on the bottom right to add a new one.</string>
     <string name="empty_flash_cards">There are no flash card sets! Press the button on the bottom right to get started.</string>
     <string name="empty_lectures">No lecture files added! Press the button on the bottom right to retrieve one from your files.</string>

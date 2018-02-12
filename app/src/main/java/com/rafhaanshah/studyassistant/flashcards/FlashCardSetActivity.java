@@ -67,9 +67,8 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 if (flashCardSetAdapter.getFragment(lastPage) != null) {
                     saveFlashCard(flashCardSetAdapter.getFragment(lastPage), lastPage);
                 }
-                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText()) && getFragment().isEditing()) {
-                    HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
-                    getFragment().setFocus();
+                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+                    getFragment().editCard();
                 }
                 lastPage = position;
                 updateTitle();
@@ -108,6 +107,12 @@ public class FlashCardSetActivity extends AppCompatActivity {
         finish();
         overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
     @Override
@@ -182,7 +187,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
         flashCardSetAdapter.addFragment(viewPager.getCurrentItem() + 1);
         flashCardSetAdapter.notifyDataSetChanged();
         viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
-        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
     }
 
     private void deleteFlashCard() {
@@ -211,19 +215,18 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     private void editFlashCard() {
         getFragment().editCard();
-        if (getFragment().isEditing()) {
-            HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
-        }
     }
 
     private void saveFlashCard(FlashCardSetFragment frag, int pos) {
-        if (frag.isCardFlipped()) {
-            saveAnswerText(pos, frag.getText());
-        } else {
-            saveCardText(pos, frag.getText());
-        }
-        if (frag.isEditing()) {
-            frag.editCard();
+        if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+            if (frag.isCardFlipped()) {
+                saveAnswerText(pos, frag.getText());
+            } else {
+                saveCardText(pos, frag.getText());
+            }
+            if (frag.isEditing()) {
+                frag.editCard();
+            }
         }
     }
 
@@ -253,9 +256,8 @@ public class FlashCardSetActivity extends AppCompatActivity {
         saveFlashCard(getFragment(), viewPager.getCurrentItem());
         getFragment().setText();
         getFragment().flipCard();
-        if (getFragment().isEditing()) {
-            HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
-            getFragment().setFocus();
+        if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+            getFragment().editCard();
         }
     }
 
@@ -272,7 +274,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 page.setTranslationX(-page.getWidth() * position);
                 page.setTranslationY(30 * position);
             }
-
         }
     }*/
 }

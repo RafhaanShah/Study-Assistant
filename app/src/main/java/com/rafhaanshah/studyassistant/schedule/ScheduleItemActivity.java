@@ -16,10 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -38,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 
 public class ScheduleItemActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -54,9 +52,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     private int day, month, year, hour, minute;
     private boolean newItem;
     private Realm realm;
-    private ScheduleItem oldItem;
+    private ScheduleItem item;
     private SimpleDateFormat timeFormat, dateFormat, dateTimeFormat;
     private TextView timeText, dateText;
+    private CheckBox checkBox;
 
     public static Intent getStartIntent(Context context, int ID) {
         Intent intent = new Intent(context, ScheduleItemActivity.class);
@@ -71,6 +70,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         realm = Realm.getDefaultInstance();
@@ -82,15 +82,13 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         timeText = findViewById(R.id.tv_time);
         dateText = findViewById(R.id.tv_date);
+        checkBox = findViewById(R.id.checkBox);
 
         int itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
         if (itemID == 0) {
             newItem = true;
-            findViewById(R.id.btn_finish).setVisibility(View.GONE);
-            Button saveButton = findViewById(R.id.btn_save);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            params.weight = 2;
-            saveButton.setLayoutParams(params);
+            toolbar.setTitle(getString(R.string.new_event));
+            findViewById(R.id.btn_delete_event).setVisibility(View.GONE);
             findViewById(R.id.et_title).requestFocus();
         } else {
             newItem = false;
@@ -100,40 +98,15 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (newItem) {
-            return false;
-        } else {
-            getMenuInflater().inflate(R.menu.activity_schedule_item, menu);
-            return true;
-        }
+        getMenuInflater().inflate(R.menu.activity_schedule_item, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_btn_delete_event:
-                new AlertDialog.Builder(this)
-                        .setTitle(getString(R.string.confirm_delete))
-                        .setMessage(getString(R.string.delete_event))
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                realm.executeTransaction(new Realm.Transaction() {
-                                    @Override
-                                    public void execute(@NonNull Realm realm) {
-                                        oldItem.deleteFromRealm();
-                                    }
-                                });
-                                finish();
-                                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setIcon(R.drawable.ic_delete_black_24dp)
-                        .show();
+            case R.id.menu_btn_save_event:
+                saveItem();
                 return true;
         }
         return false;
@@ -142,8 +115,14 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     @Override
     public boolean onSupportNavigateUp() {
         finish();
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
 
     @Override
@@ -170,22 +149,38 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         realm.close();
     }
 
-    private void setFields(int ID) {
-        RealmQuery query = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, ID);
-        oldItem = (ScheduleItem) query.findFirst();
-
-        EditText editTitle = findViewById(R.id.et_title);
-        editTitle.setText(oldItem.getTitle());
-        EditText editNote = findViewById(R.id.et_notes);
-        editNote.setText(oldItem.getNotes());
-
-        if (oldItem.isCompleted()) {
-            Button button = findViewById(R.id.btn_finish);
-            button.setText(getString(R.string.mark_incomplete));
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (i) {
+            case 0:
+                type = ScheduleItem.ScheduleItemType.HOMEWORK;
+                break;
+            case 1:
+                type = ScheduleItem.ScheduleItemType.COURSEWORK;
+                break;
+            case 2:
+                type = ScheduleItem.ScheduleItemType.TEST;
+                break;
+            case 3:
+                type = ScheduleItem.ScheduleItemType.EXAM;
+                break;
+            default:
+                type = ScheduleItem.ScheduleItemType.HOMEWORK;
         }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+    }
+
+    private void setFields(int ID) {
+        item = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, ID).findFirst();
+
+        ((EditText) findViewById(R.id.et_title)).setText(item.getTitle());
+        ((EditText) findViewById(R.id.et_notes)).setText(item.getNotes());
 
         Spinner spinner = findViewById(R.id.spinner);
-        switch (oldItem.getType()) {
+        switch (item.getType()) {
             case HOMEWORK:
                 spinner.setSelection(0);
                 break;
@@ -202,8 +197,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
                 spinner.setSelection(0);
         }
 
-        dueTime = timeFormat.format(new Date(oldItem.getTime()));
-        dueDate = dateFormat.format(new Date(oldItem.getTime()));
+        checkBox.setChecked(item.isCompleted());
+
+        dueTime = timeFormat.format(new Date(item.getTime()));
+        dueDate = dateFormat.format(new Date(item.getTime()));
 
         hour = Integer.parseInt(dueTime.substring(0, 2));
         minute = Integer.parseInt(dueTime.substring(3, 5));
@@ -240,7 +237,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         spinner.setAdapter(dataAdapter);
     }
 
-    public void saveItem(View view) {
+    private void saveItem() {
         title = ((EditText) findViewById(R.id.et_title)).getText().toString().trim();
         notes = ((EditText) findViewById(R.id.et_notes)).getText().toString().trim();
 
@@ -261,59 +258,45 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                ScheduleItem item = oldItem;
-
+                ScheduleItem scheduleItem = item;
                 if (newItem) {
-                    item = realm.createObject(ScheduleItem.class);
-                    item.setID(maxID + 1);
-                    item.setCompleted(false);
+                    scheduleItem = realm.createObject(ScheduleItem.class);
+                    scheduleItem.setID(maxID + 1);
                 }
-                item.setTitle(title);
-                item.setNotes(notes);
-                item.setTime(epochTime);
-                item.setType(type);
+                scheduleItem.setCompleted(checkBox.isChecked());
+                scheduleItem.setTitle(title);
+                scheduleItem.setNotes(notes);
+                scheduleItem.setTime(epochTime);
+                scheduleItem.setType(type);
             }
         });
         finish();
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
 
-    public void finishItem(View view) {
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(@NonNull Realm realm) {
-                if (oldItem.isCompleted()) {
-                    oldItem.setCompleted(false);
-                } else {
-                    oldItem.setCompleted(true);
-                }
-            }
-        });
-        saveItem(view);
-    }
+    public void deleteEvent(View view) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.confirm_delete))
+                .setMessage(getString(R.string.delete_event))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(@NonNull Realm realm) {
+                                item.deleteFromRealm();
+                            }
+                        });
+                        finish();
+                        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        switch (i) {
-            case 0:
-                type = ScheduleItem.ScheduleItemType.HOMEWORK;
-                break;
-            case 1:
-                type = ScheduleItem.ScheduleItemType.COURSEWORK;
-                break;
-            case 2:
-                type = ScheduleItem.ScheduleItemType.TEST;
-                break;
-            case 3:
-                type = ScheduleItem.ScheduleItemType.EXAM;
-                break;
-            default:
-                type = ScheduleItem.ScheduleItemType.HOMEWORK;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+                    }
+                })
+                .setIcon(R.drawable.ic_delete_black_24dp)
+                .show();
     }
 
     public void pickDate(View view) {

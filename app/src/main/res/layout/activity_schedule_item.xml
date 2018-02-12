@@ -30,64 +30,83 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_title_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-10dp"
+                android:layout_marginStart="5dp"
+                android:hint="@string/title" />
+
             <EditText
                 android:id="@+id/et_title"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
                 android:hint="@string/title"
                 android:inputType="textCapWords"
                 android:maxLength="30"
-                android:paddingTop="10dp" />
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/tv_spinner_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-15dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:hint="@string/event_type" />
 
             <Spinner
                 android:id="@+id/spinner"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp" />
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart="-5dp"
+                android:layout_marginTop="20dp"
+                android:focusable="false" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:paddingTop="20dp">
+            <TextView
+                android:id="@+id/tv_date_time_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="0dp"
+                android:hint="@string/pick_date_time" />
 
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="250dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:gravity="center"
-                    android:hint="@string/date"
-                    android:onClick="deleteEvent" />
+            <EditText
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/date"
+                android:minWidth="200dp"
+                android:onClick="pickDate" />
 
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="250dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center"
-                    android:hint="@string/time" />
+            <EditText
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/time"
+                android:minWidth="200dp"
+                android:onClick="pickTime" />
 
-                <Button
-                    android:id="@+id/btn_date"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:onClick="pickDate"
-                    android:text="@string/pick_date" />
-
-                <Button
-                    android:id="@+id/btn_time"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:onClick="pickTime"
-                    android:text="@string/pick_time" />
-
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_checkbox_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:hint="@string/event_status" />
 
             <CheckBox
                 android:id="@+id/checkBox"
@@ -95,20 +114,33 @@
                 android:layout_height="wrap_content"
                 android:text="@string/event_complete" />
 
+            <TextView
+                android:id="@+id/tv_notes_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:hint="@string/additional_notes" />
+
             <EditText
                 android:id="@+id/et_notes"
+                style="@style/Widget.AppCompat.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
+                android:background="@drawable/rounded_border"
                 android:hint="@string/additional_notes"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="250"
-                android:paddingTop="20dp" />
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp" />
 
             <Button
                 android:id="@+id/btn_delete_event"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
                 android:onClick="deleteEvent"
                 android:text="@string/delete" />
 

@@ -11,10 +11,11 @@
     <string name="delete">Delete</string>
     <string name="menu_history">My History</string>
     <string name="title">Title</string>
-    <string name="pick_date">Pick Date</string>
-    <string name="pick_time">Pick Time</string>
-    <string name="date">Date</string>
-    <string name="time">Time</string>
+    <string name="event_type">Event Type</string>
+    <string name="pick_date_time">Pick Date and Time</string>
+    <string name="event_status">Event Status</string>
+    <string name="date">Due Date</string>
+    <string name="time">Due Time</string>
     <string name="additional_notes">Additional Notes</string>
     <string name="save">Save</string>
     <string name="mark_completed">Mark Completed</string>

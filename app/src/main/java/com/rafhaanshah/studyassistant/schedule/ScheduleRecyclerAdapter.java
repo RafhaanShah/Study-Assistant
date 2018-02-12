@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
@@ -37,14 +38,16 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private RealmResults<ScheduleItem> scheduleItems;
     private RealmResults<ScheduleItem> filteredItems;
+    private FragmentManager fragmentManager;
     private RecyclerView recyclerView;
     private Context context;
     private Realm realm;
     private Sort sort;
 
-    ScheduleRecyclerAdapter(Context getContext, Realm getRealm, RecyclerView getRecyclerView, boolean history) {
+    ScheduleRecyclerAdapter(Context getContext, FragmentManager fm, Realm getRealm, RecyclerView getRecyclerView, boolean history) {
         realm = getRealm;
         context = getContext;
+        fragmentManager = fm;
         if (history) {
             sort = Sort.DESCENDING;
         } else {
@@ -106,8 +109,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
-                ((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
+                showDialogFragment();
+                //context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
+                //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -232,6 +236,11 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     void removeListener() {
         scheduleItems.removeAllChangeListeners();
+    }
+
+    private void showDialogFragment() {
+        ScheduleItemFragment scheduleItemFragment = ScheduleItemFragment.newInstance();
+        scheduleItemFragment.show(fragmentManager, "fragment_edit_name");
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

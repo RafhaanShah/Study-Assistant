@@ -57,7 +57,7 @@ public class ScheduleListFragment extends Fragment {
         emptyText = view.findViewById(R.id.tv_empty);
 
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
-        recyclerAdapter = new ScheduleRecyclerAdapter(getContext(), realm, recyclerView, history);
+        recyclerAdapter = new ScheduleRecyclerAdapter(getContext(), getChildFragmentManager(), realm, recyclerView, history);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -163,4 +163,6 @@ public class ScheduleListFragment extends Fragment {
     public void filterType(ScheduleItem.ScheduleItemType type) {
         recyclerAdapter.filterType(type);
     }
+
+
 }

@@ -1,5 +1,5 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="@integer/animation_fade_time">
+    android:duration="@integer/animation_list_time">
 
     <translate
         android:fromYDelta="-20%"

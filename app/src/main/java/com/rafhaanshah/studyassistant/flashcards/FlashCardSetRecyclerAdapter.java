@@ -193,7 +193,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     void animateList() {
-        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom);
         recyclerView.setLayoutAnimation(controller);
         notifyDataSetChanged();
         recyclerView.scheduleLayoutAnimation();

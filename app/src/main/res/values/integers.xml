@@ -3,5 +3,6 @@
     <integer name="animation_flip_time_full">400</integer>
     <integer name="animation_flip_time_half">200</integer>
     <integer name="animation_fade_time">200</integer>
-    <integer name="slide_animation_duration">250</integer>
+    <integer name="animation_list_time">300</integer>
+    <integer name="slide_animation_duration">300</integer>
 </resources>

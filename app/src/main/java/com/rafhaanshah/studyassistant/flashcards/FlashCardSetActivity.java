@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -87,7 +88,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_btn_edit_flash_card:
-                editFlashCard();
+                getFragment().editCard();
                 return true;
             case R.id.menu_btn_delete_flash_card:
                 deleteFlashCard();
@@ -213,12 +214,8 @@ public class FlashCardSetActivity extends AppCompatActivity {
         }
     }
 
-    private void editFlashCard() {
-        getFragment().editCard();
-    }
-
     private void saveFlashCard(FlashCardSetFragment frag, int pos) {
-        if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+        if (getFragment() != null && !TextUtils.isEmpty(getFragment().getText())) {
             if (frag.isCardFlipped()) {
                 saveAnswerText(pos, frag.getText());
             } else {
@@ -256,9 +253,15 @@ public class FlashCardSetActivity extends AppCompatActivity {
         saveFlashCard(getFragment(), viewPager.getCurrentItem());
         getFragment().setText();
         getFragment().flipCard();
-        if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
-            getFragment().editCard();
-        }
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+                    getFragment().editCard();
+                }
+            }
+        }, 100);
     }
 
     private FlashCardSetFragment getFragment() {

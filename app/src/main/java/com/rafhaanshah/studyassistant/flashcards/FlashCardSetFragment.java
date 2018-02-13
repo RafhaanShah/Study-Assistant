@@ -206,15 +206,17 @@ public class FlashCardSetFragment extends Fragment {
         }
 
         private void editCard() {
-            if (!editing) {
-                editing = true;
-                textView.setVisibility(View.INVISIBLE);
-                editText.setVisibility(View.VISIBLE);
-                editText.requestFocus();
-            } else {
-                editing = false;
-                textView.setVisibility(View.VISIBLE);
-                editText.setVisibility(View.INVISIBLE);
+            if (textView != null && editText != null) {
+                if (!editing) {
+                    editing = true;
+                    textView.setVisibility(View.GONE);
+                    editText.setVisibility(View.VISIBLE);
+                    editText.requestFocus();
+                } else {
+                    editing = false;
+                    editText.setVisibility(View.GONE);
+                    textView.setVisibility(View.VISIBLE);
+                }
             }
         }
 

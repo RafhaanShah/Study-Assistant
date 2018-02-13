@@ -109,9 +109,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialogFragment();
-                //context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
-                //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
+                //showDialogFragment();
+                context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
+                ((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {

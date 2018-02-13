@@ -11,7 +11,6 @@ import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int SORT_SIZE = 2;
     private static final int REQUEST_LECTURE = 100;
     private static final String PREF_SORTING = "PREF_SORTING";
+    private static final String BUNDLE_SCHEDULE_HISTORY = "BUNDLE_SCHEDULE_HISTORY";
 
     private boolean scheduleHistory;
     private int lectureSorting;
@@ -71,12 +71,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
-            selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content, selectedFragment);
-            transaction.commit();
+            selectedFragment = ScheduleListFragment.newInstance(false);
+            replaceFragment();
         } else {
             selectedFragment = getSupportFragmentManager().findFragmentById(R.id.content);
+            scheduleHistory = savedInstanceState.getBoolean(BUNDLE_SCHEDULE_HISTORY, false);
         }
     }
 
@@ -99,10 +98,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(BUNDLE_SCHEDULE_HISTORY, scheduleHistory);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         if (selectedFragment.getClass() == ScheduleListFragment.class) {
-            swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
+            if (scheduleHistory) {
+                swapToolbarMenu(getString(R.string.menu_history), R.menu.fragment_schedule_list);
+            } else {
+                swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
+            }
         } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
             swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list);
         } else if (selectedFragment.getClass() == LectureListFragment.class) {
@@ -248,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
             HelperUtils.fadeTextChange(getString(R.string.menu_schedule), (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
         } else {
             scheduleHistory = true;
-            //toolbar.setTitle(getString(R.string.menu_history));
             HelperUtils.fadeTextChange(getString(R.string.menu_history), (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
         }
         selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);

@@ -20,7 +20,8 @@ public class ScheduleItemFragment extends DialogFragment {
 
     public static ScheduleItemFragment newInstance() {
 
-        //TODO: what's the difference between member variables and buncles???
+        //TODO: what's the difference between member variables and bundles???
+        // Bundles are the correct way, and for Realm just open and close a new instance
 
         ScheduleItemFragment frag = new ScheduleItemFragment();
         Bundle args = new Bundle();

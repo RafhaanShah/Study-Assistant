@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 public class FlashCardSetFragment extends Fragment {
 
@@ -43,7 +42,7 @@ public class FlashCardSetFragment extends Fragment {
         cardText = getArguments().getString(BUNDLE_CARD_TEXT);
         answerText = getArguments().getString(BUNDLE_ANSWER_TEXT);
         position = getArguments().getInt(BUNDLE_POSITION);
-        getColour();
+        colour = HelperUtils.getColour(getContext(), position);
     }
 
     @Nullable
@@ -58,26 +57,6 @@ public class FlashCardSetFragment extends Fragment {
                 .commit();
 
         return inflatedView;
-    }
-
-    private void getColour() {
-        switch (position % 5) {
-            case 0:
-                colour = ContextCompat.getColor(getContext(), R.color.materialRed);
-                break;
-            case 1:
-                colour = ContextCompat.getColor(getContext(), R.color.materialBlue);
-                break;
-            case 2:
-                colour = ContextCompat.getColor(getContext(), R.color.materialOrange);
-                break;
-            case 3:
-                colour = ContextCompat.getColor(getContext(), R.color.materialPurple);
-                break;
-            case 4:
-                colour = ContextCompat.getColor(getContext(), R.color.materialGreen);
-                break;
-        }
     }
 
     int getPosition() {

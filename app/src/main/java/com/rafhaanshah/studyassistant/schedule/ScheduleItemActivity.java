@@ -24,8 +24,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -23,8 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -59,6 +60,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         final FlashCardSet item = filteredSets.get(position);
 
         holder.flashCardSetTitle.setText(item.getTitle());
+        holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,11 +217,13 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView flashCardSetTitle;
         private RelativeLayout relativeLayout;
+        private CardView cardView;
 
         ViewHolder(View view) {
             super(view);
             flashCardSetTitle = view.findViewById(R.id.tv_flash_card_set_title);
-            relativeLayout = view.findViewById(R.id.flash_card_relative_layout);
+            relativeLayout = view.findViewById(R.id.flash_card_layout);
+            cardView = view.findViewById(R.id.flash_card_view);
         }
     }
 }

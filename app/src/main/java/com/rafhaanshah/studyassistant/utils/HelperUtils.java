@@ -1,13 +1,17 @@
-package com.rafhaanshah.studyassistant;
+package com.rafhaanshah.studyassistant.utils;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+
+import com.rafhaanshah.studyassistant.MainActivity;
+import com.rafhaanshah.studyassistant.R;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -19,6 +23,28 @@ public class HelperUtils {
     private final static String LECTURE_DIRECTORY = "lectures";
 
     private HelperUtils() {
+    }
+
+    public static int getColour(Context context, int position) {
+        int colour = 0;
+        switch (position % 5) {
+            case 0:
+                colour = ContextCompat.getColor(context, R.color.materialRed);
+                break;
+            case 1:
+                colour = ContextCompat.getColor(context, R.color.materialBlue);
+                break;
+            case 2:
+                colour = ContextCompat.getColor(context, R.color.materialOrange);
+                break;
+            case 3:
+                colour = ContextCompat.getColor(context, R.color.materialPurple);
+                break;
+            case 4:
+                colour = ContextCompat.getColor(context, R.color.materialGreen);
+                break;
+        }
+        return colour;
     }
 
     public static int darkenColor(int color, double fraction) {

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -20,13 +21,12 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.MainActivity;
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -67,7 +67,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
 
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -83,7 +83,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             }
         });
 
-        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View view) {
                 showPopupMenu(holder, lec, holder.getAdapterPosition());
@@ -98,7 +98,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec, final int position) {
-        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
+        PopupMenu popup = new PopupMenu(context, holder.cardView, Gravity.END);
         popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -255,14 +255,14 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         private TextView lectureTitle;
         private TextView lectureSize;
         private TextView lectureDate;
-        private RelativeLayout relativeLayout;
+        private CardView cardView;
 
         ViewHolder(View view) {
             super(view);
             lectureTitle = view.findViewById(R.id.tv_lecture_title);
             lectureSize = view.findViewById(R.id.tv_lecture_size);
             lectureDate = view.findViewById(R.id.lectureDate);
-            relativeLayout = view.findViewById(R.id.flash_card_relative_layout);
+            cardView = view.findViewById(R.id.card_view);
         }
     }
 }

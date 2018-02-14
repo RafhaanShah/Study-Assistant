@@ -2,6 +2,7 @@ package com.rafhaanshah.studyassistant.flashcards;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -26,8 +27,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -59,14 +60,16 @@ public class FlashCardSetListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         final FloatingActionButton fab = view.findViewById(R.id.fab);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
         emptyText = view.findViewById(R.id.tv_empty);
 
         recyclerAdapter = new FlashCardSetRecyclerAdapter(getContext(), realm, recyclerView);
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 6));
+        }
         recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

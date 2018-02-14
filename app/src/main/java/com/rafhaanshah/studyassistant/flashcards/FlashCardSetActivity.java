@@ -19,8 +19,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.rafhaanshah.studyassistant.HelperUtils;
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Realm;
 

@@ -26,6 +26,7 @@ import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItem;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleListFragment;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;

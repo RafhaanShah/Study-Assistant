@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_size">20sp</dimen>
-    <dimen name="letter_size">40sp</dimen>
+    <dimen name="letter_size">25sp</dimen>
     <dimen name="card_elevation">2dp</dimen>
     <dimen name="card_max_elevation">8dp</dimen>
     <dimen name="card_text_margin">20dp</dimen>

@@ -20,18 +20,20 @@ public class FlashCardSetFragment extends Fragment {
     private static final String BUNDLE_CARD_TEXT = "BUNDLE_CARD_TEXT";
     private static final String BUNDLE_ANSWER_TEXT = "BUNDLE_ANSWER_TEXT";
     private static final String BUNDLE_POSITION = "BUNDLE_POSITION";
+    private static final String BUNDLE_OFFSET = "BUNDLE_OFFSET";
 
     private String cardText, answerText;
-    private int position, colour;
+    private int position, colour, offset;
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
-    static FlashCardSetFragment newInstance(String card, String answer, int pos) {
+    static FlashCardSetFragment newInstance(String card, String answer, int pos, int offset) {
         FlashCardSetFragment flashCardSetFragment = new FlashCardSetFragment();
         Bundle bundle = new Bundle(2);
         bundle.putString(BUNDLE_CARD_TEXT, card);
         bundle.putString(BUNDLE_ANSWER_TEXT, answer);
         bundle.putInt(BUNDLE_POSITION, pos);
+        bundle.putInt(BUNDLE_POSITION, offset);
         flashCardSetFragment.setArguments(bundle);
         return flashCardSetFragment;
     }
@@ -42,7 +44,8 @@ public class FlashCardSetFragment extends Fragment {
         cardText = getArguments().getString(BUNDLE_CARD_TEXT);
         answerText = getArguments().getString(BUNDLE_ANSWER_TEXT);
         position = getArguments().getInt(BUNDLE_POSITION);
-        colour = HelperUtils.getColour(getContext(), position);
+        offset = getArguments().getInt(BUNDLE_OFFSET);
+        colour = HelperUtils.getColour(getContext(), position + offset);
     }
 
     @Nullable

@@ -13,4 +13,5 @@
     <color name="dividerGrey">#E0E0E0</color>
     <color name="textWhite">#F5F5F5</color>
     <color name="textGrey">#808080</color>
+    <color name="backgroundGrey">#efefef</color>
 </resources>

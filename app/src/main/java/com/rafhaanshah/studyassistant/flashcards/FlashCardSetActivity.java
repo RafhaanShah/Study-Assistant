@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import io.realm.Realm;
 public class FlashCardSetActivity extends AppCompatActivity {
 
     private static final String EXTRA_SET_TITLE = "EXTRA_SET_TITLE";
+    private static final String EXTRA_SET_OFFSET = "EXTRA_SET_OFFSET";
 
     private FlashCardSet flashCardSet;
     private ViewPager viewPager;
@@ -34,9 +36,10 @@ public class FlashCardSetActivity extends AppCompatActivity {
     private Realm realm;
     private int lastPage;
 
-    public static Intent getStartIntent(Context context, String title) {
+    public static Intent getStartIntent(Context context, String title, int offset) {
         Intent intent = new Intent(context, FlashCardSetActivity.class);
         intent.putExtra(EXTRA_SET_TITLE, title);
+        intent.putExtra(EXTRA_SET_OFFSET, offset);
         return intent;
     }
 
@@ -50,12 +53,14 @@ public class FlashCardSetActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String title = getIntent().getStringExtra(EXTRA_SET_TITLE);
+        int offset = getIntent().getIntExtra(EXTRA_SET_OFFSET, 0);
+        Log.v("Offset", String.valueOf(offset));
 
         realm = Realm.getDefaultInstance();
         flashCardSet = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
 
         viewPager = findViewById(R.id.view_pager);
-        flashCardSetAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), flashCardSet);
+        flashCardSetAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), flashCardSet, offset);
 
         //viewPager.setPageTransformer(true, new FlashCardStackTransformer());
         viewPager.setOffscreenPageLimit(2);
@@ -76,6 +81,14 @@ public class FlashCardSetActivity extends AppCompatActivity {
             }
         });
         updateTitle();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+                    getFragment().editCard();
+                }
+            }
+        }, 100);
     }
 
     @Override
@@ -253,8 +266,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         saveFlashCard(getFragment(), viewPager.getCurrentItem());
         getFragment().setText();
         getFragment().flipCard();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {

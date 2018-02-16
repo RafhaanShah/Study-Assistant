@@ -68,7 +68,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
         holder.lectureLetter.setText(lec.getName().substring(0, 1).toUpperCase());
-        holder.letterBackground.setBackgroundColor(HelperUtils.getColour(context, position));
+        holder.letterBackground.getBackground().setTint(HelperUtils.getColour(context, position));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -196,7 +196,7 @@ public class FlashCardSetListFragment extends Fragment {
                         });
                         updateView();
                         dialog.dismiss();
-                        getContext().startActivity(FlashCardSetActivity.getStartIntent(getContext(), title));
+                        getContext().startActivity(FlashCardSetActivity.getStartIntent(getContext(), title, recyclerAdapter.getSetPosition(title)));
                         getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
                     } else {
                         Toast.makeText(getContext(), R.string.error_set_exists, Toast.LENGTH_SHORT).show();

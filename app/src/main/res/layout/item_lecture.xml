@@ -3,81 +3,84 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_margin="6dp"
+    android:layout_height="70dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardCornerRadius="4dp"
+    card_view:cardCornerRadius="0dp"
     card_view:cardElevation="@dimen/card_elevation"
     card_view:cardMaxElevation="@dimen/card_max_elevation">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:layout_margin="10dp">
 
-        <RelativeLayout
+        <com.rafhaanshah.studyassistant.utils.SquareLayout
             android:id="@+id/letter_bg"
-            android:layout_width="0dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/circle">
 
             <TextView
                 android:id="@+id/tv_letter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="@color/textWhite"
                 android:textSize="@dimen/letter_size" />
 
-        </RelativeLayout>
+        </com.rafhaanshah.studyassistant.utils.SquareLayout>
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4">
+        <TextView
+            android:id="@+id/tv_lecture_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/letter_bg"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingEnd="2dp"
+            android:paddingStart="4dp"
+            android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/tv_lecture_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:paddingEnd="2dp"
-                android:paddingStart="4dp"
-                android:textSize="22sp" />
+        <TextView
+            android:id="@+id/tv_lecture_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@id/letter_bg"
+            android:paddingBottom="4dp"
+            android:paddingEnd="2dp"
+            android:paddingStart="4dp"
+            android:paddingTop="2dp"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/tv_lecture_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:paddingBottom="4dp"
-                android:paddingEnd="2dp"
-                android:paddingStart="4dp"
-                android:paddingTop="2dp"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/lectureDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:paddingBottom="4dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="2dp"
+            android:paddingTop="2dp"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/lectureDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:paddingBottom="4dp"
-                android:paddingEnd="4dp"
-                android:paddingStart="2dp"
-                android:paddingTop="2dp"
-                android:textSize="16sp" />
+    </RelativeLayout>
 
-        </RelativeLayout>
-
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:background="@color/dividerGrey" />
 
 </android.support.v7.widget.CardView>

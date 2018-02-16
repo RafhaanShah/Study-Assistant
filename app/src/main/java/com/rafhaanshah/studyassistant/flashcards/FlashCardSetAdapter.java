@@ -12,10 +12,12 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<FlashCardSetFragment> flashCardSetFragments;
     private FlashCardSet flashCardSet;
+    private int offset;
 
-    FlashCardSetAdapter(FragmentManager fm, FlashCardSet set) {
+    FlashCardSetAdapter(FragmentManager fm, FlashCardSet set, int colourOffset) {
         super(fm);
         flashCardSet = set;
+        offset = colourOffset;
         flashCardSetFragments = new ArrayList<>(flashCardSet.getCards().size());
         flashCardSetFragments.add(null);
         for (int i = 0; i < flashCardSet.getCards().size(); i++) {
@@ -26,7 +28,7 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
     // This is called to create new fragments
     @Override
     public Fragment getItem(int position) {
-        FlashCardSetFragment frag = FlashCardSetFragment.newInstance(flashCardSet.getCards().get(position), flashCardSet.getAnswers().get(position), position);
+        FlashCardSetFragment frag = FlashCardSetFragment.newInstance(flashCardSet.getCards().get(position), flashCardSet.getAnswers().get(position), position, offset);
         flashCardSetFragments.set(position, frag);
         return frag;
     }

@@ -56,7 +56,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final FlashCardSet item = filteredSets.get(position);
 
         holder.flashCardSetTitle.setText(item.getTitle());
@@ -64,7 +64,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle()));
+                context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle(), position));
                 ((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
@@ -183,6 +183,15 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     private void resetList() {
         filteredSets = flashCardSets;
+    }
+
+    int getSetPosition(String title) {
+        for (FlashCardSet f : filteredSets) {
+            if (f.getTitle().equals(title)) {
+                return filteredSets.indexOf(f);
+            }
+        }
+        return 0;
     }
 
     void filter(String query) {

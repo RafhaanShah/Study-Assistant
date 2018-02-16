@@ -3,6 +3,9 @@ package com.rafhaanshah.studyassistant.utils;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -61,6 +64,11 @@ public class HelperUtils {
 
     private static int darken(int color, double fraction) {
         return (int) Math.max(color - (color * fraction), 0);
+    }
+
+    public static void setDrawableColour(Drawable drawable, int colour) {
+        if (drawable != null)
+            drawable.setColorFilter(new PorterDuffColorFilter(colour, PorterDuff.Mode.SRC_IN));
     }
 
     public static void hideSoftKeyboard(Context context, View view) {

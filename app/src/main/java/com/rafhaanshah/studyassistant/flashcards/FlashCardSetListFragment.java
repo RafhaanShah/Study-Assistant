@@ -83,7 +83,7 @@ public class FlashCardSetListFragment extends Fragment {
             }
         });
 
-        setItemTouchHelper();
+        //setItemTouchHelper();
     }
 
     @Override

@@ -24,6 +24,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -92,19 +93,23 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         switch (item.getType()) {
             case HOMEWORK:
                 holder.typeText.setText(context.getString(R.string.homework));
+                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
                 break;
             case COURSEWORK:
                 holder.typeText.setText(context.getString(R.string.coursework));
+                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
                 break;
             case TEST:
                 holder.typeText.setText(context.getString(R.string.class_test));
+                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
                 break;
             case EXAM:
                 holder.typeText.setText(context.getString(R.string.exam));
+                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
                 break;
-            default:
-                holder.typeText.setText(context.getString(R.string.homework));
         }
+
+        HelperUtils.setDrawableColour(holder.typeText.getCompoundDrawables()[0], ContextCompat.getColor(context, R.color.textGrey));
 
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override

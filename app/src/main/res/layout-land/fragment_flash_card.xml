@@ -25,7 +25,7 @@
             android:layout_marginStart="@dimen/card_text_margin"
             android:hint="@string/hint_edit_card"
             android:textAlignment="center"
-            android:textColor="@color/textGrey"
+            android:textColor="@color/textWhite"
             android:textSize="@dimen/text_size" />
 
         <EditText
@@ -40,7 +40,7 @@
             android:maxLength="250"
             android:selectAllOnFocus="true"
             android:textAlignment="center"
-            android:textColor="@color/textGrey"
+            android:textColor="@color/textWhite"
             android:textSize="@dimen/text_size"
             android:visibility="gone" />
 

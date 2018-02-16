@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         lectureSorting = preferences.getInt(PREF_SORTING, 0);
         directory = HelperUtils.getLectureDirectory(MainActivity.this);
 
@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
+    public boolean onCreateOptionsMenu(Menu getMenu) {
+        menu = getMenu;
         if (selectedFragment.getClass() == ScheduleListFragment.class) {
             if (scheduleHistory) {
                 swapToolbarMenu(getString(R.string.menu_history), R.menu.fragment_schedule_list);

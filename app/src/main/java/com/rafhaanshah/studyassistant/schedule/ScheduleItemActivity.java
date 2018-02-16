@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -30,15 +29,13 @@ import com.rafhaanshah.studyassistant.utils.HelperUtils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
 
-public class ScheduleItemActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ScheduleItemActivity extends AppCompatActivity {
 
     public static final String BUNDLE_TIME = "BUNDLE_TIME";
     public static final String BUNDLE_DATE = "BUNDLE_DATE";
@@ -70,8 +67,10 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         realm = Realm.getDefaultInstance();
         setSpinner();
@@ -149,30 +148,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
         realm.close();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        switch (i) {
-            case 0:
-                type = ScheduleItem.ScheduleItemType.HOMEWORK;
-                break;
-            case 1:
-                type = ScheduleItem.ScheduleItemType.COURSEWORK;
-                break;
-            case 2:
-                type = ScheduleItem.ScheduleItemType.TEST;
-                break;
-            case 3:
-                type = ScheduleItem.ScheduleItemType.EXAM;
-                break;
-            default:
-                type = ScheduleItem.ScheduleItemType.HOMEWORK;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-    }
-
     private void setFields(int ID) {
         item = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, ID).findFirst();
 
@@ -193,8 +168,6 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             case EXAM:
                 spinner.setSelection(3);
                 break;
-            default:
-                spinner.setSelection(0);
         }
 
         checkBox.setChecked(item.isCompleted());
@@ -224,17 +197,35 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
 
     public void setSpinner() {
         Spinner spinner = findViewById(R.id.spinner);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        type = ScheduleItem.ScheduleItemType.HOMEWORK;
+                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
+                        break;
+                    case 1:
+                        type = ScheduleItem.ScheduleItemType.COURSEWORK;
+                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
+                        break;
+                    case 2:
+                        type = ScheduleItem.ScheduleItemType.TEST;
+                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
+                        break;
+                    case 3:
+                        type = ScheduleItem.ScheduleItemType.EXAM;
+                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
+                        break;
+                }
+                ((TextView) view).setCompoundDrawablePadding(50);
+                //HelperUtils.setDrawableColour(((TextView) view).getCompoundDrawables()[0], ContextCompat.getColor(ScheduleItemActivity.this, R.color.textGrey));
+            }
 
-        List<String> categories = new ArrayList<>();
-        categories.add(getString(R.string.homework));
-        categories.add(getString(R.string.coursework));
-        categories.add(getString(R.string.class_test));
-        categories.add(getString(R.string.exam));
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dataAdapter);
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
     }
 
     private void saveItem() {
@@ -275,7 +266,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
     }
 
     public void deleteEvent(View view) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(ScheduleItemActivity.this)
                 .setTitle(getString(R.string.confirm_delete))
                 .setMessage(getString(R.string.delete_event))
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -309,7 +300,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             day = c.get(Calendar.DAY_OF_MONTH);
         }
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+        DatePickerDialog datePickerDialog = new DatePickerDialog(ScheduleItemActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     @Override
@@ -339,7 +330,7 @@ public class ScheduleItemActivity extends AppCompatActivity implements AdapterVi
             minute = c.get(Calendar.MINUTE);
         }
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+        TimePickerDialog timePickerDialog = new TimePickerDialog(ScheduleItemActivity.this,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {

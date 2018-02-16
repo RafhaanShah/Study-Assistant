@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +67,8 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
+        holder.lectureLetter.setText(lec.getName().substring(0, 1).toUpperCase());
+        holder.letterBackground.setBackgroundColor(HelperUtils.getColour(context, position));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,14 +258,18 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         private TextView lectureTitle;
         private TextView lectureSize;
         private TextView lectureDate;
+        private TextView lectureLetter;
         private CardView cardView;
+        private RelativeLayout letterBackground;
 
         ViewHolder(View view) {
             super(view);
             lectureTitle = view.findViewById(R.id.tv_lecture_title);
             lectureSize = view.findViewById(R.id.tv_lecture_size);
             lectureDate = view.findViewById(R.id.lectureDate);
+            lectureLetter = view.findViewById(R.id.tv_letter);
             cardView = view.findViewById(R.id.card_view);
+            letterBackground = view.findViewById(R.id.letter_bg);
         }
     }
 }

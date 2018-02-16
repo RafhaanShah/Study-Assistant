@@ -4,24 +4,36 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:layout_margin="8dp"
+    android:layout_margin="6dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardCornerRadius="2dp"
+    card_view:cardCornerRadius="4dp"
     card_view:cardElevation="@dimen/card_elevation"
     card_view:cardMaxElevation="@dimen/card_max_elevation">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/letter_bg"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary" />
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_letter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/textWhite"
+                android:textSize="@dimen/letter_size" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"

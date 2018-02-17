@@ -24,6 +24,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.text.DateFormat;
@@ -41,12 +42,12 @@ public class ScheduleItemActivity extends AppCompatActivity {
     public static final String BUNDLE_DATE = "BUNDLE_DATE";
     public static final String BUNDLE_DUE_TIME = "BUNDLE_DUE_TIME";
     public static final String BUNDLE_DUE_DATE = "BUNDLE_DUE_DATE";
-    private static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
+    public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
 
     private String title, dueDate, dueTime, notes;
     private ScheduleItem.ScheduleItemType type;
     private long epochTime;
-    private int day, month, year, hour, minute;
+    private int day, month, year, hour, minute, itemID;
     private boolean newItem;
     private Realm realm;
     private ScheduleItem item;
@@ -83,7 +84,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
         dateText = findViewById(R.id.tv_date);
         checkBox = findViewById(R.id.checkBox);
 
-        int itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
+        itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
         if (itemID == 0) {
             newItem = true;
             toolbar.setTitle(getString(R.string.new_event));
@@ -288,6 +289,11 @@ public class ScheduleItemActivity extends AppCompatActivity {
                 })
                 .setIcon(R.drawable.ic_delete_black_24dp)
                 .show();
+    }
+
+    public void setNotification() {
+        Notifier.setNotification(ScheduleItemActivity.this, itemID, title, "Event is in XXX hours", 1);
+        finish();
     }
 
     public void pickDate(View view) {

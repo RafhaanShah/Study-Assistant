@@ -4,7 +4,7 @@ import io.realm.RealmObject;
 
 public class ScheduleItem extends RealmObject {
 
-    static final String ScheduleItem_ID = "ID";
+    public static final String ScheduleItem_ID = "ID";
     static final String ScheduleItem_TITLE = "title";
     static final String ScheduleItem_TYPE = "type";
     static final String ScheduleItem_NOTES = "notes";

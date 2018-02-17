@@ -1,7 +1,9 @@
 package com.rafhaanshah.studyassistant;
 
 import android.app.Application;
-import android.os.StrictMode;
+
+import com.rafhaanshah.studyassistant.notifications.Notifier;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.io.File;
 
@@ -13,15 +15,13 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Initialize Realm. Should only be done once when the application starts.
-        Realm.init(this);
+        Realm.init(MainApplication.this);
 
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-
-        File directory = new File(getFilesDir().getAbsolutePath() + File.separator + "lectures");
+        File directory = HelperUtils.getLectureDirectory(MainApplication.this);
         if (!directory.exists()) {
             directory.mkdirs();
         }
+
+        Notifier.createNotificationChannel(MainApplication.this);
     }
 }

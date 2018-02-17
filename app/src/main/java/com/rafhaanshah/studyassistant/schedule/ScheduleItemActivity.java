@@ -291,8 +291,8 @@ public class ScheduleItemActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void setNotification() {
-        Notifier.setNotification(ScheduleItemActivity.this, itemID, title, "Event is in XXX hours", 1);
+    public void setNotification(View view) {
+        Notifier.setNotification(ScheduleItemActivity.this, itemID, "Testing Title", "Event is in XXX hours", 1);
         finish();
     }
 

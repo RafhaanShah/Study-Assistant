@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
+import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItem;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleListFragment;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         if (searchView != null && !searchView.isIconified()) {
             searchView.onActionViewCollapsed();
         }
+        Notifier.clearAllNotifications(MainActivity.this);
     }
 
     @Override

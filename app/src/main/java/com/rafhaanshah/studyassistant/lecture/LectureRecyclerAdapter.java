@@ -1,10 +1,10 @@
 package com.rafhaanshah.studyassistant.lecture;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
@@ -61,7 +61,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     @Override
-    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
         final File lec = filteredFiles.get(position);
         String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
@@ -73,14 +73,13 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
                 Uri uri = FileProvider.getUriForFile(context, context.getString(R.string.file_provider_authority), lec);
-                intent.setDataAndType(uri, MainActivity.TYPE_APPLICATION_PDF);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                PackageManager pm = context.getPackageManager();
-                if (intent.resolveActivity(pm) != null) {
-                    context.startActivity(intent);
-                } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW)
+                        .setDataAndType(uri, MainActivity.TYPE_APPLICATION_PDF)
+                        .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.pdf_reader_select)));
+                } catch (ActivityNotFoundException e) {
                     Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_SHORT).show();
                 }
             }

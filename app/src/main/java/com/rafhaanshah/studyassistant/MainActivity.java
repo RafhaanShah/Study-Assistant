@@ -336,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 

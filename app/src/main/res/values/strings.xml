@@ -23,9 +23,10 @@
     <string name="error_blank">Error: Enter some text</string>
     <string name="error_characters">Invalid characters entered</string>
     <string name="error_file_added">Error: File already added</string>
-    <string name="error_file_picker">Error: File picker app not installed</string>
+    <string name="error_file_picker">Error: No file browser app installed</string>
     <string name="error_inaccessible_file">"Error: File may not be accessible"</string>
     <string name="error_invalid_file">Error: Not a PDF</string>
+    <string name="error_notification_time">Reminder time cannot be in the past</string>
     <string name="error_out_of_bounds">Error: That card number does not exist</string>
     <string name="error_pdf">Error: No PDF reader app installed</string>
     <string name="error_rename">File with that name already exists</string>
@@ -58,7 +59,11 @@
     <string name="new_event">New Event</string>
     <string name="new_flash">New Flash Card Set</string>
     <string name="no">No</string>
+    <string name="notification_date">Notification Date</string>
+    <string name="notification_time">Notification Time</string>
+    <string name="notification_switch">Set Reminder</string>
     <string name="pdf_select">Select a PDF file</string>
+    <string name="pdf_reader_select">Select a PDF Reader App</string>
     <string name="pick_date_time">Pick Date and Time</string>
     <string name="rename_file">Rename File</string>
     <string name="rename_flash_card_set">Rename Flash Card Set</string>

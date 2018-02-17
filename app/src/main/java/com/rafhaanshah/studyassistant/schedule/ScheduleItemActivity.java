@@ -19,12 +19,12 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
-import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.text.DateFormat;
@@ -52,8 +52,9 @@ public class ScheduleItemActivity extends AppCompatActivity {
     private Realm realm;
     private ScheduleItem item;
     private SimpleDateFormat timeFormat, dateFormat, dateTimeFormat;
-    private TextView timeText, dateText;
+    private TextView timeText, dateText, notificationTimeText, notificationDateText;
     private CheckBox checkBox;
+    private Switch notificationSwitch;
 
     public static Intent getStartIntent(Context context, int ID) {
         Intent intent = new Intent(context, ScheduleItemActivity.class);
@@ -83,6 +84,9 @@ public class ScheduleItemActivity extends AppCompatActivity {
         timeText = findViewById(R.id.tv_time);
         dateText = findViewById(R.id.tv_date);
         checkBox = findViewById(R.id.checkBox);
+        notificationTimeText = findViewById(R.id.tv_notification_time);
+        notificationDateText = findViewById(R.id.tv_notification_date);
+        notificationSwitch = findViewById(R.id.switch_notification);
 
         itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
         if (itemID == 0) {
@@ -115,6 +119,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         finish();
+        super.onSupportNavigateUp();
         overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
         return true;
     }
@@ -291,11 +296,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void setNotification(View view) {
-        Notifier.setNotification(ScheduleItemActivity.this, itemID, "Testing Title", "Event is in XXX hours", 1);
-        finish();
-    }
-
+    //TODO: Cleaner date time parsing, set notification views and alarm
     public void pickDate(View view) {
         HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, view);
 

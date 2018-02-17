@@ -19,6 +19,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             //TODO: Boot completed, set notifications again
 
         } else if (intent.getAction().equals(ACTION_NOTIFICATION)) {
+            // Show the notification for the event
             Notifier.showNotification(context, intent);
         }
     }

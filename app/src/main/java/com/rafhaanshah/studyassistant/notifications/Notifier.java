@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,36 +18,63 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.rafhaanshah.studyassistant.R;
-import com.rafhaanshah.studyassistant.schedule.ScheduleItem;
 import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
 
 public class Notifier {
 
     static final String ACTION_NOTIFICATION = "com.rafhaanshah.studyassistant.action.EVENT_NOTIFICATION";
-    static final String EXTRA_NOTIFICATION_EVENT = "NOTIFICATION_EVENT";
-    private static final int REQUEST_EVENT_NOTIFICATION = 101;
-    private static final int REQUEST_EVENT_RESULT = 102;
+    private static final String EXTRA_NOTIFICATION_EVENT = "EXTRA_NOTIFICATION_EVENT";
     private static final String NOTIFICATION_CHANNEL_EVENT = "NOTIFICATION_CHANNEL_EVENT";
 
     private Notifier() {
     }
 
-    public static void setNotification(Context context, int itemID, String itemTitle, String itemTime, long notificationTime) {
+    public static void scheduleNotification(Context context, int itemID, String itemTitle, String itemTime, long notificationTime) {
         Log.v("Notify", "Set");
+        setAlarm(context, getAlarmIntent(context, itemID, itemTitle, itemTime));
+    }
 
+    public static void cancelScheduledNotification(Context context, int itemID, String itemTitle, String itemTime, long notificationTime) {
+        Log.v("Notify", "Cancel");
+        cancelAlarm(context, getAlarmIntent(context, itemID, itemTitle, itemTime));
+    }
+
+    private static void setAlarm(Context context, PendingIntent pendingIntent) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null)
+            // TODO: Change to actual notification time
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5000, pendingIntent);
+    }
+
+    private static void cancelAlarm(Context context, PendingIntent pendingIntent) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null)
+            alarmManager.cancel(pendingIntent);
+    }
+
+    private static PendingIntent getAlarmIntent(Context context, int itemID, String itemTitle, String itemTime) {
+        // Get intent for the timed alarm
         Intent intent = new Intent(context, NotificationReceiver.class);
         intent.setAction(ACTION_NOTIFICATION);
-        intent.putExtra(ScheduleItem.ScheduleItem_ID, itemID);
+        intent.putExtra(ScheduleItemActivity.EXTRA_ITEM_ID, itemID);
 
+        // Get intent for Schedule Item Activity
         Intent resultIntent = ScheduleItemActivity.getStartIntent(context, itemID);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, REQUEST_EVENT_RESULT, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        // Add correct activity stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(ScheduleItemActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+
+        // Create Pending Intent for clicking the notification
+        //PendingIntent resultPendingIntent = PendingIntent.getActivity(context, REQUEST_EVENT_RESULT, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(itemID, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Add the notification to the intent for the timed alarm
         intent.putExtra(EXTRA_NOTIFICATION_EVENT, buildNotification(context, resultPendingIntent, itemTitle, itemTime));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_EVENT_NOTIFICATION, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, itemID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 10000, pendingIntent);
-
+        return pendingIntent;
     }
 
     private static Notification buildNotification(Context context, PendingIntent intent, String title, String text) {
@@ -75,7 +103,8 @@ public class Notifier {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION_EVENT);
         int id = intent.getIntExtra(ScheduleItemActivity.EXTRA_ITEM_ID, 0);
-        notificationManager.notify(id, notification);
+        if (notificationManager != null)
+            notificationManager.notify(id, notification);
     }
 
     public static void createNotificationChannel(Context context) {
@@ -92,13 +121,15 @@ public class Notifier {
                     .build());
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(notificationChannel);
+            if (notificationManager != null)
+                notificationManager.createNotificationChannel(notificationChannel);
         }
     }
 
     public static void clearAllNotifications(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancelAll();
+        if (notificationManager != null)
+            notificationManager.cancelAll();
     }
 
     //TODO: Disable enabled in Manifest and use this

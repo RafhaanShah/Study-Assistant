@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -60,11 +59,12 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         final FlashCardSet item = filteredSets.get(position);
 
         holder.flashCardSetTitle.setText(item.getTitle());
-        holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
+        //holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
+        holder.relativeLayout.setBackgroundColor((HelperUtils.getColour(context, position)));
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle(), position));
+                context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle(), holder.getAdapterPosition()));
                 ((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
@@ -226,13 +226,13 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView flashCardSetTitle;
         private RelativeLayout relativeLayout;
-        private CardView cardView;
+        //private CardView cardView;
 
         ViewHolder(View view) {
             super(view);
             flashCardSetTitle = view.findViewById(R.id.tv_flash_card_set_title);
             relativeLayout = view.findViewById(R.id.flash_card_layout);
-            cardView = view.findViewById(R.id.flash_card_view);
+            //cardView = view.findViewById(R.id.flash_card_view);
         }
     }
 }

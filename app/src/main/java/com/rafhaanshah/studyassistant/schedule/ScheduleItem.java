@@ -4,16 +4,17 @@ import io.realm.RealmObject;
 
 public class ScheduleItem extends RealmObject {
 
-    public static final String ScheduleItem_ID = "ID";
+    static final String ScheduleItem_ID = "ID";
     static final String ScheduleItem_TITLE = "title";
     static final String ScheduleItem_TYPE = "type";
     static final String ScheduleItem_NOTES = "notes";
     static final String ScheduleItem_TIME = "time";
     static final String ScheduleItem_COMPLETED = "completed";
+
     private int ID;
     private String title, notes, type;
-    private Long time;
-    private boolean completed;
+    private Long time, reminderTime;
+    private boolean completed, reminder;
 
     int getID() {
         return ID;
@@ -61,6 +62,22 @@ public class ScheduleItem extends RealmObject {
 
     void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    Long getReminderTime() {
+        return reminderTime;
+    }
+
+    void setReminderTime(Long reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
+    boolean isReminder() {
+        return reminder;
+    }
+
+    void setReminder(boolean reminder) {
+        this.reminder = reminder;
     }
 
     public enum ScheduleItemType {

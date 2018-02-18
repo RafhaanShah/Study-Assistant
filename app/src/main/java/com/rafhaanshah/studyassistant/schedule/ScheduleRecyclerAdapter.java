@@ -215,7 +215,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         animateList();
     }
 
-    void completeItem(int position) {
+    void completeEvent(int position) {
         final ScheduleItem item = filteredItems.get(position);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -224,6 +224,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                     item.setCompleted(false);
                 } else {
                     item.setCompleted(true);
+                    item.setReminder(false);
+                    item.setReminderTime(0L);
+                    // TODO: Turn off alarm
                 }
             }
         });

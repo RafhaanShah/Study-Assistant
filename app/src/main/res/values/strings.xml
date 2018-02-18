@@ -30,6 +30,8 @@
     <string name="error_out_of_bounds">Error: That card number does not exist</string>
     <string name="error_pdf">Error: No PDF reader app installed</string>
     <string name="error_rename">File with that name already exists</string>
+    <string name="error_reminder_time">Reminder time cannot be after the event</string>
+    <string name="error_reminder_time_past">Reminder time cannot be in the past</string>
     <string name="error_set_exists">Error: Set with that name already exists</string>
     <string name="event_complete">Event Is Completed</string>
     <string name="event_status">Event Status</string>
@@ -37,6 +39,7 @@
     <string name="exam">Exam</string>
     <string name="file_provider_authority" translatable="false">com.rafhaanshah.studyassistant.utils.GenericFileProvider</string>
     <string name="fill_event">Please fill in the title and select a date</string>
+    <string name="fill_notification">Please fill in the reminder options</string>
     <string name="filter">Filter</string>
     <string name="go_to_card">Go To Card Number:</string>
     <string name="hint_card">Enter some text for this card</string>

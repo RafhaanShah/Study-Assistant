@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -28,31 +27,23 @@ import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import io.realm.Realm;
 
 public class ScheduleItemActivity extends AppCompatActivity {
 
-    public static final String BUNDLE_TIME = "BUNDLE_TIME";
-    public static final String BUNDLE_DATE = "BUNDLE_DATE";
-    public static final String BUNDLE_DUE_TIME = "BUNDLE_DUE_TIME";
-    public static final String BUNDLE_DUE_DATE = "BUNDLE_DUE_DATE";
     public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
-
-    private String title, dueDate, dueTime, notes;
-    private ScheduleItem.ScheduleItemType type;
-    private long epochTime;
-    private int day, month, year, hour, minute, itemID;
+    private static final String BUNDLE_TIME_MS = "BUNDLE_TIME_MS";
+    private static final String BUNDLE_NOTIFICATION_TIME_MS = "BUNDLE_NOTIFICATION_TIME_MS";
+    private int itemID;
     private boolean newItem;
+    private Calendar eventCal, notificationCal;
     private Realm realm;
     private ScheduleItem item;
-    private SimpleDateFormat timeFormat, dateFormat, dateTimeFormat;
-    private TextView timeText, dateText, notificationTimeText, notificationDateText;
+    private ScheduleItem.ScheduleItemType type;
+    private TextView titleText, notesText, dateText, timeText, notificationDateText, notificationTimeText;
+    private Spinner spinner;
     private CheckBox checkBox;
     private Switch notificationSwitch;
 
@@ -74,29 +65,22 @@ public class ScheduleItemActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        getViews();
+
+        eventCal = Calendar.getInstance();
+        notificationCal = Calendar.getInstance();
+
         realm = Realm.getDefaultInstance();
-        setSpinner();
-
-        timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        dateTimeFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-
-        timeText = findViewById(R.id.tv_time);
-        dateText = findViewById(R.id.tv_date);
-        checkBox = findViewById(R.id.checkBox);
-        notificationTimeText = findViewById(R.id.tv_notification_time);
-        notificationDateText = findViewById(R.id.tv_notification_date);
-        notificationSwitch = findViewById(R.id.switch_notification);
-
         itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
+
         if (itemID == 0) {
             newItem = true;
             toolbar.setTitle(getString(R.string.new_event));
+            titleText.requestFocus();
             findViewById(R.id.btn_delete_event).setVisibility(View.GONE);
-            findViewById(R.id.et_title).requestFocus();
         } else {
             newItem = false;
-            setFields(itemID);
+            setFields();
         }
     }
 
@@ -133,19 +117,15 @@ public class ScheduleItemActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
-        out.putString(BUNDLE_TIME, timeText.getText().toString());
-        out.putString(BUNDLE_DATE, dateText.getText().toString());
-        out.putString(BUNDLE_DUE_TIME, dueTime);
-        out.putString(BUNDLE_DUE_DATE, dueDate);
+        out.putLong(BUNDLE_TIME_MS, eventCal.getTimeInMillis());
+        out.putLong(BUNDLE_NOTIFICATION_TIME_MS, notificationCal.getTimeInMillis());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle in) {
         super.onRestoreInstanceState(in);
-        timeText.setText(in.getString(BUNDLE_TIME));
-        dateText.setText(in.getString(BUNDLE_DATE));
-        dueTime = in.getString(BUNDLE_DUE_TIME);
-        dueDate = in.getString(BUNDLE_DUE_DATE);
+        eventCal.setTimeInMillis(in.getLong(BUNDLE_TIME_MS));
+        notificationCal.setTimeInMillis(in.getLong(BUNDLE_NOTIFICATION_TIME_MS));
     }
 
     @Override
@@ -154,77 +134,40 @@ public class ScheduleItemActivity extends AppCompatActivity {
         realm.close();
     }
 
-    private void setFields(int ID) {
-        item = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, ID).findFirst();
+    private void getViews() {
 
-        ((EditText) findViewById(R.id.et_title)).setText(item.getTitle());
-        ((EditText) findViewById(R.id.et_notes)).setText(item.getNotes());
+        titleText = findViewById(R.id.et_title);
+        notesText = findViewById(R.id.et_notes);
+        dateText = findViewById(R.id.et_date);
+        timeText = findViewById(R.id.et_time);
+        checkBox = findViewById(R.id.checkBox);
+        notificationDateText = findViewById(R.id.et_notification_date);
+        notificationTimeText = findViewById(R.id.et_notification_time);
+        notificationSwitch = findViewById(R.id.switch_notification);
 
-        Spinner spinner = findViewById(R.id.spinner);
-        switch (item.getType()) {
-            case HOMEWORK:
-                spinner.setSelection(0);
-                break;
-            case COURSEWORK:
-                spinner.setSelection(1);
-                break;
-            case TEST:
-                spinner.setSelection(2);
-                break;
-            case EXAM:
-                spinner.setSelection(3);
-                break;
-        }
-
-        checkBox.setChecked(item.isCompleted());
-
-        dueTime = timeFormat.format(new Date(item.getTime()));
-        dueDate = dateFormat.format(new Date(item.getTime()));
-
-        hour = Integer.parseInt(dueTime.substring(0, 2));
-        minute = Integer.parseInt(dueTime.substring(3, 5));
-
-        day = Integer.parseInt(dueDate.substring(0, 2));
-        month = Integer.parseInt(dueDate.substring(3, 5)) - 1;
-        year = Integer.parseInt(dueDate.substring(6, 10));
-
-        timeText = findViewById(R.id.tv_time);
-        dateText = findViewById(R.id.tv_date);
-        try {
-            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
-            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-            timeText.setText(dueTime);
-            dateText.setText(dueDate);
-        }
-    }
-
-    public void setSpinner() {
-        Spinner spinner = findViewById(R.id.spinner);
+        spinner = findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0:
                         type = ScheduleItem.ScheduleItemType.HOMEWORK;
-                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
+                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
                         break;
                     case 1:
                         type = ScheduleItem.ScheduleItemType.COURSEWORK;
-                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
+                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
                         break;
                     case 2:
                         type = ScheduleItem.ScheduleItemType.TEST;
-                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
+                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
                         break;
                     case 3:
                         type = ScheduleItem.ScheduleItemType.EXAM;
-                        ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
+                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
                         break;
                 }
-                ((TextView) view).setCompoundDrawablePadding(50);
+                //((TextView) view).setCompoundDrawablePadding(50);
                 //HelperUtils.setDrawableColour(((TextView) view).getCompoundDrawables()[0], ContextCompat.getColor(ScheduleItemActivity.this, R.color.textGrey));
             }
 
@@ -234,15 +177,78 @@ public class ScheduleItemActivity extends AppCompatActivity {
         });
     }
 
-    private void saveItem() {
-        title = ((EditText) findViewById(R.id.et_title)).getText().toString().trim();
-        notes = ((EditText) findViewById(R.id.et_notes)).getText().toString().trim();
+    private void setFields() {
+        item = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, itemID).findFirst();
 
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(dueDate) || TextUtils.isEmpty(dueTime)) {
+        if (item != null) {
+            titleText.setText(item.getTitle());
+            notesText.setText(item.getNotes());
+
+            spinner = findViewById(R.id.spinner);
+            switch (item.getType()) {
+                case HOMEWORK:
+                    spinner.setSelection(0);
+                    break;
+                case COURSEWORK:
+                    spinner.setSelection(1);
+                    break;
+                case TEST:
+                    spinner.setSelection(2);
+                    break;
+                case EXAM:
+                    spinner.setSelection(3);
+                    break;
+            }
+
+            checkBox.setChecked(item.isCompleted());
+            notificationSwitch.setChecked(item.isReminder());
+
+            eventCal.setTimeInMillis(item.getTime());
+            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(eventCal.getTimeInMillis()));
+            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(eventCal.getTimeInMillis()));
+
+            if (item.getReminderTime() != 0L) {
+                notificationCal.setTimeInMillis(item.getReminderTime());
+                notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
+                notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
+            }
+        }
+    }
+
+    private void saveItem() {
+        final String title = titleText.getText().toString().trim();
+        final String notes = notesText.getText().toString().trim();
+        final boolean completed = checkBox.isChecked();
+        final boolean reminder;
+        final long reminderTime;
+
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(timeText.getText().toString()) || TextUtils.isEmpty(dateText.getText().toString())) {
             Toast.makeText(getApplicationContext(), getString(R.string.fill_event), Toast.LENGTH_SHORT).show();
             return;
         }
-        epochTime = parseDateTime(dueDate, dueTime);
+
+        // If item is not complete and notification is on:
+        if (!completed && notificationSwitch.isChecked()) {
+            if (TextUtils.isEmpty(notificationTimeText.getText().toString()) || TextUtils.isEmpty(notificationDateText.getText().toString())) {
+                Toast.makeText(getApplicationContext(), getString(R.string.fill_notification), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (eventCal.getTimeInMillis() < notificationCal.getTimeInMillis()) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (System.currentTimeMillis() < notificationCal.getTimeInMillis()) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time_past), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            reminder = true;
+            reminderTime = notificationCal.getTimeInMillis();
+            // Set alarm on
+        } else {
+            reminder = false;
+            reminderTime = 0L;
+            // Set alarm off
+        }
 
         Number num = realm.where(ScheduleItem.class).max(ScheduleItem.ScheduleItem_ID);
         final int maxID;
@@ -260,11 +266,13 @@ public class ScheduleItemActivity extends AppCompatActivity {
                     scheduleItem = realm.createObject(ScheduleItem.class);
                     scheduleItem.setID(maxID + 1);
                 }
-                scheduleItem.setCompleted(checkBox.isChecked());
+                scheduleItem.setCompleted(completed);
                 scheduleItem.setTitle(title);
                 scheduleItem.setNotes(notes);
-                scheduleItem.setTime(epochTime);
+                scheduleItem.setTime(eventCal.getTimeInMillis());
                 scheduleItem.setType(type);
+                scheduleItem.setReminder(reminder);
+                scheduleItem.setReminderTime(reminderTime);
             }
         });
         finish();
@@ -296,76 +304,51 @@ public class ScheduleItemActivity extends AppCompatActivity {
                 .show();
     }
 
-    //TODO: Cleaner date time parsing, set notification views and alarm
-    public void pickDate(View view) {
+    public void pickDate(final View view) {
         HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, view);
-
-        if (newItem) {
-            final Calendar c = Calendar.getInstance();
-            year = c.get(Calendar.YEAR);
-            month = c.get(Calendar.MONTH);
-            day = c.get(Calendar.DAY_OF_MONTH);
-        }
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(ScheduleItemActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
-
                     @Override
-                    public void onDateSet(DatePicker view, int pickedYear, int monthOfYear, int dayOfMonth) {
-                        dueDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + pickedYear;
-                        year = pickedYear;
-                        month = monthOfYear;
-                        day = dayOfMonth;
-                        try {
-                            dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(dateFormat.parse(dueDate)));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-                            dateText.setText(dueDate);
+                    public void onDateSet(DatePicker datePickerView, int year, int month, int day) {
+                        switch (view.getId()) {
+                            case R.id.et_date:
+                                eventCal.set(Calendar.YEAR, year);
+                                eventCal.set(Calendar.MONTH, month);
+                                eventCal.set(Calendar.DAY_OF_MONTH, day);
+                                dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(eventCal.getTimeInMillis()));
+                                break;
+                            case R.id.et_notification_date:
+                                notificationCal.set(Calendar.YEAR, year);
+                                notificationCal.set(Calendar.MONTH, month);
+                                notificationCal.set(Calendar.DAY_OF_MONTH, day);
+                                notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
+                                break;
                         }
                     }
-                }, year, month, day);
+                }, eventCal.get(Calendar.YEAR), eventCal.get(Calendar.MONTH), eventCal.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
-    public void pickTime(View view) {
+    public void pickTime(final View view) {
         HelperUtils.hideSoftKeyboard(ScheduleItemActivity.this, view);
-
-        if (newItem) {
-            final Calendar c = Calendar.getInstance();
-            hour = c.get(Calendar.HOUR_OF_DAY);
-            minute = c.get(Calendar.MINUTE);
-        }
-
         TimePickerDialog timePickerDialog = new TimePickerDialog(ScheduleItemActivity.this,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {
-                        dueTime = (String.valueOf(hourOfDay) + ":" + String.valueOf(minuteOfHour));
-                        hour = hourOfDay;
-                        minute = minuteOfHour;
-                        try {
-                            timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timeFormat.parse(dueTime)));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                            timeText.setText(dueTime);
+                    public void onTimeSet(TimePicker timePickerView, int hour, int minute) {
+                        switch (view.getId()) {
+                            case R.id.et_time:
+                                eventCal.set(Calendar.HOUR_OF_DAY, hour);
+                                eventCal.set(Calendar.MINUTE, minute);
+                                timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(eventCal.getTimeInMillis()));
+                                break;
+                            case R.id.et_notification_time:
+                                notificationCal.set(Calendar.HOUR_OF_DAY, hour);
+                                notificationCal.set(Calendar.MINUTE, minute);
+                                notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
+                                break;
                         }
                     }
-                }, hour, minute, false);
-
+                }, eventCal.get(Calendar.HOUR_OF_DAY), eventCal.get(Calendar.MINUTE), false);
         timePickerDialog.show();
-    }
-
-    private long parseDateTime(String date, String time) {
-        Date epochDate = null;
-        try {
-            epochDate = dateTimeFormat.parse(date + " " + time);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-        }
-        if (epochDate != null) return epochDate.getTime();
-        else return Calendar.getInstance().getTimeInMillis();
     }
 }

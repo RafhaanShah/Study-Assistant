@@ -105,7 +105,7 @@ public class ScheduleListFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                recyclerAdapter.completeItem(viewHolder.getAdapterPosition());
+                recyclerAdapter.completeEvent(viewHolder.getAdapterPosition());
                 updateView();
             }
 

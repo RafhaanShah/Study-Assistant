@@ -86,7 +86,7 @@ public class ScheduleItem extends RealmObject {
     }
 
     public enum ScheduleItemType {
-        HOMEWORK, COURSEWORK, TEST, EXAM
+        HOMEWORK, TEST, COURSEWORK, EXAM
     }
 }
 

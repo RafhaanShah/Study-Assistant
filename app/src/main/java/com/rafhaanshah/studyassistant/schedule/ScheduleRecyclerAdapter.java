@@ -96,13 +96,13 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 holder.typeText.setText(context.getString(R.string.homework));
                 holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
                 break;
-            case COURSEWORK:
-                holder.typeText.setText(context.getString(R.string.coursework));
-                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
-                break;
             case TEST:
                 holder.typeText.setText(context.getString(R.string.class_test));
                 holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
+                break;
+            case COURSEWORK:
+                holder.typeText.setText(context.getString(R.string.coursework));
+                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
                 break;
             case EXAM:
                 holder.typeText.setText(context.getString(R.string.exam));

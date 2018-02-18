@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.MainActivity;
@@ -108,17 +109,84 @@ public class HelperUtils {
         animator.start();
     }
 
-    public static void fadeOutView(View view, int duration) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1);
-        animator.setDuration(duration);
-        animator.start();
+    public static void fadeOutView(final View view, final int duration) {
+        final AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);
+        fadeOut.setDuration(duration);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+        });
+        view.startAnimation(fadeOut);
     }
 
-    public static void fadeInView(View view, int duration) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.ALPHA, 1, 0);
-        animator.setDuration(duration);
-        animator.start();
+    public static void fadeInView(final View view, final int duration) {
+        final AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+        fadeIn.setDuration(duration);
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                view.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+        });
+        view.startAnimation(fadeIn);
     }
+
+    public static void moveViewY(View view, int distance, int duration) {
+        ObjectAnimator objectanimator = ObjectAnimator.ofFloat(view, View.Y, distance);
+        objectanimator.setDuration(duration);
+        objectanimator.start();
+    }
+
+    public static void moveViewX(View view, int distance, int duration) {
+        ObjectAnimator objectanimator = ObjectAnimator.ofFloat(view, View.X, distance);
+        objectanimator.setDuration(duration);
+        objectanimator.start();
+    }
+
+    public static void fadeImageChange(final ImageView imageView, final Drawable drawable, final int duration) {
+        final AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);
+        fadeOut.setDuration(duration);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageView.setBackground(drawable);
+                final AlphaAnimation fadeIn = new AlphaAnimation(0f, 1f);
+                fadeIn.setDuration(duration);
+                imageView.startAnimation(fadeIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+        });
+        imageView.startAnimation(fadeOut);
+    }
+
 
     public static void fadeTextChange(final String text, final TextView textView, final int duration) {
         final AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);

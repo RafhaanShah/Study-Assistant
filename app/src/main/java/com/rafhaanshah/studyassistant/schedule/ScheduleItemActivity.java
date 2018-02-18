@@ -18,7 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -49,6 +52,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
     private Spinner spinner;
     private CheckBox checkBox;
     private Switch notificationSwitch;
+    private ImageView imageView;
 
     public static Intent getStartIntent(Context context, int ID) {
         Intent intent = new Intent(context, ScheduleItemActivity.class);
@@ -83,7 +87,8 @@ public class ScheduleItemActivity extends AppCompatActivity {
             findViewById(R.id.btn_delete_event).setVisibility(View.GONE);
         } else {
             newItem = false;
-            setFields();
+            item = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, itemID).findFirst();
+            setViews();
         }
     }
 
@@ -97,7 +102,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_btn_save_event:
-                saveItem();
+                saveEvent();
                 return true;
         }
         return false;
@@ -143,10 +148,27 @@ public class ScheduleItemActivity extends AppCompatActivity {
         notesText = findViewById(R.id.et_notes);
         dateText = findViewById(R.id.et_date);
         timeText = findViewById(R.id.et_time);
-        checkBox = findViewById(R.id.checkBox);
         notificationDateText = findViewById(R.id.et_notification_date);
         notificationTimeText = findViewById(R.id.et_notification_time);
         notificationSwitch = findViewById(R.id.switch_notification);
+
+        final RelativeLayout notificationLayout = findViewById(R.id.reminder_layout);
+        imageView = findViewById(R.id.image_view_type);
+        imageView.setBackground(getDrawable(R.drawable.ic_edit_black_24dp));
+
+        checkBox = findViewById(R.id.checkBox);
+        checkBox.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            notificationLayout.setVisibility(View.GONE);
+                        } else {
+                            notificationLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+        );
 
         spinner = findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -155,23 +177,21 @@ public class ScheduleItemActivity extends AppCompatActivity {
                 switch (i) {
                     case 0:
                         type = ScheduleItem.ScheduleItemType.HOMEWORK;
-                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
+                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_edit_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
                         break;
                     case 1:
-                        type = ScheduleItem.ScheduleItemType.COURSEWORK;
-                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
+                        type = ScheduleItem.ScheduleItemType.TEST;
+                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_chrome_reader_mode_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
                         break;
                     case 2:
-                        type = ScheduleItem.ScheduleItemType.TEST;
-                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
+                        type = ScheduleItem.ScheduleItemType.COURSEWORK;
+                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_computer_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
                         break;
                     case 3:
                         type = ScheduleItem.ScheduleItemType.EXAM;
-                        //((TextView) view).setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
+                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_event_note_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
                         break;
                 }
-                //((TextView) view).setCompoundDrawablePadding(50);
-                //HelperUtils.setDrawableColour(((TextView) view).getCompoundDrawables()[0], ContextCompat.getColor(ScheduleItemActivity.this, R.color.textGrey));
             }
 
             @Override
@@ -180,9 +200,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
         });
     }
 
-    private void setFields() {
-        item = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_ID, itemID).findFirst();
-
+    private void setViews() {
         if (item != null) {
             titleText.setText(item.getTitle());
             notesText.setText(item.getNotes());
@@ -191,15 +209,19 @@ public class ScheduleItemActivity extends AppCompatActivity {
             switch (item.getType()) {
                 case HOMEWORK:
                     spinner.setSelection(0);
-                    break;
-                case COURSEWORK:
-                    spinner.setSelection(1);
+                    imageView.setBackground(getDrawable(R.drawable.ic_edit_black_24dp));
                     break;
                 case TEST:
+                    spinner.setSelection(1);
+                    imageView.setBackground(getDrawable(R.drawable.ic_computer_black_24dp));
+                    break;
+                case COURSEWORK:
                     spinner.setSelection(2);
+                    imageView.setBackground(getDrawable(R.drawable.ic_chrome_reader_mode_black_24dp));
                     break;
                 case EXAM:
                     spinner.setSelection(3);
+                    imageView.setBackground(getDrawable(R.drawable.ic_event_note_black_24dp));
                     break;
             }
 
@@ -218,7 +240,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
         }
     }
 
-    private void saveItem() {
+    private void saveEvent() {
         final String title = titleText.getText().toString().trim();
         final String notes = notesText.getText().toString().trim();
         final boolean completed = checkBox.isChecked();
@@ -235,7 +257,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
         if (newItem)
             itemID = newID;
 
-        // If item is not complete and notification is on:
+        // If event is not complete and notification is on:
         if (!completed && notificationSwitch.isChecked()) {
             if (TextUtils.isEmpty(notificationTimeText.getText().toString()) || TextUtils.isEmpty(notificationDateText.getText().toString())) {
                 Toast.makeText(getApplicationContext(), getString(R.string.fill_notification), Toast.LENGTH_SHORT).show();

@@ -5,10 +5,4 @@
         <item>@string/coursework</item>
         <item>@string/exam</item>
     </string-array>
-    <string-array name="event_icons">
-        <item>@drawable/ic_edit_black_24dp</item>
-        <item>@drawable/ic_chrome_reader_mode_black_24dp</item>
-        <item>@drawable/ic_computer_black_24dp</item>
-        <item>@drawable/ic_event_note_black_24dp</item>
-    </string-array>
 </resources>

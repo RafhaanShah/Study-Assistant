@@ -14,7 +14,8 @@
         android:id="@+id/flash_card_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:animateLayoutChanges="true">
 
         <TextView
             android:id="@+id/tv_flash_card"

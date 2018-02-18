@@ -76,6 +76,7 @@ public class Notifier {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, itemID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Log.v("Notify", timeString);
+        Log.v("Notify Intent", pendingIntent.toString());
 
         return pendingIntent;
     }

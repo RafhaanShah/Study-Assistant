@@ -24,6 +24,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Case;
@@ -71,7 +72,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         final ScheduleItem item = filteredItems.get(position);
         final long currentTime = System.currentTimeMillis();
         final long eventTime = item.getTime();
-        String showTime = (String) DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS);
+        String showTime = DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS).toString();
         int colour = ContextCompat.getColor(context, R.color.materialGreen);
 
         if (item.isCompleted()) {
@@ -217,6 +218,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     void completeEvent(int position) {
         final ScheduleItem item = filteredItems.get(position);
+        final long notificationTime = item.getReminderTime();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
@@ -226,11 +228,14 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                     item.setCompleted(true);
                     item.setReminder(false);
                     item.setReminderTime(0L);
-                    // TODO: Turn off alarm
                 }
             }
         });
         notifyItemRemoved(position);
+        if (notificationTime != 0L) {
+            String timeString = DateUtils.getRelativeTimeSpanString(item.getTime(), notificationTime, DateUtils.MINUTE_IN_MILLIS).toString();
+            Notifier.cancelScheduledNotification(context, item.getID(), item.getTitle(), timeString);
+        }
     }
 
     void addListener() {
@@ -248,7 +253,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private void showDialogFragment() {
         ScheduleItemFragment scheduleItemFragment = ScheduleItemFragment.newInstance();
-        scheduleItemFragment.show(fragmentManager, "fragment_edit_name");
+        scheduleItemFragment.show(fragmentManager, "event_fragment");
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

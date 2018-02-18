@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +26,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.text.DateFormat;
@@ -71,12 +74,12 @@ public class ScheduleItemActivity extends AppCompatActivity {
         notificationCal = Calendar.getInstance();
 
         realm = Realm.getDefaultInstance();
-        itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, 0);
+        itemID = getIntent().getIntExtra(EXTRA_ITEM_ID, -1);
 
-        if (itemID == 0) {
+        if (itemID < 0) {
             newItem = true;
-            toolbar.setTitle(getString(R.string.new_event));
             titleText.requestFocus();
+            toolbar.setTitle(getString(R.string.new_event));
             findViewById(R.id.btn_delete_event).setVisibility(View.GONE);
         } else {
             newItem = false;
@@ -221,11 +224,16 @@ public class ScheduleItemActivity extends AppCompatActivity {
         final boolean completed = checkBox.isChecked();
         final boolean reminder;
         final long reminderTime;
+        final long eventTime = eventCal.getTimeInMillis();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(timeText.getText().toString()) || TextUtils.isEmpty(dateText.getText().toString())) {
             Toast.makeText(getApplicationContext(), getString(R.string.fill_event), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        final int newID = getNextID();
+        if (newItem)
+            itemID = newID;
 
         // If item is not complete and notification is on:
         if (!completed && notificationSwitch.isChecked()) {
@@ -237,25 +245,19 @@ public class ScheduleItemActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time), Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (System.currentTimeMillis() < notificationCal.getTimeInMillis()) {
+            if (System.currentTimeMillis() > notificationCal.getTimeInMillis()) {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time_past), Toast.LENGTH_SHORT).show();
                 return;
             }
             reminder = true;
             reminderTime = notificationCal.getTimeInMillis();
-            // Set alarm on
+            String timeString = DateUtils.getRelativeTimeSpanString(eventTime, reminderTime, DateUtils.MINUTE_IN_MILLIS).toString();
+            Notifier.scheduleNotification(ScheduleItemActivity.this, itemID, title, timeString, reminderTime);
         } else {
             reminder = false;
             reminderTime = 0L;
-            // Set alarm off
-        }
-
-        Number num = realm.where(ScheduleItem.class).max(ScheduleItem.ScheduleItem_ID);
-        final int maxID;
-        if (num != null) {
-            maxID = num.intValue();
-        } else {
-            maxID = 0;
+            String timeString = DateUtils.getRelativeTimeSpanString(eventTime, notificationCal.getTimeInMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
+            Notifier.cancelScheduledNotification(ScheduleItemActivity.this, itemID, title, timeString);
         }
 
         realm.executeTransaction(new Realm.Transaction() {
@@ -263,20 +265,33 @@ public class ScheduleItemActivity extends AppCompatActivity {
             public void execute(@NonNull Realm realm) {
                 ScheduleItem scheduleItem = item;
                 if (newItem) {
-                    scheduleItem = realm.createObject(ScheduleItem.class);
-                    scheduleItem.setID(maxID + 1);
+                    scheduleItem = realm.createObject(ScheduleItem.class, newID);
                 }
                 scheduleItem.setCompleted(completed);
                 scheduleItem.setTitle(title);
                 scheduleItem.setNotes(notes);
-                scheduleItem.setTime(eventCal.getTimeInMillis());
+                scheduleItem.setTime(eventTime);
                 scheduleItem.setType(type);
                 scheduleItem.setReminder(reminder);
                 scheduleItem.setReminderTime(reminderTime);
             }
         });
+        Log.v("Notify Saved ID ", String.valueOf(itemID));
         finish();
         overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
+    }
+
+    private int getNextID() {
+        try {
+            Number number = realm.where(ScheduleItem.class).max(ScheduleItem.ScheduleItem_ID);
+            if (number != null) {
+                return number.intValue() + 1;
+            } else {
+                return 0;
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return 0;
+        }
     }
 
     public void deleteEvent(View view) {

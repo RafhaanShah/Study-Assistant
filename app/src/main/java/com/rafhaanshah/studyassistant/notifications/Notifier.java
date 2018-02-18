@@ -29,21 +29,22 @@ public class Notifier {
     private Notifier() {
     }
 
-    public static void scheduleNotification(Context context, int itemID, String itemTitle, String itemTime, long notificationTime) {
+    public static void scheduleNotification(Context context, int itemID, String itemTitle, String timeString, long notificationTime) {
         Log.v("Notify", "Set " + String.valueOf(itemID));
-        setAlarm(context, getAlarmIntent(context, itemID, itemTitle, itemTime));
+        setAlarm(context, getAlarmIntent(context, itemID, itemTitle, timeString), notificationTime);
     }
 
-    public static void cancelScheduledNotification(Context context, int itemID, String itemTitle, String itemTime, long notificationTime) {
+    public static void cancelScheduledNotification(Context context, int itemID, String itemTitle, String timeString) {
         Log.v("Notify", "Cancel " + String.valueOf(itemID));
-        cancelAlarm(context, getAlarmIntent(context, itemID, itemTitle, itemTime));
+        cancelAlarm(context, getAlarmIntent(context, itemID, itemTitle, timeString));
     }
 
-    private static void setAlarm(Context context, PendingIntent pendingIntent) {
+    private static void setAlarm(Context context, PendingIntent pendingIntent, long alarmTime) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null)
             // TODO: Change to actual notification time
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5000, pendingIntent);
+            //alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 8000, pendingIntent);
     }
 
     private static void cancelAlarm(Context context, PendingIntent pendingIntent) {
@@ -52,7 +53,7 @@ public class Notifier {
             alarmManager.cancel(pendingIntent);
     }
 
-    private static PendingIntent getAlarmIntent(Context context, int itemID, String itemTitle, String itemTime) {
+    private static PendingIntent getAlarmIntent(Context context, int itemID, String itemTitle, String timeString) {
         // Get intent for the timed alarm
         Intent intent = new Intent(context, NotificationReceiver.class);
         intent.setAction(ACTION_NOTIFICATION);
@@ -71,8 +72,10 @@ public class Notifier {
         //PendingIntent resultPendingIntent = PendingIntent.getActivity(context, REQUEST_EVENT_RESULT, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Add the notification to the intent for the timed alarm
-        intent.putExtra(EXTRA_NOTIFICATION_EVENT, buildNotification(context, resultPendingIntent, itemTitle, itemTime));
+        intent.putExtra(EXTRA_NOTIFICATION_EVENT, buildNotification(context, resultPendingIntent, itemTitle, timeString));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, itemID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Log.v("Notify", timeString);
 
         return pendingIntent;
     }

@@ -1,6 +1,8 @@
 package com.rafhaanshah.studyassistant.schedule;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class ScheduleItem extends RealmObject {
 
@@ -11,8 +13,11 @@ public class ScheduleItem extends RealmObject {
     static final String ScheduleItem_TIME = "time";
     static final String ScheduleItem_COMPLETED = "completed";
 
+    @PrimaryKey
     private int ID;
+    @Required
     private String title, notes, type;
+    @Required
     private Long time, reminderTime;
     private boolean completed, reminder;
 

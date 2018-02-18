@@ -2,6 +2,7 @@ package com.rafhaanshah.studyassistant.flashcards;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Required;
 
 public class FlashCardSet extends RealmObject {
 
@@ -9,6 +10,7 @@ public class FlashCardSet extends RealmObject {
     static final String FlashCardSet_CARDS = "cards";
     static final String FlashCardSet_ANSWERS = "answers";
 
+    @Required
     private String title;
     private RealmList<String> cards;
     private RealmList<String> answers;

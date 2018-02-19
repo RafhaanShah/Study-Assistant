@@ -33,7 +33,7 @@ public class FlashCardSetFragment extends Fragment {
         bundle.putString(BUNDLE_CARD_TEXT, card);
         bundle.putString(BUNDLE_ANSWER_TEXT, answer);
         bundle.putInt(BUNDLE_POSITION, pos);
-        bundle.putInt(BUNDLE_POSITION, offset);
+        bundle.putInt(BUNDLE_OFFSET, offset);
         flashCardSetFragment.setArguments(bundle);
         return flashCardSetFragment;
     }

@@ -1,6 +1,5 @@
 package com.rafhaanshah.studyassistant.schedule;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -117,7 +116,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             public void onClick(View view) {
                 //showDialogFragment();
                 context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
-                ((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
+                //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -151,7 +150,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private void editEvent(ScheduleItem item) {
         context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
-        ((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
+        //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 
     private void deleteEvent(final ScheduleItem item, final int position) {

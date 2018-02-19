@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void newScheduleItem(View view) {
         startActivity(ScheduleItemActivity.getStartIntent(MainActivity.this, -1));
-        overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
+        //overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 
     public void newFlashCardItem(View view) {

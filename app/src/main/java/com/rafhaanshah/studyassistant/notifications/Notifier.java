@@ -44,7 +44,7 @@ public class Notifier {
         if (alarmManager != null)
             // TODO: Change to actual notification time
             //alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent);
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 8000, pendingIntent);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 30000, pendingIntent);
     }
 
     private static void cancelAlarm(Context context, PendingIntent pendingIntent) {

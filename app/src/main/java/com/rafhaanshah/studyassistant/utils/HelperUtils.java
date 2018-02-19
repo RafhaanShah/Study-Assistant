@@ -29,6 +29,20 @@ public class HelperUtils {
     private HelperUtils() {
     }
 
+    public static ArrayList<File> getLectureFiles(Context context) {
+        return new ArrayList<>(Arrays.asList(getLectureDirectory(context).listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(MainActivity.PDF);
+            }
+        })));
+    }
+
+    public static File getLectureDirectory(Context context) {
+        return new File(context.getFilesDir().getAbsolutePath() + File.separator + LECTURE_DIRECTORY);
+    }
+
+
     public static int getColour(Context context, int position) {
         int colour = 0;
         switch (position % 5) {
@@ -88,19 +102,6 @@ public class HelperUtils {
         } catch (NullPointerException E) {
             // Not a huge problem if keyboard is not automatically shown
         }
-    }
-
-    public static ArrayList<File> getLectureFiles(Context context) {
-        return new ArrayList<>(Arrays.asList(getLectureDirectory(context).listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.toLowerCase().endsWith(MainActivity.PDF);
-            }
-        })));
-    }
-
-    public static File getLectureDirectory(Context context) {
-        return new File(context.getFilesDir().getAbsolutePath() + File.separator + LECTURE_DIRECTORY);
     }
 
     public static void rotateView(View view, int duration) {

@@ -1,7 +1,6 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -65,7 +64,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             @Override
             public void onClick(View view) {
                 context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle(), holder.getAdapterPosition()));
-                ((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
+                //((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
 

@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,7 +53,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
         String title = getIntent().getStringExtra(EXTRA_SET_TITLE);
         int offset = getIntent().getIntExtra(EXTRA_SET_OFFSET, 0);
-        Log.v("Offset", String.valueOf(offset));
 
         realm = Realm.getDefaultInstance();
         flashCardSet = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
@@ -118,15 +116,14 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+        onBackPressed();
         return true;
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+        //overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
     @Override
@@ -219,7 +216,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         });
         if (viewPager.getAdapter() == null) {
             finish();
-            overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
+            //overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
         } else {
             flashCardSetAdapter.removeFragment(current);
             flashCardSetAdapter.notifyDataSetChanged();

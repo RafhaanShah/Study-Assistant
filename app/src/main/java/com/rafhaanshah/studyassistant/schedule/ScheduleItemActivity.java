@@ -110,16 +110,14 @@ public class ScheduleItemActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
-        super.onSupportNavigateUp();
-        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
+        onBackPressed();
         return true;
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
+        //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
 
     @Override
@@ -154,7 +152,6 @@ public class ScheduleItemActivity extends AppCompatActivity {
 
         final RelativeLayout notificationLayout = findViewById(R.id.reminder_layout);
         imageView = findViewById(R.id.image_view_type);
-        imageView.setBackground(getDrawable(R.drawable.ic_edit_black_24dp));
 
         checkBox = findViewById(R.id.checkBox);
         checkBox.setOnCheckedChangeListener(
@@ -174,24 +171,26 @@ public class ScheduleItemActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.v("Selector", String.valueOf(i));
                 switch (i) {
                     case 0:
                         type = ScheduleItem.ScheduleItemType.HOMEWORK;
-                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_edit_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
+                        imageView.setBackground(getDrawable(R.drawable.ic_border_color_white_24dp));
                         break;
                     case 1:
                         type = ScheduleItem.ScheduleItemType.TEST;
-                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_chrome_reader_mode_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
+                        imageView.setBackground(getDrawable(R.drawable.ic_chrome_reader_mode_white_24dp));
                         break;
                     case 2:
                         type = ScheduleItem.ScheduleItemType.COURSEWORK;
-                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_computer_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
+                        imageView.setBackground(getDrawable(R.drawable.ic_computer_white_24dp));
                         break;
                     case 3:
                         type = ScheduleItem.ScheduleItemType.EXAM;
-                        HelperUtils.fadeImageChange(imageView, getDrawable(R.drawable.ic_event_note_black_24dp), getResources().getInteger(R.integer.animation_fade_time));
+                        imageView.setBackground(getDrawable(R.drawable.ic_event_note_white_24dp));
                         break;
                 }
+                //imageView.getBackground().setTint(ContextCompat.getColor(ScheduleItemActivity.this, R.color.colorPrimary));
             }
 
             @Override
@@ -206,22 +205,19 @@ public class ScheduleItemActivity extends AppCompatActivity {
             notesText.setText(item.getNotes());
 
             spinner = findViewById(R.id.spinner);
+            Log.v("Set Type", item.getType().toString());
             switch (item.getType()) {
                 case HOMEWORK:
                     spinner.setSelection(0);
-                    imageView.setBackground(getDrawable(R.drawable.ic_edit_black_24dp));
                     break;
                 case TEST:
                     spinner.setSelection(1);
-                    imageView.setBackground(getDrawable(R.drawable.ic_computer_black_24dp));
                     break;
                 case COURSEWORK:
                     spinner.setSelection(2);
-                    imageView.setBackground(getDrawable(R.drawable.ic_chrome_reader_mode_black_24dp));
                     break;
                 case EXAM:
                     spinner.setSelection(3);
-                    imageView.setBackground(getDrawable(R.drawable.ic_event_note_black_24dp));
                     break;
             }
 
@@ -300,7 +296,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
         });
         Log.v("Notify Saved ID ", String.valueOf(itemID));
         finish();
-        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
+        //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
 
     private int getNextID() {
@@ -329,7 +325,7 @@ public class ScheduleItemActivity extends AppCompatActivity {
                             }
                         });
                         finish();
-                        overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
+                        //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
                     }
                 })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {

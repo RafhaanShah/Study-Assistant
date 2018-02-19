@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".schedule.ScheduleItemActivity"
+            android:name=".schedule.ScheduleEventActivity"
             android:parentActivityName=".MainActivity" />
 
         <activity

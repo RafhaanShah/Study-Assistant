@@ -37,8 +37,8 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     private static final int ONE_DAY_MS = 86400000;
 
-    private RealmResults<ScheduleItem> scheduleItems;
-    private RealmResults<ScheduleItem> filteredItems;
+    private RealmResults<ScheduleEvent> scheduleEvents;
+    private RealmResults<ScheduleEvent> filteredEvents;
     private FragmentManager fragmentManager;
     private RecyclerView recyclerView;
     private Context context;
@@ -55,26 +55,26 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             sort = Sort.ASCENDING;
         }
         recyclerView = getRecyclerView;
-        scheduleItems = realm.where(ScheduleItem.class).equalTo(ScheduleItem.ScheduleItem_COMPLETED, history).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
-        filteredItems = scheduleItems;
+        scheduleEvents = realm.where(ScheduleEvent.class).equalTo(ScheduleEvent.ScheduleEvent_COMPLETED, history).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
+        filteredEvents = scheduleEvents;
     }
 
     @Override
     public ScheduleRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_schedule, parent, false);
+        View view = inflater.inflate(R.layout.item_schedule_event, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final ScheduleItem item = filteredItems.get(position);
+        final ScheduleEvent scheduleEvent = filteredEvents.get(position);
         final long currentTime = System.currentTimeMillis();
-        final long eventTime = item.getTime();
+        final long eventTime = scheduleEvent.getTime();
         String showTime = DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS).toString();
         int colour = ContextCompat.getColor(context, R.color.materialGreen);
 
-        if (item.isCompleted()) {
+        if (scheduleEvent.isCompleted()) {
             colour = ContextCompat.getColor(context, R.color.materialBlue);
         } else if (eventTime < currentTime) {
             colour = ContextCompat.getColor(context, R.color.materialRed);
@@ -87,10 +87,10 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         shape.setShape(GradientDrawable.RECTANGLE);
 
         holder.rectangle.setBackground(shape);
-        holder.titleText.setText(item.getTitle());
+        holder.titleText.setText(scheduleEvent.getTitle());
         holder.timeText.setText(showTime);
 
-        switch (item.getType()) {
+        switch (scheduleEvent.getType()) {
             case HOMEWORK:
                 holder.typeText.setText(context.getString(R.string.homework));
                 holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
@@ -115,20 +115,20 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             @Override
             public void onClick(View view) {
                 //showDialogFragment();
-                context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
+                context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
                 //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
             }
         });
         holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View view) {
-                showPopupMenu(holder, item, holder.getAdapterPosition());
+                showPopupMenu(holder, scheduleEvent, holder.getAdapterPosition());
                 return true;
             }
         });
     }
 
-    private void showPopupMenu(ViewHolder holder, final ScheduleItem item, final int position) {
+    private void showPopupMenu(ViewHolder holder, final ScheduleEvent scheduleEvent, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.END);
         popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -136,10 +136,10 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_edit:
-                        editEvent(item);
+                        editEvent(scheduleEvent);
                         return true;
                     case R.id.popup_delete:
-                        deleteEvent(item, position);
+                        deleteEvent(scheduleEvent, position);
                         return true;
                 }
                 return false;
@@ -148,12 +148,12 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         popup.show();
     }
 
-    private void editEvent(ScheduleItem item) {
-        context.startActivity(ScheduleItemActivity.getStartIntent(context, item.getID()));
+    private void editEvent(ScheduleEvent scheduleEvent) {
+        context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
         //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 
-    private void deleteEvent(final ScheduleItem item, final int position) {
+    private void deleteEvent(final ScheduleEvent scheduleEvent, final int position) {
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_event))
@@ -162,7 +162,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(@NonNull Realm realm) {
-                                item.deleteFromRealm();
+                                scheduleEvent.deleteFromRealm();
                             }
                         });
                         notifyItemRemoved(position);
@@ -183,11 +183,11 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     @Override
     public int getItemCount() {
-        return filteredItems.size();
+        return filteredEvents.size();
     }
 
     private void resetList() {
-        filteredItems = scheduleItems;
+        filteredEvents = scheduleEvents;
     }
 
     void animateList() {
@@ -197,9 +197,9 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
         recyclerView.scheduleLayoutAnimation();
     }
 
-    void filterType(ScheduleItem.ScheduleItemType type) {
+    void filterType(ScheduleEvent.ScheduleItemType type) {
         if (type != null) {
-            filteredItems = scheduleItems.where().equalTo(ScheduleItem.ScheduleItem_TYPE, type.name()).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
+            filteredEvents = scheduleEvents.where().equalTo(ScheduleEvent.ScheduleEvent_TYPE, type.name()).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
         } else {
             resetList();
         }
@@ -208,7 +208,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
 
     void filter(String query) {
         if (!TextUtils.isEmpty(query)) {
-            filteredItems = scheduleItems.where().contains(ScheduleItem.ScheduleItem_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleItem.ScheduleItem_TIME, sort);
+            filteredEvents = scheduleEvents.where().contains(ScheduleEvent.ScheduleEvent_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
         } else {
             resetList();
         }
@@ -216,43 +216,43 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     }
 
     void completeEvent(int position) {
-        final ScheduleItem item = filteredItems.get(position);
-        final long notificationTime = item.getReminderTime();
+        final ScheduleEvent scheduleEvent = filteredEvents.get(position);
+        final long notificationTime = scheduleEvent.getReminderTime();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                if (item.isCompleted()) {
-                    item.setCompleted(false);
+                if (scheduleEvent.isCompleted()) {
+                    scheduleEvent.setCompleted(false);
                 } else {
-                    item.setCompleted(true);
-                    item.setReminder(false);
-                    item.setReminderTime(0L);
+                    scheduleEvent.setCompleted(true);
+                    scheduleEvent.setReminder(false);
+                    scheduleEvent.setReminderTime(0L);
                 }
             }
         });
         notifyItemRemoved(position);
-        if (notificationTime != 0L) {
-            String timeString = DateUtils.getRelativeTimeSpanString(item.getTime(), notificationTime, DateUtils.MINUTE_IN_MILLIS).toString();
-            Notifier.cancelScheduledNotification(context, item.getID(), item.getTitle(), timeString);
+        if (notificationTime != 0L && notificationTime > System.currentTimeMillis()) {
+            String timeString = DateUtils.getRelativeTimeSpanString(scheduleEvent.getTime(), notificationTime, DateUtils.MINUTE_IN_MILLIS).toString();
+            Notifier.cancelScheduledNotification(context, scheduleEvent.getID(), scheduleEvent.getTitle(), timeString);
         }
     }
 
     void addListener() {
-        scheduleItems.addChangeListener(new RealmChangeListener<RealmResults<ScheduleItem>>() {
+        scheduleEvents.addChangeListener(new RealmChangeListener<RealmResults<ScheduleEvent>>() {
             @Override
-            public void onChange(@NonNull RealmResults<ScheduleItem> items) {
+            public void onChange(@NonNull RealmResults<ScheduleEvent> items) {
                 notifyItemRangeChanged(0, items.size());
             }
         });
     }
 
     void removeListener() {
-        scheduleItems.removeAllChangeListeners();
+        scheduleEvents.removeAllChangeListeners();
     }
 
     private void showDialogFragment() {
-        ScheduleItemFragment scheduleItemFragment = ScheduleItemFragment.newInstance();
-        scheduleItemFragment.show(fragmentManager, "event_fragment");
+        ScheduleEventFragment scheduleEventFragment = ScheduleEventFragment.newInstance();
+        scheduleEventFragment.show(fragmentManager, "event_fragment");
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

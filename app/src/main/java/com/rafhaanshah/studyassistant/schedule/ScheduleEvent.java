@@ -4,14 +4,14 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
-public class ScheduleItem extends RealmObject {
+public class ScheduleEvent extends RealmObject {
 
-    static final String ScheduleItem_ID = "ID";
-    static final String ScheduleItem_TITLE = "title";
-    static final String ScheduleItem_TYPE = "type";
-    static final String ScheduleItem_NOTES = "notes";
-    static final String ScheduleItem_TIME = "time";
-    static final String ScheduleItem_COMPLETED = "completed";
+    static final String ScheduleEvent_ID = "ID";
+    static final String ScheduleEvent_TITLE = "title";
+    static final String ScheduleEvent_TYPE = "type";
+    static final String ScheduleEvent_NOTES = "notes";
+    static final String ScheduleEvent_TIME = "time";
+    static final String ScheduleEvent_COMPLETED = "completed";
 
     @PrimaryKey
     private int ID;

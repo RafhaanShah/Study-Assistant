@@ -23,7 +23,7 @@ import com.rafhaanshah.studyassistant.R;
 
 import io.realm.Realm;
 
-public class ScheduleListFragment extends Fragment {
+public class ScheduleEventListFragment extends Fragment {
 
     private static boolean history;
     private Realm realm;
@@ -31,9 +31,9 @@ public class ScheduleListFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView emptyText;
 
-    public static ScheduleListFragment newInstance(boolean getHistory) {
+    public static ScheduleEventListFragment newInstance(boolean getHistory) {
         history = getHistory;
-        return new ScheduleListFragment();
+        return new ScheduleEventListFragment();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class ScheduleListFragment extends Fragment {
         recyclerAdapter.filter(query);
     }
 
-    public void filterType(ScheduleItem.ScheduleItemType type) {
+    public void filterType(ScheduleEvent.ScheduleItemType type) {
         recyclerAdapter.filterType(type);
     }
 

@@ -71,7 +71,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 if (flashCardSetAdapter.getFragment(lastPage) != null) {
                     saveFlashCard(flashCardSetAdapter.getFragment(lastPage), lastPage);
                 }
-                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText())) {
+                if (getFragment() != null && TextUtils.isEmpty(getFragment().getText()) && !getFragment().isEditing()) {
                     getFragment().editCard();
                 }
                 lastPage = position;

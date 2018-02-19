@@ -55,15 +55,15 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final FlashCardSet item = filteredSets.get(position);
+        final FlashCardSet flashCardSet = filteredSets.get(position);
 
-        holder.flashCardSetTitle.setText(item.getTitle());
+        holder.flashCardSetTitle.setText(flashCardSet.getTitle());
         //holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
         holder.relativeLayout.setBackgroundColor((HelperUtils.getColour(context, position)));
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(FlashCardSetActivity.getStartIntent(context, item.getTitle(), holder.getAdapterPosition()));
+                context.startActivity(FlashCardSetActivity.getStartIntent(context, flashCardSet.getTitle(), holder.getAdapterPosition()));
                 //((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
@@ -71,7 +71,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View view) {
-                showPopupMenu(holder, item, holder.getAdapterPosition());
+                showPopupMenu(holder, flashCardSet, holder.getAdapterPosition());
                 return true;
             }
         });
@@ -82,7 +82,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         return filteredSets.size();
     }
 
-    private void showPopupMenu(ViewHolder holder, final FlashCardSet item, final int position) {
+    private void showPopupMenu(ViewHolder holder, final FlashCardSet flashCardSet, final int position) {
         PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
         popup.inflate(R.menu.activity_main_popup);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -90,7 +90,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.popup_edit:
-                        renameFlashCardSet(item);
+                        renameFlashCardSet(flashCardSet);
                         return true;
                     case R.id.popup_delete:
                         deleteFlashCardSet(position);
@@ -132,11 +132,11 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 .show();
     }
 
-    private void renameFlashCardSet(final FlashCardSet item) {
+    private void renameFlashCardSet(final FlashCardSet flashCardSet) {
         HelperUtils.showSoftKeyboard(context);
 
         final EditText input = new EditText(context);
-        input.setText(item.getTitle());
+        input.setText(flashCardSet.getTitle());
         input.setSelectAllOnFocus(true);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
@@ -167,7 +167,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(@NonNull Realm realm) {
-                                item.setTitle(title);
+                                flashCardSet.setTitle(title);
                             }
 
                         });
@@ -212,8 +212,8 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     void addListener() {
         flashCardSets.addChangeListener(new RealmChangeListener<RealmResults<FlashCardSet>>() {
             @Override
-            public void onChange(@NonNull RealmResults<FlashCardSet> items) {
-                notifyItemRangeChanged(0, items.size());
+            public void onChange(@NonNull RealmResults<FlashCardSet> flashCardSets) {
+                notifyItemRangeChanged(0, flashCardSets.size());
             }
         });
     }

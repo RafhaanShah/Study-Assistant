@@ -187,10 +187,10 @@ public class FlashCardSetListFragment extends Fragment {
                                 RealmList<String> ans = new RealmList<>();
                                 cards.add("");
                                 ans.add("");
-                                FlashCardSet item = realm.createObject(FlashCardSet.class);
-                                item.setTitle(title);
-                                item.setCards(cards);
-                                item.setAnswers(ans);
+                                FlashCardSet flashCardSet = realm.createObject(FlashCardSet.class);
+                                flashCardSet.setTitle(title);
+                                flashCardSet.setCards(cards);
+                                flashCardSet.setAnswers(ans);
                             }
 
                         });

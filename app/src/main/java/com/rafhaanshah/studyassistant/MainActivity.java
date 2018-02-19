@@ -24,9 +24,9 @@ import android.widget.Toast;
 import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
 import com.rafhaanshah.studyassistant.notifications.Notifier;
-import com.rafhaanshah.studyassistant.schedule.ScheduleItem;
-import com.rafhaanshah.studyassistant.schedule.ScheduleItemActivity;
-import com.rafhaanshah.studyassistant.schedule.ScheduleListFragment;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEventListFragment;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import java.io.File;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
-            selectedFragment = ScheduleListFragment.newInstance(false);
+            selectedFragment = ScheduleEventListFragment.newInstance(false);
             replaceFragment();
         } else {
             selectedFragment = getSupportFragmentManager().findFragmentById(R.id.content);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu getMenu) {
         menu = getMenu;
-        if (selectedFragment.getClass() == ScheduleListFragment.class) {
+        if (selectedFragment.getClass() == ScheduleEventListFragment.class) {
             if (scheduleHistory) {
                 swapToolbarMenu(getString(R.string.menu_history), R.menu.fragment_schedule_list);
             } else {
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_schedule:
-                        selectedFragment = ScheduleListFragment.newInstance(false);
+                        selectedFragment = ScheduleEventListFragment.newInstance(false);
                         scheduleHistory = false;
                         swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
                         break;
@@ -239,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String query) {
-                if (selectedFragment.getClass() == ScheduleListFragment.class) {
-                    ScheduleListFragment frag = (ScheduleListFragment) selectedFragment;
+                if (selectedFragment.getClass() == ScheduleEventListFragment.class) {
+                    ScheduleEventListFragment frag = (ScheduleEventListFragment) selectedFragment;
                     frag.filter(query);
                 } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
                     FlashCardSetListFragment frag = (FlashCardSetListFragment) selectedFragment;
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
             scheduleHistory = true;
             HelperUtils.fadeTextChange(getString(R.string.menu_history), (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
         }
-        selectedFragment = ScheduleListFragment.newInstance(scheduleHistory);
+        selectedFragment = ScheduleEventListFragment.newInstance(scheduleHistory);
         replaceFragment();
     }
 
@@ -288,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void filterButtonPressed() {
-        final ScheduleListFragment frag = (ScheduleListFragment) selectedFragment;
+        final ScheduleEventListFragment frag = (ScheduleEventListFragment) selectedFragment;
 
         PopupMenu popup = new PopupMenu(MainActivity.this, findViewById(R.id.menu_btn_filter));
         popup.inflate(R.menu.fragment_schedule_list_filter);
@@ -297,16 +297,16 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.filter_homework:
-                        frag.filterType(ScheduleItem.ScheduleItemType.HOMEWORK);
+                        frag.filterType(ScheduleEvent.ScheduleItemType.HOMEWORK);
                         return true;
                     case R.id.filter_coursework:
-                        frag.filterType(ScheduleItem.ScheduleItemType.COURSEWORK);
+                        frag.filterType(ScheduleEvent.ScheduleItemType.COURSEWORK);
                         return true;
                     case R.id.filter_test:
-                        frag.filterType(ScheduleItem.ScheduleItemType.TEST);
+                        frag.filterType(ScheduleEvent.ScheduleItemType.TEST);
                         return true;
                     case R.id.filter_exam:
-                        frag.filterType(ScheduleItem.ScheduleItemType.EXAM);
+                        frag.filterType(ScheduleEvent.ScheduleItemType.EXAM);
                         return true;
                     case R.id.filter_none:
                         frag.filterType(null);
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newScheduleItem(View view) {
-        startActivity(ScheduleItemActivity.getStartIntent(MainActivity.this, -1));
+        startActivity(ScheduleEventActivity.getStartIntent(MainActivity.this, -1));
         //overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 

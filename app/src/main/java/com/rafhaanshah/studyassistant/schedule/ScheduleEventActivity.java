@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +42,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
     private static final String BUNDLE_TIME_MS = "BUNDLE_TIME_MS";
     private static final String BUNDLE_NOTIFICATION_TIME_MS = "BUNDLE_NOTIFICATION_TIME_MS";
     private int eventID;
-    private boolean newEvent;
+    private boolean newEvent, reminderSetting;
     private Calendar eventCal, notificationCal;
     private Realm realm;
     private ScheduleEvent scheduleEvent;
@@ -171,7 +170,6 @@ public class ScheduleEventActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.v("Selector", String.valueOf(i));
                 switch (i) {
                     case 0:
                         type = ScheduleEvent.ScheduleItemType.HOMEWORK;
@@ -205,7 +203,6 @@ public class ScheduleEventActivity extends AppCompatActivity {
             notesText.setText(scheduleEvent.getNotes());
 
             spinner = findViewById(R.id.spinner);
-            Log.v("Set Type", scheduleEvent.getType().toString());
             switch (scheduleEvent.getType()) {
                 case HOMEWORK:
                     spinner.setSelection(0);
@@ -223,12 +220,13 @@ public class ScheduleEventActivity extends AppCompatActivity {
 
             checkBox.setChecked(scheduleEvent.isCompleted());
             notificationSwitch.setChecked(scheduleEvent.isReminder());
+            reminderSetting = scheduleEvent.isReminder();
 
             eventCal.setTimeInMillis(scheduleEvent.getTime());
             dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(eventCal.getTimeInMillis()));
             timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(eventCal.getTimeInMillis()));
 
-            if (scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
+            if (scheduleEvent.isReminder() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
                 notificationCal.setTimeInMillis(scheduleEvent.getReminderTime());
                 notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
                 notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
@@ -275,8 +273,10 @@ public class ScheduleEventActivity extends AppCompatActivity {
             // No reminder
             reminder = false;
             reminderTime = 0L;
-            String timeString = DateUtils.getRelativeTimeSpanString(eventTime, notificationCal.getTimeInMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
-            Notifier.cancelScheduledNotification(ScheduleEventActivity.this, eventID, title, timeString);
+
+            // Cancel notification only if it had been set previously
+            if (reminderSetting)
+                Notifier.cancelScheduledNotification(ScheduleEventActivity.this, eventID);
         }
 
         realm.executeTransaction(new Realm.Transaction() {
@@ -295,7 +295,6 @@ public class ScheduleEventActivity extends AppCompatActivity {
                 scheduleEvent.setReminderTime(reminderTime);
             }
         });
-        Log.v("Notify Saved ID ", String.valueOf(eventID));
         finish();
         //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
@@ -325,6 +324,8 @@ public class ScheduleEventActivity extends AppCompatActivity {
                                 scheduleEvent.deleteFromRealm();
                             }
                         });
+                        if (reminderSetting)
+                            Notifier.cancelScheduledNotification(ScheduleEventActivity.this, eventID);
                         finish();
                         //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
                     }
@@ -339,6 +340,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
     }
 
     public void pickDate(final View view) {
+        titleText.clearFocus();
         HelperUtils.hideSoftKeyboard(ScheduleEventActivity.this, view);
         DatePickerDialog datePickerDialog = new DatePickerDialog(ScheduleEventActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
@@ -364,6 +366,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
     }
 
     public void pickTime(final View view) {
+        titleText.clearFocus();
         HelperUtils.hideSoftKeyboard(ScheduleEventActivity.this, view);
         TimePickerDialog timePickerDialog = new TimePickerDialog(ScheduleEventActivity.this,
                 new TimePickerDialog.OnTimeSetListener() {

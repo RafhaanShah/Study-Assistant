@@ -33,7 +33,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 
-public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecyclerAdapter.ViewHolder> {
+public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleEventRecyclerAdapter.ViewHolder> {
 
     private static final int ONE_DAY_MS = 86400000;
 
@@ -45,7 +45,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     private Realm realm;
     private Sort sort;
 
-    ScheduleRecyclerAdapter(Context getContext, FragmentManager fm, Realm getRealm, RecyclerView getRecyclerView, boolean history) {
+    ScheduleEventRecyclerAdapter(Context getContext, FragmentManager fm, Realm getRealm, RecyclerView getRecyclerView, boolean history) {
         realm = getRealm;
         context = getContext;
         fragmentManager = fm;
@@ -60,7 +60,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     }
 
     @Override
-    public ScheduleRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ScheduleEventRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_schedule_event, parent, false);
         return new ViewHolder(view);
@@ -159,12 +159,16 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
                 .setMessage(context.getString(R.string.delete_event))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        if (scheduleEvent.isReminder() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
+                            Notifier.cancelScheduledNotification(context, scheduleEvent.getID());
+                        }
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(@NonNull Realm realm) {
                                 scheduleEvent.deleteFromRealm();
                             }
                         });
+
                         notifyItemRemoved(position);
                     }
                 })
@@ -218,6 +222,7 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
     void completeEvent(int position) {
         final ScheduleEvent scheduleEvent = filteredEvents.get(position);
         final long notificationTime = scheduleEvent.getReminderTime();
+        final boolean notification = scheduleEvent.isReminder();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
@@ -231,9 +236,8 @@ public class ScheduleRecyclerAdapter extends RecyclerView.Adapter<ScheduleRecycl
             }
         });
         notifyItemRemoved(position);
-        if (notificationTime != 0L && notificationTime > System.currentTimeMillis()) {
-            String timeString = DateUtils.getRelativeTimeSpanString(scheduleEvent.getTime(), notificationTime, DateUtils.MINUTE_IN_MILLIS).toString();
-            Notifier.cancelScheduledNotification(context, scheduleEvent.getID(), scheduleEvent.getTitle(), timeString);
+        if (notification && notificationTime != 0L && notificationTime > System.currentTimeMillis()) {
+            Notifier.cancelScheduledNotification(context, scheduleEvent.getID());
         }
     }
 

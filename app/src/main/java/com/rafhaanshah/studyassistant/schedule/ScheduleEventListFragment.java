@@ -27,7 +27,7 @@ public class ScheduleEventListFragment extends Fragment {
 
     private static boolean history;
     private Realm realm;
-    private ScheduleRecyclerAdapter recyclerAdapter;
+    private ScheduleEventRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private TextView emptyText;
 
@@ -57,7 +57,7 @@ public class ScheduleEventListFragment extends Fragment {
         emptyText = view.findViewById(R.id.tv_empty);
 
         recyclerView = view.findViewById(R.id.fragment_recycler_view);
-        recyclerAdapter = new ScheduleRecyclerAdapter(getContext(), getChildFragmentManager(), realm, recyclerView, history);
+        recyclerAdapter = new ScheduleEventRecyclerAdapter(getContext(), getChildFragmentManager(), realm, recyclerView, history);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

@@ -14,11 +14,15 @@ import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
+
+import io.realm.Realm;
 
 public class Notifier {
 
@@ -34,9 +38,9 @@ public class Notifier {
         setAlarm(context, getAlarmIntent(context, eventID, eventTitle, timeString), notificationTime);
     }
 
-    public static void cancelScheduledNotification(Context context, int eventID, String eventTitle, String timeString) {
+    public static void cancelScheduledNotification(Context context, int eventID) {
         Log.v("Notify", "Cancel " + String.valueOf(eventID));
-        cancelAlarm(context, getAlarmIntent(context, eventID, eventTitle, timeString));
+        cancelAlarm(context, getAlarmIntent(context, eventID, "", ""));
     }
 
     private static void setAlarm(Context context, PendingIntent pendingIntent, long alarmTime) {
@@ -44,7 +48,7 @@ public class Notifier {
         if (alarmManager != null)
             // TODO: Change to actual notification time
             //alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent);
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 30000, pendingIntent);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 20000, pendingIntent);
     }
 
     private static void cancelAlarm(Context context, PendingIntent pendingIntent) {
@@ -59,7 +63,7 @@ public class Notifier {
         intent.setAction(ACTION_NOTIFICATION);
         intent.putExtra(ScheduleEventActivity.EXTRA_ITEM_ID, eventID);
 
-        // Get intent for Schedule event Activity
+        // Get intent for Schedule Event Activity
         Intent resultIntent = ScheduleEventActivity.getStartIntent(context, eventID);
 
         // Add correct activity stack
@@ -107,8 +111,25 @@ public class Notifier {
         Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION_EVENT);
         int id = intent.getIntExtra(ScheduleEventActivity.EXTRA_ITEM_ID, 0);
         Log.v("Notify", "Show " + String.valueOf(id));
+        setEventReminderOff(id);
         if (notificationManager != null)
             notificationManager.notify(id, notification);
+    }
+
+    private static void setEventReminderOff(int eventID) {
+        final Realm realm = Realm.getDefaultInstance();
+        final ScheduleEvent scheduleEvent = realm.where(ScheduleEvent.class)
+                .equalTo(ScheduleEvent.ScheduleEvent_ID, eventID).findFirst();
+        if (scheduleEvent != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(@NonNull Realm realm) {
+                    scheduleEvent.setReminder(false);
+                    scheduleEvent.setReminderTime(0L);
+                }
+            });
+        }
+        realm.close();
     }
 
     public static void createNotificationChannel(Context context) {

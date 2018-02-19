@@ -6,12 +6,14 @@ import io.realm.annotations.Required;
 
 public class ScheduleEvent extends RealmObject {
 
-    static final String ScheduleEvent_ID = "ID";
-    static final String ScheduleEvent_TITLE = "title";
-    static final String ScheduleEvent_TYPE = "type";
-    static final String ScheduleEvent_NOTES = "notes";
-    static final String ScheduleEvent_TIME = "time";
-    static final String ScheduleEvent_COMPLETED = "completed";
+    public static final String ScheduleEvent_ID = "ID";
+    public static final String ScheduleEvent_TITLE = "title";
+    public static final String ScheduleEvent_TYPE = "type";
+    public static final String ScheduleEvent_NOTES = "notes";
+    public static final String ScheduleEvent_TIME = "time";
+    public static final String ScheduleEvent_COMPLETED = "completed";
+    public static final String ScheduleEvent_REMINDER = "reminder";
+    public static final String ScheduleEvent_REMINDER_TIME = "reminderTime";
 
     @PrimaryKey
     private int ID;
@@ -21,67 +23,67 @@ public class ScheduleEvent extends RealmObject {
     private Long time, reminderTime;
     private boolean completed, reminder;
 
-    int getID() {
+    public int getID() {
         return ID;
     }
 
-    void setID(int ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    ScheduleItemType getType() {
+    public ScheduleItemType getType() {
         return ScheduleItemType.valueOf(type);
     }
 
-    void setType(ScheduleItemType type) {
+    public void setType(ScheduleItemType type) {
         this.type = type.name();
     }
 
-    String getNotes() {
+    public String getNotes() {
         return notes;
     }
 
-    void setNotes(String notes) {
+    public void setNotes(String notes) {
         this.notes = notes;
     }
 
-    Long getTime() {
+    public Long getTime() {
         return time;
     }
 
-    void setTime(Long time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 
-    boolean isCompleted() {
+    public boolean isCompleted() {
         return completed;
     }
 
-    void setCompleted(boolean completed) {
+    public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
-    Long getReminderTime() {
+    public Long getReminderTime() {
         return reminderTime;
     }
 
-    void setReminderTime(Long reminderTime) {
+    public void setReminderTime(Long reminderTime) {
         this.reminderTime = reminderTime;
     }
 
-    boolean isReminder() {
+    public boolean isReminder() {
         return reminder;
     }
 
-    void setReminder(boolean reminder) {
+    public void setReminder(boolean reminder) {
         this.reminder = reminder;
     }
 

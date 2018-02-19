@@ -46,7 +46,6 @@
 
         <receiver android:name=".notifications.NotificationReceiver">
             <intent-filter>
-                <action android:name="com.rafhaanshah.studyassistant.action.EVENT_NOTIFICATION" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>

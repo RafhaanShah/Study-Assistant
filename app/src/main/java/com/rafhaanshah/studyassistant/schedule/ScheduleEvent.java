@@ -79,7 +79,7 @@ public class ScheduleEvent extends RealmObject {
         this.reminderTime = reminderTime;
     }
 
-    public boolean isReminder() {
+    public boolean isReminderSet() {
         return reminder;
     }
 

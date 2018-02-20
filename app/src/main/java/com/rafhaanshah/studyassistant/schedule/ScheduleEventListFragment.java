@@ -25,21 +25,27 @@ import io.realm.Realm;
 
 public class ScheduleEventListFragment extends Fragment {
 
-    private static boolean history;
+    private static final String BUNDLE_HISTORY = "BUNDLE_HISTORY";
+
+    private boolean history;
     private Realm realm;
     private ScheduleEventRecyclerAdapter recyclerAdapter;
     private RecyclerView recyclerView;
     private TextView emptyText;
 
     public static ScheduleEventListFragment newInstance(boolean getHistory) {
-        history = getHistory;
-        return new ScheduleEventListFragment();
+        ScheduleEventListFragment scheduleEventListFragment = new ScheduleEventListFragment();
+        Bundle bundle = new Bundle(1);
+        bundle.putBoolean(BUNDLE_HISTORY, getHistory);
+        scheduleEventListFragment.setArguments(bundle);
+        return scheduleEventListFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
+        history = getArguments().getBoolean(BUNDLE_HISTORY);
     }
 
     @Override

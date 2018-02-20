@@ -219,14 +219,14 @@ public class ScheduleEventActivity extends AppCompatActivity {
             }
 
             checkBox.setChecked(scheduleEvent.isCompleted());
-            notificationSwitch.setChecked(scheduleEvent.isReminder());
-            reminderSetting = scheduleEvent.isReminder();
+            notificationSwitch.setChecked(scheduleEvent.isReminderSet());
+            reminderSetting = scheduleEvent.isReminderSet();
 
             eventCal.setTimeInMillis(scheduleEvent.getTime());
             dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(eventCal.getTimeInMillis()));
             timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(eventCal.getTimeInMillis()));
 
-            if (scheduleEvent.isReminder() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
+            if (scheduleEvent.isReminderSet() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
                 notificationCal.setTimeInMillis(scheduleEvent.getReminderTime());
                 notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
                 notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));

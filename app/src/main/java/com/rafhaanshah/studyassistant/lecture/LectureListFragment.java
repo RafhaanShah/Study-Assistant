@@ -42,7 +42,7 @@ public class LectureListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sorting = getArguments().getInt(BUNDLE_SORTING, 0);
+        sorting = getArguments().getInt(BUNDLE_SORTING);
     }
 
     @Override

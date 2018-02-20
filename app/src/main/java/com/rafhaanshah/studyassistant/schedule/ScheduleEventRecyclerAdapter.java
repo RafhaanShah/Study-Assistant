@@ -159,7 +159,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                 .setMessage(context.getString(R.string.delete_event))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (scheduleEvent.isReminder() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
+                        if (scheduleEvent.isReminderSet() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
                             Notifier.cancelScheduledNotification(context, scheduleEvent.getID());
                         }
                         realm.executeTransaction(new Realm.Transaction() {
@@ -222,7 +222,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
     void completeEvent(int position) {
         final ScheduleEvent scheduleEvent = filteredEvents.get(position);
         final long notificationTime = scheduleEvent.getReminderTime();
-        final boolean notification = scheduleEvent.isReminder();
+        final boolean notification = scheduleEvent.isReminderSet();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {

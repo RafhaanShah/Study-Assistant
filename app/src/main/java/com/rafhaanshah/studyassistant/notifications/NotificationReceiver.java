@@ -36,7 +36,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .findAll();
 
             for (ScheduleEvent scheduleEvent : scheduleEvents) {
-                String timeString = DateUtils.getRelativeTimeSpanString(scheduleEvent.getTime(), scheduleEvent.getReminderTime(), DateUtils.MINUTE_IN_MILLIS).toString();
+                String timeString = DateUtils.getRelativeTimeSpanString(scheduleEvent.getEventTime(), scheduleEvent.getReminderTime(), DateUtils.MINUTE_IN_MILLIS).toString();
                 Notifier.scheduleNotification(context, scheduleEvent.getID(), scheduleEvent.getTitle(), timeString, scheduleEvent.getReminderTime());
             }
 

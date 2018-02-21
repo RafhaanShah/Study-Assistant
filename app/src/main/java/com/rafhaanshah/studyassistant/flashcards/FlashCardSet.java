@@ -6,37 +6,37 @@ import io.realm.annotations.Required;
 
 public class FlashCardSet extends RealmObject {
 
-    public static final String FlashCardSet_TITLE = "title";
-    public static final String FlashCardSet_CARDS = "cards";
-    public static final String FlashCardSet_ANSWERS = "answers";
+    public static final String FlashCardSet_TITLE = "TITLE";
+    public static final String FlashCardSet_CARDS = "CARDS";
+    public static final String FlashCardSet_ANSWERS = "ANSWERS";
 
     @Required
-    private String title;
-    private RealmList<String> cards;
-    private RealmList<String> answers;
+    private String TITLE;
+    private RealmList<String> CARDS;
+    private RealmList<String> ANSWERS;
 
     public String getTitle() {
-        return title;
+        return TITLE;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.TITLE = title;
     }
 
     public RealmList<String> getCards() {
-        return cards;
+        return CARDS;
     }
 
     public void setCards(RealmList<String> cards) {
-        this.cards = cards;
+        this.CARDS = cards;
     }
 
     public RealmList<String> getAnswers() {
-        return answers;
+        return ANSWERS;
     }
 
     public void setAnswers(RealmList<String> answers) {
-        this.answers = answers;
+        this.ANSWERS = answers;
     }
 
 }

@@ -7,21 +7,21 @@ import io.realm.annotations.Required;
 public class ScheduleEvent extends RealmObject {
 
     public static final String ScheduleEvent_ID = "ID";
-    public static final String ScheduleEvent_TITLE = "title";
-    public static final String ScheduleEvent_TYPE = "type";
-    public static final String ScheduleEvent_NOTES = "notes";
-    public static final String ScheduleEvent_TIME = "time";
-    public static final String ScheduleEvent_COMPLETED = "completed";
-    public static final String ScheduleEvent_REMINDER = "reminder";
-    public static final String ScheduleEvent_REMINDER_TIME = "reminderTime";
+    public static final String ScheduleEvent_TITLE = "TITLE";
+    public static final String ScheduleEvent_TYPE = "TYPE";
+    public static final String ScheduleEvent_NOTES = "NOTES";
+    public static final String ScheduleEvent_TIME = "EVENT_TIME";
+    public static final String ScheduleEvent_COMPLETED = "COMPLETED";
+    public static final String ScheduleEvent_REMINDER = "REMINDER";
+    public static final String ScheduleEvent_REMINDER_TIME = "REMINDER_TIME";
 
     @PrimaryKey
     private int ID;
     @Required
-    private String title, notes, type;
+    private String TITLE, NOTES, TYPE;
     @Required
-    private Long time, reminderTime;
-    private boolean completed, reminder;
+    private Long EVENT_TIME, REMINDER_TIME;
+    private boolean COMPLETED, REMINDER;
 
     public int getID() {
         return ID;
@@ -32,59 +32,59 @@ public class ScheduleEvent extends RealmObject {
     }
 
     public String getTitle() {
-        return title;
+        return TITLE;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.TITLE = title;
     }
 
     public ScheduleItemType getType() {
-        return ScheduleItemType.valueOf(type);
+        return ScheduleItemType.valueOf(TYPE);
     }
 
     public void setType(ScheduleItemType type) {
-        this.type = type.name();
+        this.TYPE = type.name();
     }
 
     public String getNotes() {
-        return notes;
+        return NOTES;
     }
 
     public void setNotes(String notes) {
-        this.notes = notes;
+        this.NOTES = notes;
     }
 
-    public Long getTime() {
-        return time;
+    public Long getEventTime() {
+        return EVENT_TIME;
     }
 
-    public void setTime(Long time) {
-        this.time = time;
+    public void setEventTime(Long eventTime) {
+        this.EVENT_TIME = eventTime;
     }
 
     public boolean isCompleted() {
-        return completed;
+        return COMPLETED;
     }
 
     public void setCompleted(boolean completed) {
-        this.completed = completed;
+        this.COMPLETED = completed;
     }
 
     public Long getReminderTime() {
-        return reminderTime;
+        return REMINDER_TIME;
     }
 
     public void setReminderTime(Long reminderTime) {
-        this.reminderTime = reminderTime;
+        this.REMINDER_TIME = reminderTime;
     }
 
     public boolean isReminderSet() {
-        return reminder;
+        return REMINDER;
     }
 
     public void setReminder(boolean reminder) {
-        this.reminder = reminder;
+        this.REMINDER = reminder;
     }
 
     public enum ScheduleItemType {

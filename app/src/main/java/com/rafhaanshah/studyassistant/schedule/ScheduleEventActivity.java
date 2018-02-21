@@ -222,7 +222,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
             notificationSwitch.setChecked(scheduleEvent.isReminderSet());
             reminderSetting = scheduleEvent.isReminderSet();
 
-            eventCal.setTimeInMillis(scheduleEvent.getTime());
+            eventCal.setTimeInMillis(scheduleEvent.getEventTime());
             dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(eventCal.getTimeInMillis()));
             timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(eventCal.getTimeInMillis()));
 
@@ -289,7 +289,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
                 scheduleEvent.setCompleted(completed);
                 scheduleEvent.setTitle(title);
                 scheduleEvent.setNotes(notes);
-                scheduleEvent.setTime(eventTime);
+                scheduleEvent.setEventTime(eventTime);
                 scheduleEvent.setType(type);
                 scheduleEvent.setReminder(reminder);
                 scheduleEvent.setReminderTime(reminderTime);

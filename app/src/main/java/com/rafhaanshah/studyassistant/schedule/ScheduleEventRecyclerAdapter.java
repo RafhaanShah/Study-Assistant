@@ -70,7 +70,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final ScheduleEvent scheduleEvent = filteredEvents.get(position);
         final long currentTime = System.currentTimeMillis();
-        final long eventTime = scheduleEvent.getTime();
+        final long eventTime = scheduleEvent.getEventTime();
         String showTime = DateUtils.getRelativeTimeSpanString(eventTime, currentTime, DateUtils.MINUTE_IN_MILLIS).toString();
         int colour = ContextCompat.getColor(context, R.color.materialGreen);
 

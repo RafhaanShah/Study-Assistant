@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Realm;
 
@@ -170,5 +171,7 @@ public class ScheduleEventListFragment extends Fragment {
         recyclerAdapter.filterType(type);
     }
 
-
+    public void scrollToTop() {
+        HelperUtils.scrollToTop(getContext(), recyclerView);
+    }
 }

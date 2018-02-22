@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -154,6 +155,7 @@ public class FlashCardSetListFragment extends Fragment {
         HelperUtils.showSoftKeyboard(getContext());
 
         final EditText input = new EditText(getContext());
+        input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
@@ -216,5 +218,9 @@ public class FlashCardSetListFragment extends Fragment {
 
     public void filter(String query) {
         recyclerAdapter.filter(query);
+    }
+
+    public void scrollToTop() {
+        HelperUtils.scrollToTop(getContext(), recyclerView);
     }
 }

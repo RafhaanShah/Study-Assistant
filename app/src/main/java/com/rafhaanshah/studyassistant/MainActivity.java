@@ -196,15 +196,30 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_schedule:
+                        if (selectedFragment.getClass() == ScheduleEventListFragment.class) {
+                            ScheduleEventListFragment frag = (ScheduleEventListFragment) selectedFragment;
+                            frag.scrollToTop();
+                            return true;
+                        }
                         selectedFragment = ScheduleEventListFragment.newInstance(false);
                         scheduleHistory = false;
                         swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
                         break;
                     case R.id.navigation_flash_cards:
+                        if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
+                            FlashCardSetListFragment frag = (FlashCardSetListFragment) selectedFragment;
+                            frag.scrollToTop();
+                            return true;
+                        }
                         selectedFragment = FlashCardSetListFragment.newInstance();
                         swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list);
                         break;
                     case R.id.navigation_lectures:
+                        if (selectedFragment.getClass() == LectureListFragment.class) {
+                            LectureListFragment frag = (LectureListFragment) selectedFragment;
+                            frag.scrollToTop();
+                            return true;
+                        }
                         selectedFragment = LectureListFragment.newInstance(lectureSorting);
                         swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list);
                         break;

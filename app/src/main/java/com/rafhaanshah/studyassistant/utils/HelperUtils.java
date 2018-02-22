@@ -7,6 +7,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearSmoothScroller;
+import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -211,5 +214,16 @@ public class HelperUtils {
 
         });
         textView.startAnimation(fadeOut);
+    }
+
+    public static void scrollToTop(Context context, RecyclerView recyclerView) {
+        LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(context) {
+            @Override
+            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                return 50f / displayMetrics.densityDpi;
+            }
+        };
+        linearSmoothScroller.setTargetPosition(0);
+        recyclerView.getLayoutManager().startSmoothScroll(linearSmoothScroller);
     }
 }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -136,6 +137,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         HelperUtils.showSoftKeyboard(context);
 
         final EditText input = new EditText(context);
+        input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setText(flashCardSet.getTitle());
         input.setSelectAllOnFocus(true);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});

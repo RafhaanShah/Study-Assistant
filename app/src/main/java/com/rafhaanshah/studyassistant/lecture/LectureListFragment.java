@@ -150,4 +150,8 @@ public class LectureListFragment extends Fragment {
             emptyText.setVisibility(View.GONE);
         }
     }
+
+    public void scrollToTop() {
+        HelperUtils.scrollToTop(getContext(), recyclerView);
+    }
 }

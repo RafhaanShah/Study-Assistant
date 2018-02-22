@@ -47,6 +47,7 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
                 android:drawableStart="@drawable/ic_text_format_black_24dp"
+                android:imeOptions="flagNoExtractUi"
                 android:inputType="textCapWords"
                 android:maxLength="30"
                 android:maxLines="1" />

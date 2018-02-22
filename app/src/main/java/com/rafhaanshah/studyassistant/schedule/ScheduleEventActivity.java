@@ -39,7 +39,7 @@ import io.realm.Realm;
 public class ScheduleEventActivity extends AppCompatActivity {
 
     public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
-    private static final String BUNDLE_TIME_MS = "BUNDLE_TIME_MS";
+    private static final String BUNDLE_EVENT_TIME_MS = "BUNDLE_EVENT_TIME_MS";
     private static final String BUNDLE_NOTIFICATION_TIME_MS = "BUNDLE_NOTIFICATION_TIME_MS";
     private int eventID;
     private boolean newEvent, reminderSetting;
@@ -74,7 +74,11 @@ public class ScheduleEventActivity extends AppCompatActivity {
         getViews();
 
         eventCal = Calendar.getInstance();
+        eventCal.set(Calendar.SECOND, 0);
+        eventCal.set(Calendar.MILLISECOND, 0);
         notificationCal = Calendar.getInstance();
+        notificationCal.set(Calendar.SECOND, 0);
+        notificationCal.set(Calendar.MILLISECOND, 0);
 
         realm = Realm.getDefaultInstance();
         eventID = getIntent().getIntExtra(EXTRA_ITEM_ID, -1);
@@ -122,14 +126,14 @@ public class ScheduleEventActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
-        out.putLong(BUNDLE_TIME_MS, eventCal.getTimeInMillis());
+        out.putLong(BUNDLE_EVENT_TIME_MS, eventCal.getTimeInMillis());
         out.putLong(BUNDLE_NOTIFICATION_TIME_MS, notificationCal.getTimeInMillis());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle in) {
         super.onRestoreInstanceState(in);
-        eventCal.setTimeInMillis(in.getLong(BUNDLE_TIME_MS));
+        eventCal.setTimeInMillis(in.getLong(BUNDLE_EVENT_TIME_MS));
         notificationCal.setTimeInMillis(in.getLong(BUNDLE_NOTIFICATION_TIME_MS));
     }
 

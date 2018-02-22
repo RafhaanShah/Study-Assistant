@@ -37,6 +37,7 @@
             android:layout_marginEnd="@dimen/card_text_margin"
             android:layout_marginStart="@dimen/card_text_margin"
             android:hint="@string/hint_card"
+            android:imeOptions="flagNoExtractUi"
             android:inputType="textCapSentences|textMultiLine"
             android:maxLength="250"
             android:selectAllOnFocus="true"

@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -143,6 +144,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
 
         final EditText input = new EditText(FlashCardSetActivity.this);
+        input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setSelectAllOnFocus(true);

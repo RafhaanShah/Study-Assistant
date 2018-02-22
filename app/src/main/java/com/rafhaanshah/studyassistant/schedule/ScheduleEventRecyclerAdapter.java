@@ -241,6 +241,10 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         }
     }
 
+    void scrollToTop() {
+
+    }
+
     void addListener() {
         scheduleEvents.addChangeListener(new RealmChangeListener<RealmResults<ScheduleEvent>>() {
             @Override

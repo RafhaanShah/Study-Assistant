@@ -16,7 +16,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/SplashTheme"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

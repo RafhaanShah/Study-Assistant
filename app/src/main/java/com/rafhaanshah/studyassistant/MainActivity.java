@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -241,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
         final MenuItem searchItem = menu.findItem(R.id.menu_btn_search);
         searchView = (SearchView) searchItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        int options = searchView.getImeOptions();
+        searchView.setImeOptions(options | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override

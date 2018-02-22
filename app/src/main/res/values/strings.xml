@@ -62,6 +62,7 @@
     <string name="new_event">New Event</string>
     <string name="new_flash">New Flash Card Set</string>
     <string name="no">No</string>
+    <string name="notification_text">You have some reminders</string>
     <string name="notification_date">Notification Date</string>
     <string name="notification_time">Notification Time</string>
     <string name="notification_switch">Set Reminder</string>

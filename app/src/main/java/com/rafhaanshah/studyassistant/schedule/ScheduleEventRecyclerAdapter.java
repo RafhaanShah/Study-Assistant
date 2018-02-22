@@ -255,6 +255,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
     }
 
     void addListener() {
+        // TODO: Crashes if notification is completed while in view
         scheduleEvents.addChangeListener(new RealmChangeListener<RealmResults<ScheduleEvent>>() {
             @Override
             public void onChange(@NonNull RealmResults<ScheduleEvent> items) {

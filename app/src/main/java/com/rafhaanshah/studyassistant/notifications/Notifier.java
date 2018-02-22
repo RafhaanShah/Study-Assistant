@@ -27,8 +27,10 @@ import io.realm.Realm;
 public class Notifier {
 
     static final String ACTION_NOTIFICATION = "com.rafhaanshah.studyassistant.action.EVENT_NOTIFICATION";
+    static final String ACTION_MARK_EVENT = "com.rafhaanshah.studyassistant.action.MARK_EVENT";
     private static final String EXTRA_NOTIFICATION_EVENT = "EXTRA_NOTIFICATION_EVENT";
-    private static final String NOTIFICATION_CHANNEL_EVENT = "NOTIFICATION_CHANNEL_EVENT";
+    private static final String NOTIFICATION_CHANNEL_EVENT = "com.rafhaanshah.studyassistant.notifications.CHANNEL_EVENT";
+    private static final String NOTIFICATION_GROUP_EVENT = "com.rafhaanshah.studyassistant.notifications.GROUP_EVENT";
 
     private Notifier() {
     }
@@ -64,19 +66,25 @@ public class Notifier {
         intent.putExtra(ScheduleEventActivity.EXTRA_ITEM_ID, eventID);
 
         // Get intent for Schedule Event Activity
-        Intent resultIntent = ScheduleEventActivity.getStartIntent(context, eventID);
+        Intent clickIntent = ScheduleEventActivity.getStartIntent(context, eventID);
 
         // Add correct activity stack
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(ScheduleEventActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
+        stackBuilder.addNextIntent(clickIntent);
 
         // Create Pending Intent for clicking the notification
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(eventID, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent clickPendingIntent = stackBuilder.getPendingIntent(eventID, PendingIntent.FLAG_UPDATE_CURRENT);
         //PendingIntent resultPendingIntent = PendingIntent.getActivity(context, REQUEST_EVENT_RESULT, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Intent buttonIntent = new Intent(context, NotificationReceiver.class);
+        buttonIntent.setAction(ACTION_MARK_EVENT);
+        buttonIntent.putExtra(ScheduleEventActivity.EXTRA_ITEM_ID, eventID);
+
+        PendingIntent buttonPendingIntent = PendingIntent.getBroadcast(context, eventID, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // Add the notification to the intent for the timed alarm
-        intent.putExtra(EXTRA_NOTIFICATION_EVENT, buildNotification(context, resultPendingIntent, eventTitle, timeString));
+        intent.putExtra(EXTRA_NOTIFICATION_EVENT, buildNotification(context, clickPendingIntent, buttonPendingIntent, eventTitle, timeString));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, eventID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Log.v("Notify", timeString);
@@ -84,17 +92,18 @@ public class Notifier {
         return pendingIntent;
     }
 
-    private static Notification buildNotification(Context context, PendingIntent intent, String title, String text) {
-        //TODO: Add button to notification
+    private static Notification buildNotification(Context context, PendingIntent clickIntent, PendingIntent buttonIntent, String title, String text) {
         Notification.Builder builder = new Notification.Builder(context)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setContentIntent(intent)
+                .setContentIntent(clickIntent)
+                .setGroup(NOTIFICATION_GROUP_EVENT)
                 .setWhen(System.currentTimeMillis())
                 .setShowWhen(true)
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setSmallIcon(R.drawable.ic_check_white_24dp);
+                .setSmallIcon(R.drawable.ic_check_white_24dp)
+                .addAction(R.drawable.ic_check_white_24dp, context.getString(R.string.mark_completed), buttonIntent);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             builder.setChannelId(NOTIFICATION_CHANNEL_EVENT);
@@ -107,13 +116,22 @@ public class Notifier {
     }
 
     static void showNotification(Context context, Intent intent) {
+        Notification groupNotification = new Notification.Builder(context)
+                .setContentTitle(context.getString(R.string.notification_text))
+                .setSmallIcon(R.drawable.ic_check_white_24dp)
+                .setGroupSummary(true)
+                .setGroup(NOTIFICATION_GROUP_EVENT)
+                .build();
+
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION_EVENT);
-        int id = intent.getIntExtra(ScheduleEventActivity.EXTRA_ITEM_ID, 0);
-        Log.v("Notify", "Show " + String.valueOf(id));
-        setEventReminderOff(id);
-        if (notificationManager != null)
-            notificationManager.notify(id, notification);
+        int ID = intent.getIntExtra(ScheduleEventActivity.EXTRA_ITEM_ID, -1);
+        Log.v("Notify", "Show " + String.valueOf(ID));
+        setEventReminderOff(ID);
+        if (notificationManager != null) {
+            notificationManager.notify(ID, notification);
+            notificationManager.notify(-1, groupNotification);
+        }
     }
 
     private static void setEventReminderOff(int eventID) {
@@ -130,6 +148,26 @@ public class Notifier {
             });
         }
         realm.close();
+    }
+
+    static void markEvent(Context context, Intent intent) {
+        final int ID = intent.getIntExtra(ScheduleEventActivity.EXTRA_ITEM_ID, -1);
+        final Realm realm = Realm.getDefaultInstance();
+        final ScheduleEvent scheduleEvent = realm.where(ScheduleEvent.class)
+                .equalTo(ScheduleEvent.ScheduleEvent_ID, ID).findFirst();
+        if (scheduleEvent != null) {
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(@NonNull Realm realm) {
+                    scheduleEvent.setCompleted(true);
+                }
+            });
+        }
+        realm.close();
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null)
+            notificationManager.cancel(ID);
+
     }
 
     public static void createNotificationChannel(Context context) {

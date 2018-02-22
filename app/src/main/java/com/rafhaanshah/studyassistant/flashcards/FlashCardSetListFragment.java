@@ -218,6 +218,9 @@ public class FlashCardSetListFragment extends Fragment {
 
     public void filter(String query) {
         recyclerAdapter.filter(query);
+        if (TextUtils.isEmpty(query)) {
+            updateView();
+        }
     }
 
     public void scrollToTop() {

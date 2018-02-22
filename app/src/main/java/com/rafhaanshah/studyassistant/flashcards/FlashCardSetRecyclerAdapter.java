@@ -5,12 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.Gravity;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,14 +67,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 //((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
-
-        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(final View view) {
-                showPopupMenu(holder, flashCardSet, holder.getAdapterPosition());
-                return true;
-            }
-        });
+        setContextMenu(holder, flashCardSet);
     }
 
     @Override
@@ -83,27 +75,32 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         return filteredSets.size();
     }
 
-    private void showPopupMenu(ViewHolder holder, final FlashCardSet flashCardSet, final int position) {
-        PopupMenu popup = new PopupMenu(context, holder.relativeLayout, Gravity.END);
-        popup.inflate(R.menu.activity_main_popup);
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.popup_edit:
-                        renameFlashCardSet(flashCardSet);
-                        return true;
-                    case R.id.popup_delete:
-                        deleteFlashCardSet(position);
-                        return true;
+    private void setContextMenu(final ViewHolder holder, final FlashCardSet set) {
+        holder.relativeLayout.setOnCreateContextMenuListener(
+                new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                        menu.add(context.getString(R.string.rename)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                renameFlashCardSet(set);
+                                return true;
+                            }
+                        });
+                        menu.add(context.getString(R.string.delete)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                deleteFlashCardSet(holder.getAdapterPosition());
+                                return true;
+                            }
+                        });
+                    }
                 }
-                return false;
-            }
-        });
-        popup.show();
+        );
     }
 
     void deleteFlashCardSet(final int position) {
+        final FlashCardSet set = filteredSets.get(position);
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_set))
@@ -112,7 +109,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                         realm.executeTransaction(new Realm.Transaction() {
                             @Override
                             public void execute(@NonNull Realm realm) {
-                                filteredSets.get(position).deleteFromRealm();
+                                set.deleteFromRealm();
                             }
                         });
                         notifyItemRemoved(position);

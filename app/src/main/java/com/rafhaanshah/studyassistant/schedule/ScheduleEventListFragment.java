@@ -112,7 +112,7 @@ public class ScheduleEventListFragment extends Fragment {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                recyclerAdapter.completeEvent(viewHolder.getAdapterPosition());
+                recyclerAdapter.markEvent(viewHolder.getAdapterPosition());
                 updateView();
             }
 
@@ -167,7 +167,7 @@ public class ScheduleEventListFragment extends Fragment {
         recyclerAdapter.filter(query);
     }
 
-    public void filterType(ScheduleEvent.ScheduleItemType type) {
+    public void filterType(ScheduleEvent.ScheduleEventType type) {
         recyclerAdapter.filterType(type);
     }
 

@@ -39,11 +39,11 @@ public class ScheduleEvent extends RealmObject {
         this.TITLE = title;
     }
 
-    public ScheduleItemType getType() {
-        return ScheduleItemType.valueOf(TYPE);
+    public ScheduleEventType getType() {
+        return ScheduleEventType.valueOf(TYPE);
     }
 
-    public void setType(ScheduleItemType type) {
+    public void setType(ScheduleEventType type) {
         this.TYPE = type.name();
     }
 
@@ -87,7 +87,7 @@ public class ScheduleEvent extends RealmObject {
         this.REMINDER = reminder;
     }
 
-    public enum ScheduleItemType {
+    public enum ScheduleEventType {
         HOMEWORK, TEST, COURSEWORK, EXAM
     }
 }

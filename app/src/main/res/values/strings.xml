@@ -68,6 +68,7 @@
     <string name="pdf_select">Select a PDF file</string>
     <string name="pdf_reader_select">Select a PDF Reader App</string>
     <string name="pick_date_time">Pick Date and Time</string>
+    <string name="rename">Rename</string>
     <string name="rename_file">Rename File</string>
     <string name="rename_flash_card_set">Rename Flash Card Set</string>
     <string name="save">Save</string>

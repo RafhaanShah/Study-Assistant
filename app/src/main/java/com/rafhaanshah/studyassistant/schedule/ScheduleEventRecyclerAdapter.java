@@ -8,11 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.view.Gravity;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,8 +88,65 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         holder.rectangle.setBackground(shape);
         holder.titleText.setText(scheduleEvent.getTitle());
         holder.timeText.setText(showTime);
+        setIconAndType(holder, scheduleEvent.getType());
 
-        switch (scheduleEvent.getType()) {
+        HelperUtils.setDrawableColour(holder.typeText.getCompoundDrawables()[0], ContextCompat.getColor(context, R.color.textGrey));
+
+        holder.cardView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //showDialogFragment();
+                context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
+                //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
+            }
+        });
+        setContextMenu(holder, scheduleEvent);
+    }
+
+    @Override
+    public int getItemCount() {
+        return filteredEvents.size();
+    }
+
+    private void setContextMenu(final ScheduleEventRecyclerAdapter.ViewHolder holder, final ScheduleEvent event) {
+        holder.cardView.setOnCreateContextMenuListener(
+                new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                        final String markEvent;
+                        if (event.isCompleted()) {
+                            markEvent = context.getString(R.string.mark_incomplete);
+                        } else {
+                            markEvent = context.getString(R.string.mark_completed);
+                        }
+                        menu.add(markEvent).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                markEvent(holder.getAdapterPosition());
+                                return true;
+                            }
+                        });
+                        menu.add(context.getString(R.string.edit_event)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                editEvent(event);
+                                return true;
+                            }
+                        });
+                        menu.add(context.getString(R.string.delete)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                deleteEvent(event, holder.getAdapterPosition());
+                                return true;
+                            }
+                        });
+                    }
+                }
+        );
+    }
+
+    private void setIconAndType(ViewHolder holder, ScheduleEvent.ScheduleEventType type) {
+        switch (type) {
             case HOMEWORK:
                 holder.typeText.setText(context.getString(R.string.homework));
                 holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
@@ -108,44 +164,6 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                 holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
                 break;
         }
-
-        HelperUtils.setDrawableColour(holder.typeText.getCompoundDrawables()[0], ContextCompat.getColor(context, R.color.textGrey));
-
-        holder.cardView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //showDialogFragment();
-                context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
-                //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
-            }
-        });
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(final View view) {
-                showPopupMenu(holder, scheduleEvent, holder.getAdapterPosition());
-                return true;
-            }
-        });
-    }
-
-    private void showPopupMenu(ViewHolder holder, final ScheduleEvent scheduleEvent, final int position) {
-        PopupMenu popup = new PopupMenu(context, holder.itemView, Gravity.END);
-        popup.inflate(R.menu.activity_main_popup);
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.popup_edit:
-                        editEvent(scheduleEvent);
-                        return true;
-                    case R.id.popup_delete:
-                        deleteEvent(scheduleEvent, position);
-                        return true;
-                }
-                return false;
-            }
-        });
-        popup.show();
     }
 
     private void editEvent(ScheduleEvent scheduleEvent) {
@@ -185,41 +203,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                 .show();
     }
 
-    @Override
-    public int getItemCount() {
-        return filteredEvents.size();
-    }
-
-    private void resetList() {
-        filteredEvents = scheduleEvents;
-    }
-
-    void animateList() {
-        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
-        recyclerView.setLayoutAnimation(controller);
-        notifyDataSetChanged();
-        recyclerView.scheduleLayoutAnimation();
-    }
-
-    void filterType(ScheduleEvent.ScheduleItemType type) {
-        if (type != null) {
-            filteredEvents = scheduleEvents.where().equalTo(ScheduleEvent.ScheduleEvent_TYPE, type.name()).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
-        } else {
-            resetList();
-        }
-        animateList();
-    }
-
-    void filter(String query) {
-        if (!TextUtils.isEmpty(query)) {
-            filteredEvents = scheduleEvents.where().contains(ScheduleEvent.ScheduleEvent_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
-        } else {
-            resetList();
-        }
-        animateList();
-    }
-
-    void completeEvent(int position) {
+    void markEvent(final int position) {
         final ScheduleEvent scheduleEvent = filteredEvents.get(position);
         final long notificationTime = scheduleEvent.getReminderTime();
         final boolean notification = scheduleEvent.isReminderSet();
@@ -241,8 +225,33 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         }
     }
 
-    void scrollToTop() {
+    private void resetList() {
+        filteredEvents = scheduleEvents;
+    }
 
+    void animateList() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
+        recyclerView.setLayoutAnimation(controller);
+        notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
+    void filterType(ScheduleEvent.ScheduleEventType type) {
+        if (type != null) {
+            filteredEvents = scheduleEvents.where().equalTo(ScheduleEvent.ScheduleEvent_TYPE, type.name()).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
+        } else {
+            resetList();
+        }
+        animateList();
+    }
+
+    void filter(String query) {
+        if (!TextUtils.isEmpty(query)) {
+            filteredEvents = scheduleEvents.where().contains(ScheduleEvent.ScheduleEvent_TITLE, query.toLowerCase(), Case.INSENSITIVE).findAllSorted(ScheduleEvent.ScheduleEvent_TIME, sort);
+        } else {
+            resetList();
+        }
+        animateList();
     }
 
     void addListener() {

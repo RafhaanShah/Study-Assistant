@@ -312,16 +312,16 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.filter_homework:
-                        frag.filterType(ScheduleEvent.ScheduleItemType.HOMEWORK);
+                        frag.filterType(ScheduleEvent.ScheduleEventType.HOMEWORK);
                         return true;
                     case R.id.filter_coursework:
-                        frag.filterType(ScheduleEvent.ScheduleItemType.COURSEWORK);
+                        frag.filterType(ScheduleEvent.ScheduleEventType.COURSEWORK);
                         return true;
                     case R.id.filter_test:
-                        frag.filterType(ScheduleEvent.ScheduleItemType.TEST);
+                        frag.filterType(ScheduleEvent.ScheduleEventType.TEST);
                         return true;
                     case R.id.filter_exam:
-                        frag.filterType(ScheduleEvent.ScheduleItemType.EXAM);
+                        frag.filterType(ScheduleEvent.ScheduleEventType.EXAM);
                         return true;
                     case R.id.filter_none:
                         frag.filterType(null);

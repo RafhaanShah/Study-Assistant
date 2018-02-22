@@ -46,7 +46,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
     private Calendar eventCal, notificationCal;
     private Realm realm;
     private ScheduleEvent scheduleEvent;
-    private ScheduleEvent.ScheduleItemType type;
+    private ScheduleEvent.ScheduleEventType type;
     private TextView titleText, notesText, dateText, timeText, notificationDateText, notificationTimeText;
     private Spinner spinner;
     private CheckBox checkBox;
@@ -176,19 +176,19 @@ public class ScheduleEventActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0:
-                        type = ScheduleEvent.ScheduleItemType.HOMEWORK;
+                        type = ScheduleEvent.ScheduleEventType.HOMEWORK;
                         imageView.setBackground(getDrawable(R.drawable.ic_border_color_white_24dp));
                         break;
                     case 1:
-                        type = ScheduleEvent.ScheduleItemType.TEST;
+                        type = ScheduleEvent.ScheduleEventType.TEST;
                         imageView.setBackground(getDrawable(R.drawable.ic_chrome_reader_mode_white_24dp));
                         break;
                     case 2:
-                        type = ScheduleEvent.ScheduleItemType.COURSEWORK;
+                        type = ScheduleEvent.ScheduleEventType.COURSEWORK;
                         imageView.setBackground(getDrawable(R.drawable.ic_computer_white_24dp));
                         break;
                     case 3:
-                        type = ScheduleEvent.ScheduleItemType.EXAM;
+                        type = ScheduleEvent.ScheduleEventType.EXAM;
                         imageView.setBackground(getDrawable(R.drawable.ic_event_note_white_24dp));
                         break;
                 }

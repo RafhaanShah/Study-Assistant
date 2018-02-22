@@ -8,12 +8,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.Gravity;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,14 +84,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 }
             }
         });
-
-        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(final View view) {
-                showPopupMenu(holder, lec, holder.getAdapterPosition());
-                return true;
-            }
-        });
+        setContextMenu(holder, lec);
     }
 
     @Override
@@ -100,32 +92,36 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         return filteredFiles.size();
     }
 
-    private void showPopupMenu(final LectureRecyclerAdapter.ViewHolder holder, final File lec, final int position) {
-        PopupMenu popup = new PopupMenu(context, holder.cardView, Gravity.END);
-        popup.inflate(R.menu.activity_main_popup);
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.popup_edit:
-                        renameLecture(holder, lec);
-                        return true;
-                    case R.id.popup_delete:
-                        deleteLecture(position);
-                        return true;
+    private void setContextMenu(final ViewHolder holder, final File lec) {
+        holder.cardView.setOnCreateContextMenuListener(
+                new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                        menu.add(context.getString(R.string.rename)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                renameLecture(lec);
+                                return true;
+                            }
+                        });
+                        menu.add(context.getString(R.string.delete)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                deleteLecture(holder.getAdapterPosition());
+                                return true;
+                            }
+                        });
+                    }
                 }
-                return false;
-            }
-        });
-        popup.show();
+        );
     }
 
-    private void renameLecture(ViewHolder holder, final File lec) {
+    private void renameLecture(final File lec) {
         HelperUtils.showSoftKeyboard(context);
 
         final EditText input = new EditText(context);
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        input.setText(holder.lectureTitle.getText());
+        input.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         input.setSelectAllOnFocus(true);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);

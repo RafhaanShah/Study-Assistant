@@ -88,23 +88,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        active = true;
-        Notifier.clearAllNotifications(MainActivity.this);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (searchView != null && !searchView.isIconified()) {
             searchView.onActionViewCollapsed();
         }
+        active = true;
+        Notifier.clearAllNotifications(MainActivity.this);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         active = false;
         if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();

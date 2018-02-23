@@ -34,8 +34,6 @@ import io.realm.Sort;
 
 public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleEventRecyclerAdapter.ViewHolder> {
 
-    private static final int ONE_DAY_MS = 86400000;
-
     private RealmResults<ScheduleEvent> scheduleEvents;
     private RealmResults<ScheduleEvent> filteredEvents;
     private FragmentManager fragmentManager;
@@ -77,7 +75,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
             colour = ContextCompat.getColor(context, R.color.materialBlue);
         } else if (eventTime < currentTime) {
             colour = ContextCompat.getColor(context, R.color.materialRed);
-        } else if (eventTime < (currentTime + (ONE_DAY_MS * 3))) {
+        } else if (eventTime < (currentTime + (86400000 * 3))) {
             colour = ContextCompat.getColor(context, R.color.materialOrange);
         }
 
@@ -255,11 +253,10 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
     }
 
     void addListener() {
-        // TODO: Crashes if notification is completed while in view
         scheduleEvents.addChangeListener(new RealmChangeListener<RealmResults<ScheduleEvent>>() {
             @Override
-            public void onChange(@NonNull RealmResults<ScheduleEvent> items) {
-                notifyItemRangeChanged(0, items.size());
+            public void onChange(@NonNull RealmResults<ScheduleEvent> events) {
+                notifyItemRangeChanged(0, events.size());
             }
         });
     }

@@ -15,9 +15,11 @@ import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.rafhaanshah.studyassistant.MainActivity;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
@@ -50,7 +52,7 @@ public class Notifier {
         if (alarmManager != null)
             // TODO: Change to actual notification time
             //alarmManager.set(AlarmManager.RTC, alarmTime, pendingIntent);
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 20000, pendingIntent);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5000, pendingIntent);
     }
 
     private static void cancelAlarm(Context context, PendingIntent pendingIntent) {
@@ -93,7 +95,7 @@ public class Notifier {
     }
 
     private static Notification buildNotification(Context context, PendingIntent clickIntent, PendingIntent buttonIntent, String title, String text) {
-        Notification.Builder builder = new Notification.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_EVENT)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setContentIntent(clickIntent)
@@ -103,35 +105,22 @@ public class Notifier {
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setSmallIcon(R.drawable.ic_check_white_24dp)
-                .addAction(R.drawable.ic_check_white_24dp, context.getString(R.string.mark_completed), buttonIntent);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            builder.setChannelId(NOTIFICATION_CHANNEL_EVENT);
-        } else {
-            builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-            builder.setVibrate(new long[]{100, 200, 100});
-        }
+                .addAction(R.drawable.ic_check_white_24dp, context.getString(R.string.mark_completed), buttonIntent)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setVibrate(new long[]{100, 200, 100});
 
         return builder.build();
     }
 
     static void showNotification(Context context, Intent intent) {
-        Notification groupNotification = new Notification.Builder(context)
-                .setContentTitle(context.getString(R.string.notification_text))
-                .setSmallIcon(R.drawable.ic_check_white_24dp)
-                .setGroupSummary(true)
-                .setGroup(NOTIFICATION_GROUP_EVENT)
-                .build();
-
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = intent.getParcelableExtra(EXTRA_NOTIFICATION_EVENT);
         int ID = intent.getIntExtra(ScheduleEventActivity.EXTRA_ITEM_ID, -1);
         Log.v("Notify", "Show " + String.valueOf(ID));
         setEventReminderOff(ID);
-        if (notificationManager != null) {
+
+        if (notificationManager != null && !MainActivity.isActive())
             notificationManager.notify(ID, notification);
-            notificationManager.notify(-1, groupNotification);
-        }
     }
 
     private static void setEventReminderOff(int eventID) {
@@ -172,6 +161,7 @@ public class Notifier {
 
     public static void createNotificationChannel(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_EVENT, context.getString(R.string.channel_name), NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription(context.getString(R.string.channel_description));
             notificationChannel.enableLights(true);
@@ -180,10 +170,9 @@ public class Notifier {
             notificationChannel.setVibrationPattern(new long[]{100, 200, 100});
             notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .build());
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (notificationManager != null)
                 notificationManager.createNotificationChannel(notificationChannel);
         }

@@ -234,6 +234,11 @@ public class ScheduleEventActivity extends AppCompatActivity {
                 notificationCal.setTimeInMillis(scheduleEvent.getReminderTime());
                 notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
                 notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
+                //TODO: Remove these lines after notification testing is finished
+            } else {
+                notificationCal.setTimeInMillis(eventCal.getTimeInMillis() - 3600000);
+                notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
+                notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
             }
         }
     }

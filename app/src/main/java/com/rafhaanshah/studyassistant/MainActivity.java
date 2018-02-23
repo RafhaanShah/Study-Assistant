@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
+import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventListFragment;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_LECTURE = 100;
     private static final String PREF_SORTING = "PREF_SORTING";
     private static final String BUNDLE_SCHEDULE_HISTORY = "BUNDLE_SCHEDULE_HISTORY";
+    private static boolean active = false;
 
     private boolean scheduleHistory;
     private int lectureSorting;
@@ -55,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
     private File directory;
     private SharedPreferences preferences;
     private SearchView searchView;
+
+    public static boolean isActive() {
+        return active;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +88,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+        Notifier.clearAllNotifications(MainActivity.this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (searchView != null && !searchView.isIconified()) {
             searchView.onActionViewCollapsed();
         }
-        //Notifier.clearAllNotifications(MainActivity.this);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
+        active = false;
         if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt(PREF_SORTING, lectureSorting);

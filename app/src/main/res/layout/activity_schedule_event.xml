@@ -32,11 +32,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_title_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="-10dp"
                 android:layout_marginStart="5dp"
+                android:labelFor="@id/et_title"
                 android:text="@string/title"
                 android:textColor="@color/colorPrimary" />
 
@@ -53,7 +53,6 @@
                 android:maxLines="1" />
 
             <TextView
-                android:id="@+id/tv_spinner_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="-15dp"
@@ -73,7 +72,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:backgroundTint="@android:color/black" />
+                    android:backgroundTint="@android:color/black"
+                    android:contentDescription="@string/content_description_event_type" />
 
                 <Spinner
                     android:id="@+id/spinner"
@@ -85,7 +85,6 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_date_time_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="-5dp"
@@ -125,7 +124,6 @@
                 android:onClick="pickTime" />
 
             <TextView
-                android:id="@+id/tv_checkbox_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="0dp"
@@ -141,7 +139,6 @@
                 android:text="@string/event_complete" />
 
             <TextView
-                android:id="@+id/tv_notes_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -164,8 +161,7 @@
             <RelativeLayout
                 android:id="@+id/reminder_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv_notification_date_time_hint"
@@ -192,7 +188,6 @@
                     android:inputType="datetime"
                     android:minWidth="200dp"
                     android:onClick="pickDate" />
-
 
                 <EditText
                     android:id="@+id/et_notification_time"
@@ -225,6 +220,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_toEndOf="@id/switch_notification"
+                    android:contentDescription="@string/content_description_reminder"
                     android:src="@drawable/ic_notifications_black_24dp" />
 
             </RelativeLayout>
@@ -234,7 +230,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/materialRed"
                 android:onClick="deleteEvent"
                 android:text="@string/delete"

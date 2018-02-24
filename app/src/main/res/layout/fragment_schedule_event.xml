@@ -18,6 +18,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="8dp"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/content_description_btn_close"
             android:src="@drawable/ic_close_white_24dp" />
 
         <ImageButton
@@ -28,6 +29,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="8dp"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/content_description_btn_edit"
             android:src="@drawable/ic_edit_white_24dp" />
 
         <TextView
@@ -66,8 +68,7 @@
             android:layout_below="@id/tv_event_type"
             android:layout_margin="10dp"
             android:drawablePadding="10dp"
-            android:drawableStart="@drawable/ic_access_time_black_24dp"
-            android:drawableTint="@color/textGrey"
+            android:drawableStart="@drawable/ic_access_time_white_24dp"
             android:textColor="@color/textGrey"
             android:textSize="18sp" />
 
@@ -80,7 +81,6 @@
             android:layout_margin="10dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/ic_highlight_off_white_24dp"
-            android:drawableTint="@color/textGrey"
             android:text="@string/incomplete"
             android:textColor="@color/textGrey"
             android:textSize="18sp" />
@@ -93,8 +93,7 @@
             android:layout_below="@id/tv_event_status"
             android:layout_margin="10dp"
             android:drawablePadding="10dp"
-            android:drawableStart="@drawable/ic_notifications_black_24dp"
-            android:drawableTint="@color/textGrey"
+            android:drawableStart="@drawable/ic_notifications_white_24dp"
             android:textColor="@color/textGrey"
             android:textSize="18sp" />
 
@@ -107,7 +106,6 @@
             android:layout_margin="10dp"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/ic_sort_white_24dp"
-            android:drawableTint="@color/textGrey"
             android:maxLines="5"
             android:scrollbars="vertical"
             android:textColor="@color/textGrey"

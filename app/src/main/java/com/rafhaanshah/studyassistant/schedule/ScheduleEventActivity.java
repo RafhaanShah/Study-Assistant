@@ -1,13 +1,16 @@
 package com.rafhaanshah.studyassistant.schedule;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -170,29 +173,31 @@ public class ScheduleEventActivity extends AppCompatActivity {
                 }
         );
 
+        final TypedArray icons = getResources().obtainTypedArray(R.array.event_type_icons);
         spinner = findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @SuppressLint("ResourceType")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0:
                         type = ScheduleEvent.ScheduleEventType.HOMEWORK;
-                        imageView.setImageDrawable(getDrawable(R.drawable.ic_border_color_white_24dp));
+                        imageView.setImageDrawable(icons.getDrawable(0));
                         break;
                     case 1:
                         type = ScheduleEvent.ScheduleEventType.TEST;
-                        imageView.setImageDrawable(getDrawable(R.drawable.ic_chrome_reader_mode_white_24dp));
+                        imageView.setImageDrawable(icons.getDrawable(1));
                         break;
                     case 2:
                         type = ScheduleEvent.ScheduleEventType.COURSEWORK;
-                        imageView.setImageDrawable(getDrawable(R.drawable.ic_computer_white_24dp));
+                        imageView.setImageDrawable(icons.getDrawable(2));
                         break;
                     case 3:
                         type = ScheduleEvent.ScheduleEventType.EXAM;
-                        imageView.setImageDrawable(getDrawable(R.drawable.ic_event_note_white_24dp));
+                        imageView.setImageDrawable(icons.getDrawable(3));
                         break;
                 }
-                //imageView.getBackground().setTint(ContextCompat.getColor(ScheduleItemActivity.this, R.color.colorPrimary));
+                HelperUtils.setDrawableColour(imageView.getDrawable(), ContextCompat.getColor(ScheduleEventActivity.this, android.R.color.black));
             }
 
             @Override

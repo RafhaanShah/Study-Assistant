@@ -52,7 +52,7 @@ public class FlashCardSetFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View inflatedView = inflater.inflate(R.layout.fragment_flash_card_stack, container, false);
+        View inflatedView = inflater.inflate(R.layout.fragment_flash_card_set, container, false);
 
         currentFragment = CardFragment.newInstance(cardText, colour);
         getChildFragmentManager()

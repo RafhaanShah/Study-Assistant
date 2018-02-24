@@ -1,7 +1,9 @@
 package com.rafhaanshah.studyassistant.schedule;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,7 +14,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.rafhaanshah.studyassistant.R;
@@ -45,8 +47,7 @@ public class ScheduleEventFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_schedule_event, container);
     }
 
@@ -54,9 +55,15 @@ public class ScheduleEventFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setHeaderColour(view);
+        setIconAndType(getContext(), (TextView) view.findViewById(R.id.tv_event_type), event.getType());
+        setTextViews(view);
+        setButtonActions((ImageButton) view.findViewById(R.id.btn_close), (ImageButton) view.findViewById(R.id.btn_edit));
+    }
+
+    private void setHeaderColour(@NonNull final View view) {
         final long currentTime = System.currentTimeMillis();
         int colour = ContextCompat.getColor(getContext(), R.color.materialGreen);
-
         if (event.isCompleted()) {
             colour = ContextCompat.getColor(getContext(), R.color.materialBlue);
         } else if (event.getEventTime() < currentTime) {
@@ -64,29 +71,26 @@ public class ScheduleEventFragment extends DialogFragment {
         } else if (event.getEventTime() < (currentTime + (86400000 * 3))) {
             colour = ContextCompat.getColor(getContext(), R.color.materialOrange);
         }
-
         view.findViewById(R.id.title_layout).setBackgroundColor(colour);
+    }
 
-        ImageView closeButton = view.findViewById(R.id.btn_close);
-        ImageView editButton = view.findViewById(R.id.btn_edit);
-        setButtonActions(closeButton, editButton);
-
+    private void setTextViews(@NonNull final View view) {
         TextView statusText = view.findViewById(R.id.tv_event_status);
         if (event.isCompleted()) {
             statusText.setText(getString(R.string.completed));
-            statusText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_white_24dp, 0, 0, 0);
+            statusText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_check_white_24dp, 0, 0, 0);
         }
+        HelperUtils.setDrawableColour(statusText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(getContext(), R.color.textGrey));
 
         TextView titleText = view.findViewById(R.id.tv_event_title);
         titleText.setText(event.getTitle());
-
-        TextView typeText = view.findViewById(R.id.tv_event_type);
-        setIconAndType(getContext(), typeText, event.getType());
+        HelperUtils.setDrawableColour(titleText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(getContext(), R.color.textGrey));
 
         TextView dateText = view.findViewById(R.id.tv_event_date);
         dateText.setText(getString(R.string.date_and_time,
                 DateFormat.getDateInstance(DateFormat.MEDIUM).format(event.getEventTime()),
                 DateFormat.getTimeInstance(DateFormat.SHORT).format(event.getEventTime())));
+        HelperUtils.setDrawableColour(dateText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(getContext(), R.color.textGrey));
 
         TextView reminderText = view.findViewById(R.id.tv_event_reminder_date);
         if (event.isReminderSet() && event.getReminderTime() < System.currentTimeMillis()) {
@@ -96,6 +100,7 @@ public class ScheduleEventFragment extends DialogFragment {
         } else {
             reminderText.setText(getString(R.string.no_reminder));
         }
+        HelperUtils.setDrawableColour(reminderText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(getContext(), R.color.textGrey));
 
         TextView notesText = view.findViewById(R.id.tv_event_notes);
         if (TextUtils.isEmpty(event.getNotes())) {
@@ -103,32 +108,36 @@ public class ScheduleEventFragment extends DialogFragment {
         } else {
             notesText.setText(event.getNotes());
             notesText.setMovementMethod(new ScrollingMovementMethod());
+            HelperUtils.setDrawableColour(notesText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(getContext(), R.color.textGrey));
         }
     }
 
+    @SuppressLint("ResourceType")
     private void setIconAndType(Context context, TextView typeText, ScheduleEvent.ScheduleEventType type) {
+        final TypedArray icons = getResources().obtainTypedArray(R.array.event_type_icons);
+        final String[] eventTypes = getResources().getStringArray(R.array.event_types);
         switch (type) {
             case HOMEWORK:
-                typeText.setText(context.getString(R.string.homework));
-                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
+                typeText.setText(eventTypes[0]);
+                typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(0), null, null, null);
                 break;
             case TEST:
-                typeText.setText(context.getString(R.string.class_test));
-                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
+                typeText.setText(eventTypes[1]);
+                typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(1), null, null, null);
                 break;
             case COURSEWORK:
-                typeText.setText(context.getString(R.string.coursework));
-                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
+                typeText.setText(eventTypes[2]);
+                typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(2), null, null, null);
                 break;
             case EXAM:
-                typeText.setText(context.getString(R.string.exam));
-                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
+                typeText.setText(eventTypes[3]);
+                typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(3), null, null, null);
                 break;
         }
-        HelperUtils.setDrawableColour(typeText.getCompoundDrawables()[0], ContextCompat.getColor(context, R.color.textGrey));
+        HelperUtils.setDrawableColour(typeText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(context, R.color.textGrey));
     }
 
-    private void setButtonActions(ImageView closeButton, ImageView editButton) {
+    private void setButtonActions(ImageButton closeButton, ImageButton editButton) {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,7 +148,7 @@ public class ScheduleEventFragment extends DialogFragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //dismiss();
+                dismiss();
                 getContext().startActivity(ScheduleEventActivity.getStartIntent(getContext(), event.getID()));
             }
         });

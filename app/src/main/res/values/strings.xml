@@ -12,6 +12,10 @@
     <string name="completed">Completed</string>
     <string name="confirm_delete">Confirm Delete</string>
     <string name="coursework">Coursework Assignment</string>
+    <string name="content_description_btn_close">Close Button</string>
+    <string name="content_description_btn_edit">Edit Button</string>
+    <string name="content_description_event_type">Event Type</string>
+    <string name="content_description_reminder">Event Type</string>
     <string name="date">Due Date</string>
     <string name="delete">Delete</string>
     <string name="delete_event">Are you sure you want to delete this event?</string>

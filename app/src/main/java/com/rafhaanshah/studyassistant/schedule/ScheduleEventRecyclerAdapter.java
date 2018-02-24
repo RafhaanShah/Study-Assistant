@@ -93,8 +93,8 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //showDialogFragment();
-                context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
+                showDialogFragment(scheduleEvent.getID());
+                //context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
                 //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
             }
         });
@@ -265,8 +265,8 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         scheduleEvents.removeAllChangeListeners();
     }
 
-    private void showDialogFragment() {
-        ScheduleEventFragment scheduleEventFragment = ScheduleEventFragment.newInstance();
+    private void showDialogFragment(int ID) {
+        ScheduleEventFragment scheduleEventFragment = ScheduleEventFragment.newInstance(ID);
         scheduleEventFragment.show(fragmentManager, "event_fragment");
     }
 

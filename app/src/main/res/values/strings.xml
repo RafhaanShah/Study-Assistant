@@ -74,6 +74,7 @@
     <string name="rename_flash_card_set">Rename Flash Card Set</string>
     <string name="save">Save</string>
     <string name="search">Search</string>
+    <string name="shortcut_disabled">Shortcut Disabled</string>
     <string name="sort_date">Sorting by added date</string>
     <string name="sort_size">Sorting by file size</string>
     <string name="sort_title">Sorting by title</string>

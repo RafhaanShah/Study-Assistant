@@ -114,7 +114,6 @@ public class ScheduleEventListFragment extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 recyclerAdapter.markEvent(viewHolder.getAdapterPosition());
-                updateView();
             }
 
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {

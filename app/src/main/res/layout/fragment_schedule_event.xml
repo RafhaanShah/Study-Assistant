@@ -1,13 +1,118 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_name"
-    android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical">
+    android:layout_centerInParent="true"
+    android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/tv_title"
+    <RelativeLayout
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <ImageButton
+            android:id="@+id/btn_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/btn_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_white_24dp" />
+
+        <TextView
+            android:id="@+id/tv_event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:textColor="@color/textWhite"
+            android:textSize="26sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_layout">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_event_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:drawablePadding="10dp"
+            android:textColor="@color/textGrey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_event_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tv_event_type"
+            android:layout_margin="10dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_access_time_black_24dp"
+            android:drawableTint="@color/textGrey"
+            android:textColor="@color/textGrey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_event_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tv_event_date"
+            android:layout_margin="10dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_highlight_off_white_24dp"
+            android:drawableTint="@color/textGrey"
+            android:text="@string/incomplete"
+            android:textColor="@color/textGrey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_event_reminder_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tv_event_status"
+            android:layout_margin="10dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_notifications_black_24dp"
+            android:drawableTint="@color/textGrey"
+            android:textColor="@color/textGrey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_event_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tv_event_reminder_date"
+            android:layout_margin="10dp"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_sort_white_24dp"
+            android:drawableTint="@color/textGrey"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:textColor="@color/textGrey"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

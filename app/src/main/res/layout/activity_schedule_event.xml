@@ -155,7 +155,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:background="@drawable/rounded_border"
-                android:hint="@string/blank_text"
+                android:hint="@string/notes"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="250"
                 android:paddingEnd="10dp"
@@ -225,7 +225,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_toEndOf="@id/switch_notification"
-                    android:background="@drawable/ic_notifications_black_24dp" />
+                    android:src="@drawable/ic_notifications_black_24dp" />
 
             </RelativeLayout>
 

@@ -9,6 +9,7 @@
     <string name="class_test">Class Test</string>
     <string name="clear_filter">Clear Filters</string>
     <string name="confirm">Confirm</string>
+    <string name="completed">Completed</string>
     <string name="confirm_delete">Confirm Delete</string>
     <string name="coursework">Coursework Assignment</string>
     <string name="date">Due Date</string>
@@ -16,6 +17,7 @@
     <string name="delete_event">Are you sure you want to delete this event?</string>
     <string name="delete_lecture">Are you sure you want to delete this lecture file?</string>
     <string name="delete_set">Are you sure you want to delete this flash card set?</string>
+    <string name="date_and_time">%1$s  -  %2$s</string>
     <string name="edit_event">Edit Event</string>
     <string name="empty_flash_cards">There are no flash card sets! Press the button on the bottom right to get started.</string>
     <string name="empty_lectures">No lecture files added! Press the button on the bottom right to retrieve one from your files.</string>
@@ -37,6 +39,7 @@
     <string name="event_status">Event Status</string>
     <string name="event_type">Event Type</string>
     <string name="exam">Exam</string>
+    <string name="incomplete">Incomplete</string>
     <string name="file_provider_authority" translatable="false">com.rafhaanshah.studyassistant.utils.GenericFileProvider</string>
     <string name="fill_event">Please fill in the title and select a date</string>
     <string name="fill_notification">Please fill in the reminder options</string>
@@ -62,6 +65,8 @@
     <string name="new_event">New Event</string>
     <string name="new_flash">New Flash Card Set</string>
     <string name="no">No</string>
+    <string name="no_reminder">No Reminder Set</string>
+    <string name="notes">Notes</string>
     <string name="notification_text">You have some reminders</string>
     <string name="notification_date">Notification Date</string>
     <string name="notification_time">Notification Time</string>

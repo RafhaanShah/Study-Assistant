@@ -177,19 +177,19 @@ public class ScheduleEventActivity extends AppCompatActivity {
                 switch (i) {
                     case 0:
                         type = ScheduleEvent.ScheduleEventType.HOMEWORK;
-                        imageView.setBackground(getDrawable(R.drawable.ic_border_color_white_24dp));
+                        imageView.setImageDrawable(getDrawable(R.drawable.ic_border_color_white_24dp));
                         break;
                     case 1:
                         type = ScheduleEvent.ScheduleEventType.TEST;
-                        imageView.setBackground(getDrawable(R.drawable.ic_chrome_reader_mode_white_24dp));
+                        imageView.setImageDrawable(getDrawable(R.drawable.ic_chrome_reader_mode_white_24dp));
                         break;
                     case 2:
                         type = ScheduleEvent.ScheduleEventType.COURSEWORK;
-                        imageView.setBackground(getDrawable(R.drawable.ic_computer_white_24dp));
+                        imageView.setImageDrawable(getDrawable(R.drawable.ic_computer_white_24dp));
                         break;
                     case 3:
                         type = ScheduleEvent.ScheduleEventType.EXAM;
-                        imageView.setBackground(getDrawable(R.drawable.ic_event_note_white_24dp));
+                        imageView.setImageDrawable(getDrawable(R.drawable.ic_event_note_white_24dp));
                         break;
                 }
                 //imageView.getBackground().setTint(ContextCompat.getColor(ScheduleItemActivity.this, R.color.colorPrimary));

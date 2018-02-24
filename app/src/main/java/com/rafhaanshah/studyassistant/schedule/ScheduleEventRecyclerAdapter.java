@@ -86,9 +86,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         holder.rectangle.setBackground(shape);
         holder.titleText.setText(scheduleEvent.getTitle());
         holder.timeText.setText(showTime);
-        setIconAndType(holder, scheduleEvent.getType());
-
-        HelperUtils.setDrawableColour(holder.typeText.getCompoundDrawables()[0], ContextCompat.getColor(context, R.color.textGrey));
+        setIconAndType(holder.typeText, scheduleEvent.getType());
 
         holder.cardView.setOnClickListener(new OnClickListener() {
             @Override
@@ -143,25 +141,26 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         );
     }
 
-    private void setIconAndType(ViewHolder holder, ScheduleEvent.ScheduleEventType type) {
+    private void setIconAndType(TextView typeText, ScheduleEvent.ScheduleEventType type) {
         switch (type) {
             case HOMEWORK:
-                holder.typeText.setText(context.getString(R.string.homework));
-                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
+                typeText.setText(context.getString(R.string.homework));
+                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_edit_black_24dp, 0, 0, 0);
                 break;
             case TEST:
-                holder.typeText.setText(context.getString(R.string.class_test));
-                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
+                typeText.setText(context.getString(R.string.class_test));
+                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_chrome_reader_mode_black_24dp, 0, 0, 0);
                 break;
             case COURSEWORK:
-                holder.typeText.setText(context.getString(R.string.coursework));
-                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
+                typeText.setText(context.getString(R.string.coursework));
+                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_computer_black_24dp, 0, 0, 0);
                 break;
             case EXAM:
-                holder.typeText.setText(context.getString(R.string.exam));
-                holder.typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
+                typeText.setText(context.getString(R.string.exam));
+                typeText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_note_black_24dp, 0, 0, 0);
                 break;
         }
+        HelperUtils.setDrawableColour(typeText.getCompoundDrawables()[0], ContextCompat.getColor(context, R.color.textGrey));
     }
 
     private void editEvent(ScheduleEvent scheduleEvent) {

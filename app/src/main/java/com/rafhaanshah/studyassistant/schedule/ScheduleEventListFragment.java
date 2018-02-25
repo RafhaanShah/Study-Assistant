@@ -86,7 +86,7 @@ public class ScheduleEventListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        recyclerAdapter.animateList();
+        recyclerAdapter.notifyDataSetChanged();
         recyclerAdapter.addListener();
         updateView();
     }

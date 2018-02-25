@@ -90,7 +90,7 @@ public class FlashCardSetListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        recyclerAdapter.animateList();
+        recyclerAdapter.notifyDataSetChanged();
         recyclerAdapter.addListener();
         updateView();
     }

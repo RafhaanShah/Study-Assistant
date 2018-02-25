@@ -82,7 +82,7 @@ public class LectureListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        recyclerAdapter.animateList();
+        recyclerAdapter.notifyDataSetChanged();
         updateView();
     }
 

@@ -81,11 +81,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        setTaskDescription(new ActivityManager.TaskDescription(
-                getString(R.string.app_name),
-                BitmapFactory.decodeResource(getResources(), R.drawable.ic_lamp),
-                ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark)));
-
         if (savedInstanceState == null) {
             selectedFragment = ScheduleEventListFragment.newInstance(false);
             replaceFragment();
@@ -390,5 +385,9 @@ public class MainActivity extends AppCompatActivity {
         menu.clear();
         getMenuInflater().inflate(menuLayout, menu);
         setSearchView();
+
+        setTaskDescription(new ActivityManager.TaskDescription(
+                getString(R.string.app_name),
+                BitmapFactory.decodeResource(getResources(), R.drawable.ic_lamp), darkColour));
     }
 }

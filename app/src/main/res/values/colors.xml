@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">@color/materialLightBlue</color>
-    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorPrimaryDark">@color/materialLightBlueDark</color>
     <color name="colorAccent">@color/materialAmber</color>
 
     <color name="materialRed">#F44336</color>
@@ -20,6 +20,10 @@
     <color name="materialAmber">#FFC107</color>
     <color name="materialOrange">#FF9800</color>
     <color name="materialDeepOrange">#FF5722</color>
+
+    <color name="materialRedDark">#D32F2F</color>
+    <color name="materialGreenDark">#388E3C</color>
+    <color name="materialLightBlueDark">#0288D1</color>
 
     <color name="dividerGrey">#E0E0E0</color>
     <color name="backgroundGrey">#efefef</color>

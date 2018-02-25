@@ -1,16 +1,20 @@
 package com.rafhaanshah.studyassistant.utils;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
@@ -245,6 +249,33 @@ public class HelperUtils {
 
         });
         textView.startAnimation(fadeOut);
+    }
+
+    public static void fadeColourChange(Context context, final View view, final int colour, final int duration) {
+        ColorDrawable viewBackground = (ColorDrawable) view.getBackground();
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), viewBackground.getColor(), colour);
+        colorAnimation.setDuration(duration);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                view.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
+    }
+
+    public static void fadeStatusBarColourChange(final Window window, final int colour, final int duration) {
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), window.getStatusBarColor(), colour);
+        colorAnimation.setDuration(duration);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                window.setStatusBarColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
     }
 
     public static void scrollToTop(Context context, RecyclerView recyclerView) {

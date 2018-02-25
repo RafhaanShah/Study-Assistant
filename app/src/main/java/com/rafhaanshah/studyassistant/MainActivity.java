@@ -11,6 +11,7 @@ import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
@@ -119,14 +120,18 @@ public class MainActivity extends AppCompatActivity {
         menu = getMenu;
         if (selectedFragment.getClass() == ScheduleEventListFragment.class) {
             if (scheduleHistory) {
-                swapToolbarMenu(getString(R.string.menu_history), R.menu.fragment_schedule_list);
+                swapToolbarMenu(getString(R.string.menu_history), R.menu.fragment_schedule_list, ContextCompat.getColor(MainActivity.this, R.color.colorPrimary),
+                        ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
             } else {
-                swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
+                swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list, ContextCompat.getColor(MainActivity.this, R.color.colorPrimary),
+                        ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
             }
         } else if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
-            swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list);
+            swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list, ContextCompat.getColor(MainActivity.this, R.color.materialRed),
+                    ContextCompat.getColor(MainActivity.this, R.color.materialRedDark));
         } else if (selectedFragment.getClass() == LectureListFragment.class) {
-            swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list);
+            swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list, ContextCompat.getColor(MainActivity.this, R.color.materialGreen),
+                    ContextCompat.getColor(MainActivity.this, R.color.materialGreenDark));
         }
         return true;
     }
@@ -211,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         selectedFragment = ScheduleEventListFragment.newInstance(false);
                         scheduleHistory = false;
-                        swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list);
+                        swapToolbarMenu(getString(R.string.menu_schedule), R.menu.fragment_schedule_list, ContextCompat.getColor(MainActivity.this, R.color.colorPrimary),
+                                ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
                         break;
                     case R.id.navigation_flash_cards:
                         if (selectedFragment.getClass() == FlashCardSetListFragment.class) {
@@ -220,7 +226,8 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         }
                         selectedFragment = FlashCardSetListFragment.newInstance();
-                        swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list);
+                        swapToolbarMenu(getString(R.string.menu_flash_cards), R.menu.fragment_flash_card_list, ContextCompat.getColor(MainActivity.this, R.color.materialRed),
+                                ContextCompat.getColor(MainActivity.this, R.color.materialRedDark));
                         break;
                     case R.id.navigation_lectures:
                         if (selectedFragment.getClass() == LectureListFragment.class) {
@@ -229,7 +236,8 @@ public class MainActivity extends AppCompatActivity {
                             return true;
                         }
                         selectedFragment = LectureListFragment.newInstance(lectureSorting);
-                        swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list);
+                        swapToolbarMenu(getString(R.string.menu_lectures), R.menu.fragment_lecture_list, ContextCompat.getColor(MainActivity.this, R.color.materialGreen),
+                                ContextCompat.getColor(MainActivity.this, R.color.materialGreenDark));
                         break;
                 }
                 replaceFragment();
@@ -364,9 +372,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void swapToolbarMenu(final String title, final int menuLayout) {
+    private void swapToolbarMenu(final String title, final int menuLayout, final int colour, final int darkColour) {
+        final int duration = getResources().getInteger(R.integer.animation_fade_time);
+
+        HelperUtils.fadeTextChange(title, (TextView) toolbar.getChildAt(0), duration);
+        HelperUtils.fadeColourChange(MainActivity.this, toolbar, colour, duration);
+        HelperUtils.fadeColourChange(MainActivity.this, navigation, colour, duration);
+        HelperUtils.fadeStatusBarColourChange(getWindow(), darkColour, duration);
+
         menu.clear();
-        HelperUtils.fadeTextChange(title, (TextView) toolbar.getChildAt(0), getResources().getInteger(R.integer.animation_fade_time));
         getMenuInflater().inflate(menuLayout, menu);
         setSearchView();
     }

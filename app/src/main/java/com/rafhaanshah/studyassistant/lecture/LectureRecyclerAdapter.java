@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -63,12 +64,16 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     @Override
     public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
         final File lec = filteredFiles.get(position);
+        int offset = 9;
         String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
         holder.lectureLetter.setText(lec.getName().substring(0, 1).toUpperCase());
-        holder.letterBackground.getBackground().setTint(HelperUtils.getColour(context, position));
+        holder.letterBackground.getBackground().setTint(HelperUtils.getColour(context, position + offset));
+
+        if (position + offset % 16 == 11 | position + offset % 16 == 12)
+            holder.lectureLetter.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override

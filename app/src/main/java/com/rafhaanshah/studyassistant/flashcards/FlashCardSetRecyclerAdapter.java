@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -59,6 +60,8 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         final FlashCardSet flashCardSet = filteredSets.get(position);
 
         holder.flashCardSetTitle.setText(flashCardSet.getTitle());
+        if (position % 16 == 11 | position % 16 == 12)
+            holder.flashCardSetTitle.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
         holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
         //holder.relativeLayout.setBackgroundColor((HelperUtils.getColour(context, position)));
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {

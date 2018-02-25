@@ -28,6 +28,7 @@ public class ScheduleEventFragment extends DialogFragment {
 
     private static final String BUNDLE_ID = "BUNDLE_ID";
     private ScheduleEvent event;
+    private Realm realm;
 
     public static ScheduleEventFragment newInstance(int ID) {
         ScheduleEventFragment frag = new ScheduleEventFragment();
@@ -41,9 +42,8 @@ public class ScheduleEventFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int eventID = getArguments().getInt(BUNDLE_ID, -1);
-        Realm realm = Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
         event = realm.where(ScheduleEvent.class).equalTo(ScheduleEvent.ScheduleEvent_ID, eventID).findFirst();
-        realm.close();
     }
 
     @Override
@@ -59,6 +59,12 @@ public class ScheduleEventFragment extends DialogFragment {
         setIconAndType(getContext(), (TextView) view.findViewById(R.id.tv_event_type), event.getType());
         setTextViews(view);
         setButtonActions((ImageButton) view.findViewById(R.id.btn_close), (ImageButton) view.findViewById(R.id.btn_edit));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     private void setHeaderColour(@NonNull final View view) {

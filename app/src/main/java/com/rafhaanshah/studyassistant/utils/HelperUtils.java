@@ -45,24 +45,56 @@ public class HelperUtils {
         return new File(context.getFilesDir().getAbsolutePath() + File.separator + LECTURE_DIRECTORY);
     }
 
-
     public static int getColour(Context context, int position) {
         int colour = 0;
-        switch (position % 5) {
+        switch (position % 16) {
             case 0:
                 colour = ContextCompat.getColor(context, R.color.materialRed);
                 break;
             case 1:
-                colour = ContextCompat.getColor(context, R.color.materialBlue);
+                colour = ContextCompat.getColor(context, R.color.materialPink);
                 break;
             case 2:
-                colour = ContextCompat.getColor(context, R.color.materialOrange);
-                break;
-            case 3:
                 colour = ContextCompat.getColor(context, R.color.materialPurple);
                 break;
+            case 3:
+                colour = ContextCompat.getColor(context, R.color.materialDeepPurple);
+                break;
             case 4:
+                colour = ContextCompat.getColor(context, R.color.materialIndigo);
+                break;
+            case 5:
+                colour = ContextCompat.getColor(context, R.color.materialBlue);
+                break;
+            case 6:
+                colour = ContextCompat.getColor(context, R.color.materialLightBlue);
+                break;
+            case 7:
+                colour = ContextCompat.getColor(context, R.color.materialCyan);
+                break;
+            case 8:
+                colour = ContextCompat.getColor(context, R.color.materialTeal);
+                break;
+            case 9:
                 colour = ContextCompat.getColor(context, R.color.materialGreen);
+                break;
+            case 10:
+                colour = ContextCompat.getColor(context, R.color.materialLightGreen);
+                break;
+            case 11:
+                colour = ContextCompat.getColor(context, R.color.materialLime);
+                break;
+            case 12:
+                colour = ContextCompat.getColor(context, R.color.materialYellow);
+                break;
+            case 13:
+                colour = ContextCompat.getColor(context, R.color.materialAmber);
+                break;
+            case 14:
+                colour = ContextCompat.getColor(context, R.color.materialOrange);
+                break;
+            case 15:
+                colour = ContextCompat.getColor(context, R.color.materialDeepOrange);
                 break;
         }
         return colour;
@@ -190,7 +222,6 @@ public class HelperUtils {
         });
         imageView.startAnimation(fadeOut);
     }
-
 
     public static void fadeTextChange(final String text, final TextView textView, final int duration) {
         final AlphaAnimation fadeOut = new AlphaAnimation(1f, 0f);

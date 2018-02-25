@@ -49,7 +49,7 @@
                 android:drawableStart="@drawable/ic_text_format_black_24dp"
                 android:imeOptions="flagNoExtractUi"
                 android:inputType="textCapWords"
-                android:maxLength="30"
+                android:maxLength="40"
                 android:maxLines="1" />
 
             <TextView

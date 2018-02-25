@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
 
@@ -19,7 +18,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v("Notify", "Received " + intent.getAction());
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
             //Boot completed, set notifications again
             setReminders(context);

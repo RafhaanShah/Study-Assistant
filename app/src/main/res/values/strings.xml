@@ -90,5 +90,6 @@
     <string name="sort_title">Sorting by title</string>
     <string name="time">Due Time</string>
     <string name="title">Title</string>
+    <string name="view">View</string>
     <string name="yes">Yes</string>
 </resources>

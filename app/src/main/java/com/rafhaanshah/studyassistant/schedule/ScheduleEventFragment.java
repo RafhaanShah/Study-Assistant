@@ -26,6 +26,7 @@ import io.realm.Realm;
 
 public class ScheduleEventFragment extends DialogFragment {
 
+    public static final String TAG_EVENT_DIALOG_FRAGMENT = "TAG_EVENT_DIALOG_FRAGMENT";
     private static final String BUNDLE_ID = "BUNDLE_ID";
     private ScheduleEvent event;
     private Realm realm;
@@ -55,10 +56,12 @@ public class ScheduleEventFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setHeaderColour(view);
-        setIconAndType(getContext(), (TextView) view.findViewById(R.id.tv_event_type), event.getType());
-        setTextViews(view);
-        setButtonActions((ImageButton) view.findViewById(R.id.btn_close), (ImageButton) view.findViewById(R.id.btn_edit));
+        if (event != null) {
+            setHeaderColour(view);
+            setIconAndType(getContext(), (TextView) view.findViewById(R.id.tv_event_type), event.getType());
+            setTextViews(view);
+            setButtonActions((ImageButton) view.findViewById(R.id.btn_close), (ImageButton) view.findViewById(R.id.btn_edit));
+        }
     }
 
     @Override
@@ -99,10 +102,10 @@ public class ScheduleEventFragment extends DialogFragment {
         HelperUtils.setDrawableColour(dateText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(getContext(), R.color.textGrey));
 
         TextView reminderText = view.findViewById(R.id.tv_event_reminder_date);
-        if (event.isReminderSet() && event.getReminderTime() < System.currentTimeMillis()) {
+        if (event.isReminderSet() && event.getReminderTime() > System.currentTimeMillis()) {
             reminderText.setText(getString(R.string.date_and_time,
-                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(event.getEventTime()),
-                    DateFormat.getTimeInstance(DateFormat.SHORT).format(event.getEventTime())));
+                    DateFormat.getDateInstance(DateFormat.MEDIUM).format(event.getReminderTime()),
+                    DateFormat.getTimeInstance(DateFormat.SHORT).format(event.getReminderTime())));
         } else {
             reminderText.setText(getString(R.string.no_reminder));
         }

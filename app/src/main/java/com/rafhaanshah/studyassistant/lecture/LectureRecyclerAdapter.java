@@ -132,7 +132,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         input.setSelectAllOnFocus(true);
-        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(50)});
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

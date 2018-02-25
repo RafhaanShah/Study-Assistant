@@ -179,7 +179,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                 .setMessage(context.getString(R.string.delete_event))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        if (scheduleEvent.isReminderSet() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
+                        if (scheduleEvent.isReminderSet() && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
                             Notifier.cancelScheduledNotification(context, scheduleEvent.getID());
                         }
                         realm.executeTransaction(new Realm.Transaction() {
@@ -222,7 +222,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
             }
         });
         notifyItemRemoved(position);
-        if (notification && notificationTime != 0L && notificationTime > System.currentTimeMillis()) {
+        if (notification && notificationTime > System.currentTimeMillis()) {
             Notifier.cancelScheduledNotification(context, scheduleEvent.getID());
         }
     }
@@ -271,7 +271,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
 
     private void showDialogFragment(int ID) {
         ScheduleEventFragment scheduleEventFragment = ScheduleEventFragment.newInstance(ID);
-        scheduleEventFragment.show(fragmentManager, "event_fragment");
+        scheduleEventFragment.show(fragmentManager, ScheduleEventFragment.TAG_EVENT_DIALOG_FRAGMENT);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

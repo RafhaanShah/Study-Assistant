@@ -2,7 +2,10 @@ package com.rafhaanshah.studyassistant;
 
 import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -12,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +34,7 @@ import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
 import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEventFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventListFragment;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private File directory;
     private SharedPreferences preferences;
     private SearchView searchView;
+    private BroadcastReceiver broadcastReceiver;
 
     public static boolean isActive() {
         return active;
@@ -80,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setBroadcastReceiver();
 
         if (savedInstanceState == null) {
             selectedFragment = ScheduleEventListFragment.newInstance(false);
@@ -109,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
             editor.putInt(PREF_SORTING, lectureSorting);
             editor.apply();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -253,6 +266,27 @@ public class MainActivity extends AppCompatActivity {
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
                 .replace(R.id.content, selectedFragment)
                 .commit();
+    }
+
+    private void setBroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String title = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TITLE);
+                String time = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TEXT);
+                final int ID = intent.getIntExtra(Notifier.EXTRA_NOTIFICATION_ID, -1);
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.content), title + " " + time, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(getString(R.string.view), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ScheduleEventFragment scheduleEventFragment = ScheduleEventFragment.newInstance(ID);
+                                scheduleEventFragment.show(getSupportFragmentManager(), ScheduleEventFragment.TAG_EVENT_DIALOG_FRAGMENT);
+                            }
+                        });
+                snackbar.show();
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter(Notifier.ACTION_ACTIVE_NOTIFICATION));
     }
 
     private void setSearchView() {

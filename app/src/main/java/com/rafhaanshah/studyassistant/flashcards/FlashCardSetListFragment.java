@@ -160,7 +160,7 @@ public class FlashCardSetListFragment extends Fragment {
 
         final EditText input = new EditText(getContext());
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

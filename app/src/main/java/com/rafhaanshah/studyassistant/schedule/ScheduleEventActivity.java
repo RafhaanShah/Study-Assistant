@@ -251,13 +251,8 @@ public class ScheduleEventActivity extends AppCompatActivity {
             dateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(eventCal.getTimeInMillis()));
             timeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(eventCal.getTimeInMillis()));
 
-            if (scheduleEvent.isReminderSet() && scheduleEvent.getReminderTime() != 0L && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
+            if (scheduleEvent.isReminderSet() && scheduleEvent.getReminderTime() > System.currentTimeMillis()) {
                 notificationCal.setTimeInMillis(scheduleEvent.getReminderTime());
-                notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
-                notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
-                //TODO: Remove these lines after notification testing is finished
-            } else {
-                notificationCal.setTimeInMillis(eventCal.getTimeInMillis() - 3600000);
                 notificationDateText.setText(DateFormat.getDateInstance(DateFormat.MEDIUM).format(notificationCal.getTimeInMillis()));
                 notificationTimeText.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(notificationCal.getTimeInMillis()));
             }

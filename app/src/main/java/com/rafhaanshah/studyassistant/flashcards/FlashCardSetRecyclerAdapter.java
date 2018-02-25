@@ -148,7 +148,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setText(flashCardSet.getTitle());
         input.setSelectAllOnFocus(true);
-        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
         input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

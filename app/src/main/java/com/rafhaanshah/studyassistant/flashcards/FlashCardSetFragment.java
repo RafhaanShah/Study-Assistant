@@ -24,8 +24,7 @@ public class FlashCardSetFragment extends Fragment {
     private static final String BUNDLE_OFFSET = "BUNDLE_OFFSET";
 
     private String cardText, answerText;
-    private int position;
-    private int colour, textColour;
+    private int colour, textColour, position, offset;
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
@@ -46,7 +45,7 @@ public class FlashCardSetFragment extends Fragment {
         cardText = getArguments().getString(BUNDLE_CARD_TEXT);
         answerText = getArguments().getString(BUNDLE_ANSWER_TEXT);
         position = getArguments().getInt(BUNDLE_POSITION);
-        int offset = getArguments().getInt(BUNDLE_OFFSET);
+        offset = getArguments().getInt(BUNDLE_OFFSET);
         colour = HelperUtils.getColour(getContext(), position + offset);
     }
 
@@ -55,7 +54,7 @@ public class FlashCardSetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_set, container, false);
 
-        if (position % 16 == 11 | position % 16 == 12) {
+        if (position + offset % 16 == 11 | position + offset % 16 == 12) {
             textColour = ContextCompat.getColor(getContext(), R.color.textGrey);
         } else {
             textColour = ContextCompat.getColor(getContext(), R.color.textWhite);

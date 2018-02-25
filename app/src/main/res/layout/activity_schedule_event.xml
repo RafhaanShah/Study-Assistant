@@ -155,8 +155,8 @@
                 android:hint="@string/notes"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="250"
-                android:paddingEnd="10dp"
-                android:paddingStart="10dp" />
+                android:padding="10dp"
+                android:scrollbars="vertical" />
 
             <RelativeLayout
                 android:id="@+id/reminder_layout"

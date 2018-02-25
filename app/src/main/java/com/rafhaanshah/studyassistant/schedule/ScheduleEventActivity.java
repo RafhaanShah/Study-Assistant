@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -146,10 +147,25 @@ public class ScheduleEventActivity extends AppCompatActivity {
         realm.close();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void getViews() {
-
         titleText = findViewById(R.id.et_title);
         notesText = findViewById(R.id.et_notes);
+        notesText.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v.getId() == R.id.et_notes) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
         dateText = findViewById(R.id.et_date);
         timeText = findViewById(R.id.et_time);
         notificationDateText = findViewById(R.id.et_notification_date);

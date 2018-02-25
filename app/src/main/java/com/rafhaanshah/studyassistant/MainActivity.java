@@ -1,9 +1,11 @@
 package com.rafhaanshah.studyassistant;
 
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -78,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setTaskDescription(new ActivityManager.TaskDescription(
+                getString(R.string.app_name),
+                BitmapFactory.decodeResource(getResources(), R.drawable.ic_lamp),
+                ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark)));
 
         if (savedInstanceState == null) {
             selectedFragment = ScheduleEventListFragment.newInstance(false);

@@ -104,7 +104,7 @@ public class Notifier {
                 .setShowWhen(true)
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setSmallIcon(R.drawable.ic_check_white_24dp)
+                .setSmallIcon(R.drawable.ic_notification_lamp)
                 .addAction(R.drawable.ic_check_white_24dp, context.getString(R.string.mark_completed), buttonIntent)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setVibrate(new long[]{100, 200, 100});

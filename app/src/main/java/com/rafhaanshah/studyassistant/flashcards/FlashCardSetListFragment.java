@@ -40,6 +40,7 @@ public class FlashCardSetListFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView emptyText;
     private Realm realm;
+    private AlertDialog dialog;
 
     public static FlashCardSetListFragment newInstance() {
         return new FlashCardSetListFragment();
@@ -97,8 +98,11 @@ public class FlashCardSetListFragment extends Fragment {
 
     @Override
     public void onPause() {
-        super.onPause();
         recyclerAdapter.removeListener();
+        recyclerAdapter.dismissDialog();
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+        super.onPause();
     }
 
     @Override
@@ -171,7 +175,7 @@ public class FlashCardSetListFragment extends Fragment {
         });
         builder.setIcon(R.drawable.ic_edit_black_24dp);
         builder.setView(input);
-        final AlertDialog dialog = builder.create();
+        dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override

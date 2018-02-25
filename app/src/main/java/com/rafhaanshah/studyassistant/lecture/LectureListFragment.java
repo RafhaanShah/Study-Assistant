@@ -86,6 +86,12 @@ public class LectureListFragment extends Fragment {
         updateView();
     }
 
+    @Override
+    public void onPause() {
+        recyclerAdapter.dismissDialog();
+        super.onPause();
+    }
+
     private void setOnTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 

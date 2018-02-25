@@ -39,6 +39,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     private Context context;
     private Realm realm;
     private RecyclerView recyclerView;
+    private AlertDialog dialog;
 
     FlashCardSetRecyclerAdapter(Context getContext, Realm getRealm, RecyclerView getRecyclerView) {
         context = getContext;
@@ -60,10 +61,15 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         final FlashCardSet flashCardSet = filteredSets.get(position);
 
         holder.flashCardSetTitle.setText(flashCardSet.getTitle());
-        if (position % 16 == 11 | position % 16 == 12)
-            holder.flashCardSetTitle.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
         holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
         //holder.relativeLayout.setBackgroundColor((HelperUtils.getColour(context, position)));
+
+        if (position % 16 == 11 || position % 16 == 12) {
+            holder.flashCardSetTitle.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
+        } else {
+            holder.flashCardSetTitle.setTextColor(ContextCompat.getColor(context, R.color.textWhite));
+        }
+
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +111,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     void deleteFlashCardSet(final int position) {
         final FlashCardSet set = filteredSets.get(position);
-        new AlertDialog.Builder(context)
+        dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_set))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -131,7 +137,8 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                         notifyItemChanged(position);
                     }
                 })
-                .show();
+                .create();
+        dialog.show();
     }
 
     private void renameFlashCardSet(final FlashCardSet flashCardSet) {
@@ -156,7 +163,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         });
         builder.setIcon(R.drawable.ic_edit_black_24dp);
         builder.setView(input);
-        final AlertDialog dialog = builder.create();
+        dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,6 +230,11 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
 
     void removeListener() {
         flashCardSets.removeAllChangeListeners();
+    }
+
+    void dismissDialog() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

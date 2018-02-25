@@ -35,6 +35,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     private FlashCardSetAdapter flashCardSetAdapter;
     private Realm realm;
     private int lastPage;
+    private AlertDialog dialog;
 
     public static Intent getStartIntent(Context context, String title, int offset) {
         Intent intent = new Intent(context, FlashCardSetActivity.class);
@@ -128,10 +129,16 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPause() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
-        if (viewPager.getAdapter() != null) {
+        if (viewPager.getAdapter() != null)
             saveFlashCard(getFragment(), viewPager.getCurrentItem());
-        }
         super.onDestroy();
         realm.close();
     }
@@ -161,7 +168,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         });
         builder.setIcon(R.drawable.ic_search_black_24dp);
         builder.setView(input);
-        final AlertDialog dialog = builder.create();
+        dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override

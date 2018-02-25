@@ -54,7 +54,7 @@ public class FlashCardSetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_set, container, false);
 
-        if (position + offset % 16 == 11 | position + offset % 16 == 12) {
+        if (position + offset % 16 == 11 || position + offset % 16 == 12) {
             textColour = ContextCompat.getColor(getContext(), R.color.textGrey);
         } else {
             textColour = ContextCompat.getColor(getContext(), R.color.textWhite);

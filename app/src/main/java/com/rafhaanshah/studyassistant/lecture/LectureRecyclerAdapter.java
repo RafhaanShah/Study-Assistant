@@ -44,6 +44,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     private RecyclerView recyclerView;
     private Context context;
     private int sorting;
+    private AlertDialog dialog;
 
     LectureRecyclerAdapter(Context getContext, RecyclerView getRecyclerView, int sort, ArrayList<File> newFiles) {
         files = newFiles;
@@ -72,8 +73,11 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.lectureLetter.setText(lec.getName().substring(0, 1).toUpperCase());
         holder.letterBackground.getBackground().setTint(HelperUtils.getColour(context, position + offset));
 
-        if (position + offset % 16 == 11 | position + offset % 16 == 12)
+        if (position + offset % 16 == 11 || position + offset % 16 == 12) {
             holder.lectureLetter.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
+        } else {
+            holder.lectureLetter.setTextColor(ContextCompat.getColor(context, R.color.textWhite));
+        }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +147,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         });
         builder.setIcon(R.drawable.ic_edit_black_24dp);
         builder.setView(input);
-        final AlertDialog dialog = builder.create();
+        dialog = builder.create();
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +172,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
 
     void deleteLecture(final int position) {
         final File lec = filteredFiles.get(position);
-        new AlertDialog.Builder(context)
+        dialog = new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.confirm_delete))
                 .setMessage(context.getString(R.string.delete_lecture))
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -190,7 +194,8 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                         notifyItemChanged(position);
                     }
                 })
-                .show();
+                .create();
+        dialog.show();
     }
 
     void updateData(int sort, ArrayList<File> newFilteredFiles) {
@@ -254,6 +259,11 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             filteredFiles = files;
         }
         animateList();
+    }
+
+    void dismissDialog() {
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

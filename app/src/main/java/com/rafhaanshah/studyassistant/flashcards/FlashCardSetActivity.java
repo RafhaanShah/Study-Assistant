@@ -36,6 +36,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     private Realm realm;
     private int lastPage;
     private AlertDialog dialog;
+    private Toolbar toolbar;
 
     public static Intent getStartIntent(Context context, String title, int offset) {
         Intent intent = new Intent(context, FlashCardSetActivity.class);
@@ -49,7 +50,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash_card);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -65,7 +66,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
         //viewPager.setPageTransformer(true, new FlashCardStackTransformer());
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(flashCardSetAdapter);
-
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
             @Override
@@ -80,6 +80,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 updateTitle();
             }
         });
+        setTitle(title);
         updateTitle();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -144,7 +145,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     private void updateTitle() {
-        setTitle(getString(R.string.card, viewPager.getCurrentItem() + 1, flashCardSet.getCards().size()));
+        toolbar.setSubtitle(getString(R.string.card, viewPager.getCurrentItem() + 1, flashCardSet.getCards().size()));
     }
 
     private void jumpToFlashCard() {

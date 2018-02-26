@@ -420,8 +420,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(menuLayout, menu);
         setSearchView();
 
-        setTaskDescription(new ActivityManager.TaskDescription(
-                getString(R.string.app_name),
+        setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
                 BitmapFactory.decodeResource(getResources(), R.drawable.ic_lamp), darkColour));
     }
 }

@@ -161,7 +161,8 @@
             <RelativeLayout
                 android:id="@+id/reminder_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp">
 
                 <TextView
                     android:id="@+id/tv_notification_date_time_hint"
@@ -231,7 +232,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/materialRed"
                 android:onClick="deleteEvent"
                 android:text="@string/delete"

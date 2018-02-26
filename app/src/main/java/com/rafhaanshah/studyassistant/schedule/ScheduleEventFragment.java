@@ -42,6 +42,7 @@ public class ScheduleEventFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(STYLE_NO_TITLE, 0);
         int eventID = getArguments().getInt(BUNDLE_ID, -1);
         realm = Realm.getDefaultInstance();
         event = realm.where(ScheduleEvent.class).equalTo(ScheduleEvent.ScheduleEvent_ID, eventID).findFirst();

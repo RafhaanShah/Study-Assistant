@@ -93,4 +93,5 @@
     <string name="title">Title</string>
     <string name="view">View</string>
     <string name="yes">Yes</string>
+    <string name="empty_widget">No Events to Display</string>
 </resources>

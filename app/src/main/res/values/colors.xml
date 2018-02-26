@@ -27,6 +27,7 @@
 
     <color name="dividerGrey">#E0E0E0</color>
     <color name="backgroundGrey">#efefef</color>
+    <color name="backgroundGreyTransparent">#80efefef</color>
     <color name="textWhite">#F5F5F5</color>
     <color name="textGrey">#808080</color>
 

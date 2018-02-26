@@ -42,7 +42,7 @@ import io.realm.Realm;
 
 public class ScheduleEventActivity extends AppCompatActivity {
 
-    public static final String EXTRA_ITEM_ID = "EXTRA_ITEM_ID";
+    public static final String EXTRA_EVENT_ID = "EXTRA_EVENT_ID";
     private static final String BUNDLE_EVENT_TIME_MS = "BUNDLE_EVENT_TIME_MS";
     private static final String BUNDLE_NOTIFICATION_TIME_MS = "BUNDLE_NOTIFICATION_TIME_MS";
     private int eventID;
@@ -59,7 +59,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
 
     public static Intent getStartIntent(Context context, int ID) {
         Intent intent = new Intent(context, ScheduleEventActivity.class);
-        intent.putExtra(EXTRA_ITEM_ID, ID);
+        intent.putExtra(EXTRA_EVENT_ID, ID);
         return intent;
     }
 
@@ -85,7 +85,7 @@ public class ScheduleEventActivity extends AppCompatActivity {
         notificationCal.set(Calendar.MILLISECOND, 0);
 
         realm = Realm.getDefaultInstance();
-        eventID = getIntent().getIntExtra(EXTRA_ITEM_ID, -1);
+        eventID = getIntent().getIntExtra(EXTRA_EVENT_ID, -1);
 
         if (eventID < 0) {
             newEvent = true;

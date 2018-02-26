@@ -18,6 +18,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
@@ -120,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         super.onDestroy();
-        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -272,10 +273,10 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String title = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TITLE);
-                String time = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TEXT);
+                final String title = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TITLE);
+                final String time = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TEXT);
                 final int ID = intent.getIntExtra(Notifier.EXTRA_NOTIFICATION_ID, -1);
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.content), title + " " + time, Snackbar.LENGTH_INDEFINITE)
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.content), title + " " + time, Snackbar.LENGTH_LONG)
                         .setAction(getString(R.string.view), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                 snackbar.show();
             }
         };
-        registerReceiver(broadcastReceiver, new IntentFilter(Notifier.ACTION_ACTIVE_NOTIFICATION));
+        LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(broadcastReceiver, new IntentFilter(Notifier.ACTION_SNACKBAR_NOTIFICATION));
     }
 
     private void setSearchView() {
@@ -398,9 +399,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void newLectureItem(View view) {
         Toast.makeText(getApplicationContext(), getString(R.string.pdf_select), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent()
-                .setType(TYPE_APPLICATION_PDF)
-                .setAction(Intent.ACTION_GET_CONTENT);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
+                .setType(TYPE_APPLICATION_PDF);
         try {
             startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
         } catch (ActivityNotFoundException e) {

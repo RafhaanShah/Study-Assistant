@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.rafhaanshah.studyassistant.R;
@@ -13,6 +14,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.v("Widget", "Provider onUpdate");
         for (int appWidgetId : appWidgetIds) {
             RemoteViews remoteViews = updateWidgetListView(context, appWidgetId);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
@@ -21,25 +23,23 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     private RemoteViews updateWidgetListView(Context context, int appWidgetId) {
-
-        //which layout to show on widget
+        //Which layout to show on widget
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
         //RemoteViews Service needed to provide adapter for ListView
-        Intent svcIntent = new Intent(context, WidgetService.class);
+        Intent intent = new Intent(context, WidgetService.class);
 
-        //passing app widget id to that RemoteViews Service
-        svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        //Pass Widget ID to the RemoteViews Service
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
-        //setting a unique Uri to the intent
-        svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        //Set a unique Uri to the intent
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-        //setting adapter to list view of the widget
-        remoteViews.setRemoteAdapter(R.id.list_view_widget, svcIntent);
+        //Set an adapter to ListView of the widget
+        remoteViews.setRemoteAdapter(R.id.list_view_widget, intent);
 
-        //setting an empty view in case of no data
+        //Set an empty view in case of no data objects
         remoteViews.setEmptyView(R.id.list_view_widget, R.id.tv_widget_empty);
         return remoteViews;
     }
-
 }

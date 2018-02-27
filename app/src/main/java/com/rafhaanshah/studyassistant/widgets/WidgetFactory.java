@@ -20,6 +20,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
     private ArrayList<ScheduleEvent> scheduleEvents;
     private Context context;
     private int appWidgetId, itemCount;
+    //TODO: Update widget preview image
 
     WidgetFactory(Context getContext, Intent intent) {
         Log.v("Widget", "Factory Create");
@@ -56,7 +57,7 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDestroy() {
-        Log.v("Widget", "On Destroy");
+        Log.v("Widget", "Factory On Destroy");
     }
 
     @Override

@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventListFragment;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
+import com.rafhaanshah.studyassistant.widgets.WidgetProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -110,13 +112,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        super.onPause();
+        Log.v("Widget", "Main Paused");
+        WidgetProvider.updateWidgets(MainActivity.this);
         active = false;
         if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt(PREF_SORTING, lectureSorting);
             editor.apply();
         }
+        super.onPause();
     }
 
     @Override

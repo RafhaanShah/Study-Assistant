@@ -2,6 +2,7 @@ package com.rafhaanshah.studyassistant.widgets;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +13,12 @@ import com.rafhaanshah.studyassistant.R;
 
 public class WidgetProvider extends AppWidgetProvider {
 
+    public static void updateWidgets(Context context) {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_widget);
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.v("Widget", "Provider onUpdate");
@@ -19,7 +26,11 @@ public class WidgetProvider extends AppWidgetProvider {
             RemoteViews remoteViews = updateWidgetListView(context, appWidgetId);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.v("Widget", "Provider onReceive");
     }
 
     private RemoteViews updateWidgetListView(Context context, int appWidgetId) {
@@ -42,4 +53,5 @@ public class WidgetProvider extends AppWidgetProvider {
         remoteViews.setEmptyView(R.id.list_view_widget, R.id.tv_widget_empty);
         return remoteViews;
     }
+
 }

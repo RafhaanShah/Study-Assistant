@@ -25,6 +25,8 @@ public class WidgetProvider extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews remoteViews = updateWidgetListView(context, appWidgetId);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+            //TODO: Test if widget is updated
+            //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_widget);
         }
     }
 

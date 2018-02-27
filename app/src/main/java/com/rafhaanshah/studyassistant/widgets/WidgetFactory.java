@@ -3,6 +3,7 @@ package com.rafhaanshah.studyassistant.widgets;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -78,7 +79,10 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int position) {
         final RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.item_widget);
-        remoteView.setTextViewText(R.id.tv_widget, scheduleEvents.get(position).getTitle());
+        ScheduleEvent event = scheduleEvents.get(position);
+        String showTime = DateUtils.getRelativeTimeSpanString(event.getEventTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
+        remoteView.setTextViewText(R.id.tv_widget_title, scheduleEvents.get(position).getTitle());
+        remoteView.setTextViewText(R.id.tv_widget_time, showTime);
         return remoteView;
     }
 

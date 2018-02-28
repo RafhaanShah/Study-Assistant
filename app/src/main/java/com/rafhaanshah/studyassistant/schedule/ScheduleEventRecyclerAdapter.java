@@ -1,6 +1,7 @@
 package com.rafhaanshah.studyassistant.schedule;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -188,7 +189,6 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                                 scheduleEvent.deleteFromRealm();
                             }
                         });
-
                         notifyItemRemoved(position);
                     }
                 })
@@ -221,6 +221,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                 }
             }
         });
+        ((Activity) context).closeContextMenu();
         notifyItemRemoved(position);
         if (notification && notificationTime > System.currentTimeMillis()) {
             Notifier.cancelScheduledNotification(context, scheduleEvent.getID());

@@ -149,8 +149,6 @@ public class FlashCardSetActivity extends AppCompatActivity {
     }
 
     private void jumpToFlashCard() {
-        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
-
         final EditText input = new EditText(FlashCardSetActivity.this);
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
@@ -190,6 +188,7 @@ public class FlashCardSetActivity extends AppCompatActivity {
                 }
             }
         });
+        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this, input);
     }
 
     private void addFlashCard() {

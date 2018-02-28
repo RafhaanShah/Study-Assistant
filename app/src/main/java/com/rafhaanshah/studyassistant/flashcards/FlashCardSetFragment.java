@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +23,7 @@ public class FlashCardSetFragment extends Fragment {
     private static final String BUNDLE_OFFSET = "BUNDLE_OFFSET";
 
     private String cardText, answerText;
-    private int colour, textColour, position, offset;
+    private int colour, position, offset;
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
@@ -54,13 +53,7 @@ public class FlashCardSetFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedView = inflater.inflate(R.layout.fragment_flash_card_set, container, false);
 
-        if (position + offset % 16 == 11 || position + offset % 16 == 12) {
-            textColour = ContextCompat.getColor(getContext(), R.color.textGrey);
-        } else {
-            textColour = ContextCompat.getColor(getContext(), R.color.textWhite);
-        }
-
-        currentFragment = CardFragment.newInstance(cardText, colour, textColour);
+        currentFragment = CardFragment.newInstance(cardText, colour);
         getChildFragmentManager()
                 .beginTransaction()
                 .add(R.id.container, currentFragment)
@@ -101,9 +94,9 @@ public class FlashCardSetFragment extends Fragment {
         setText();
         Fragment newFragment;
         if (cardFlipped) {
-            newFragment = CardFragment.newInstance(cardText, colour, textColour);
+            newFragment = CardFragment.newInstance(cardText, colour);
         } else {
-            newFragment = CardFragment.newInstance(answerText, HelperUtils.darkenColor(colour, 0.25), textColour);
+            newFragment = CardFragment.newInstance(answerText, HelperUtils.darkenColor(colour, 0.25));
         }
 
         getChildFragmentManager()
@@ -122,20 +115,18 @@ public class FlashCardSetFragment extends Fragment {
 
         private static final String BUNDLE_TEXT = "BUNDLE_TEXT";
         private static final String BUNDLE_COLOUR = "BUNDLE_COLOUR";
-        private static final String BUNDLE_TEXT_COLOUR = "BUNDLE_TEXT_COLOUR";
 
         private String text;
         private TextView textView, editText;
         private boolean editing;
-        private int colour, textColour;
+        private int colour;
         private CardView card;
 
-        private static CardFragment newInstance(String str, int col, int textCol) {
+        private static CardFragment newInstance(String str, int col) {
             CardFragment frag = new CardFragment();
-            Bundle bundle = new Bundle(3);
+            Bundle bundle = new Bundle(2);
             bundle.putString(BUNDLE_TEXT, str);
             bundle.putInt(BUNDLE_COLOUR, col);
-            bundle.putInt(BUNDLE_TEXT_COLOUR, textCol);
             frag.setArguments(bundle);
             return frag;
         }
@@ -145,7 +136,6 @@ public class FlashCardSetFragment extends Fragment {
             super.onCreate(savedInstanceState);
             text = getArguments().getString(BUNDLE_TEXT);
             colour = getArguments().getInt(BUNDLE_COLOUR);
-            textColour = getArguments().getInt(BUNDLE_TEXT_COLOUR);
         }
 
         @Override
@@ -165,9 +155,6 @@ public class FlashCardSetFragment extends Fragment {
 
             textView.setText(text);
             editText.setText(text);
-
-            textView.setTextColor(textColour);
-            editText.setTextColor(textColour);
 
             editText.setSelectAllOnFocus(true);
             card.setCardBackgroundColor(colour);
@@ -194,7 +181,7 @@ public class FlashCardSetFragment extends Fragment {
                     if (!focused) {
                         HelperUtils.hideSoftKeyboard(getContext(), view);
                     } else {
-                        HelperUtils.showSoftKeyboard(getContext());
+                        HelperUtils.showSoftKeyboard(getContext(), view);
                     }
                 }
             });

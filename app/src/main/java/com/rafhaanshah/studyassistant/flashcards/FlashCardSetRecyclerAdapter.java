@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -63,12 +62,6 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         holder.flashCardSetTitle.setText(flashCardSet.getTitle());
         holder.cardView.setCardBackgroundColor(HelperUtils.getColour(context, position));
         //holder.relativeLayout.setBackgroundColor((HelperUtils.getColour(context, position)));
-
-        if (position % 16 == 11 || position % 16 == 12) {
-            holder.flashCardSetTitle.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
-        } else {
-            holder.flashCardSetTitle.setTextColor(ContextCompat.getColor(context, R.color.textWhite));
-        }
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,8 +135,6 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
     }
 
     private void renameFlashCardSet(final FlashCardSet flashCardSet) {
-        HelperUtils.showSoftKeyboard(context);
-
         final EditText input = new EditText(context);
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setText(flashCardSet.getTitle());
@@ -188,6 +179,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 }
             }
         });
+        HelperUtils.showSoftKeyboard(context, input);
     }
 
     private void resetList() {

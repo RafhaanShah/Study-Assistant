@@ -51,11 +51,12 @@ public class Notifier {
         if (alarmManager != null) {
             // TODO: Uncomment this line for actual time notifications
             //alarmManager.set(AlarmManager.RTC, alarmTime, createAlarmIntent(context, eventID, eventTitle, timeString));
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 20000, createAlarmIntent(context, eventID, eventTitle, timeString));
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 15000, createAlarmIntent(context, eventID, eventTitle, timeString));
         }
     }
 
     public static void cancelScheduledNotification(Context context, int eventID) {
+        Log.v("Notification", "Cancel");
         // Get an existing Alarm Pending Intent and cancel it
         PendingIntent pendingIntent = getAlarmIntent(context, eventID);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -83,7 +84,6 @@ public class Notifier {
     }
 
     static void showNotification(Context context, Intent intent) {
-        Log.v("Notification", "Show");
         final int ID = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
         final String title = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
         final String text = intent.getStringExtra(EXTRA_NOTIFICATION_TEXT);
@@ -93,6 +93,7 @@ public class Notifier {
 
         // If the Main Activity is not active, show a notification
         if (notificationManager != null && !MainActivity.isActive()) {
+            Log.v("Notification", "Show Notification");
             Notification notification = buildNotification(context,
                     createClickIntent(context, ID),
                     createButtonIntent(context, ID),
@@ -101,11 +102,12 @@ public class Notifier {
 
             // Else show a snackbar
         } else {
+            Log.v("Notification", "Show Snackbar");
             Intent snackBarIntent = new Intent(ACTION_SNACKBAR_NOTIFICATION);
             snackBarIntent.putExtra(EXTRA_NOTIFICATION_TITLE, title);
             snackBarIntent.putExtra(EXTRA_NOTIFICATION_TEXT, text);
             snackBarIntent.putExtra(EXTRA_NOTIFICATION_ID, ID);
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(snackBarIntent);
         }
     }
 

@@ -28,11 +28,13 @@ public class WidgetProvider extends AppWidgetProvider {
             //TODO: Test if widget is updated
             //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_widget);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v("Widget", "Provider onReceive");
+        super.onReceive(context, intent);
     }
 
     private RemoteViews updateWidgetListView(Context context, int appWidgetId) {

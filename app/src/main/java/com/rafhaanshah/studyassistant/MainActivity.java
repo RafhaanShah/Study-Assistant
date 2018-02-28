@@ -1,7 +1,6 @@
 package com.rafhaanshah.studyassistant;
 
 import android.app.ActivityManager;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +38,6 @@ import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventListFragment;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
-import com.rafhaanshah.studyassistant.widgets.WidgetProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         Log.v("Widget", "Main Paused");
-        WidgetProvider.updateWidgets(MainActivity.this);
+        //WidgetProvider.updateWidgets(MainActivity.this);
         active = false;
         if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();
@@ -277,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.v("Notification", "Snackbar Received");
                 final String title = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TITLE);
                 final String time = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TEXT);
                 final int ID = intent.getIntExtra(Notifier.EXTRA_NOTIFICATION_ID, -1);
@@ -304,10 +303,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (getCurrentFocus() != null) {
-                    HelperUtils.hideSoftKeyboard(MainActivity.this, getCurrentFocus());
-                    getCurrentFocus().clearFocus();
-                }
                 return false;
             }
 
@@ -405,9 +400,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), getString(R.string.pdf_select), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
                 .setType(TYPE_APPLICATION_PDF);
-        try {
-            startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
-        } catch (ActivityNotFoundException e) {
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            //startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
+            startActivityForResult(intent, REQUEST_LECTURE);
+        } else {
             Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
         }
     }

@@ -156,8 +156,6 @@ public class FlashCardSetListFragment extends Fragment {
     }
 
     public void newFlashCardSet() {
-        HelperUtils.showSoftKeyboard(getContext());
-
         final EditText input = new EditText(getContext());
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
@@ -210,6 +208,7 @@ public class FlashCardSetListFragment extends Fragment {
                 }
             }
         });
+        HelperUtils.showSoftKeyboard(getContext(), input);
     }
 
     private void updateView() {

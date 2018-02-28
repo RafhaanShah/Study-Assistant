@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -51,54 +52,45 @@ public class HelperUtils {
 
     public static int getColour(Context context, int position) {
         int colour = 0;
-        switch (position % 16) {
+        switch (position % 12) {
             case 0:
                 colour = ContextCompat.getColor(context, R.color.materialRed);
                 break;
             case 1:
-                colour = ContextCompat.getColor(context, R.color.materialPink);
+                colour = ContextCompat.getColor(context, R.color.materialDeepOrange);
                 break;
             case 2:
-                colour = ContextCompat.getColor(context, R.color.materialPurple);
-                break;
-            case 3:
-                colour = ContextCompat.getColor(context, R.color.materialDeepPurple);
-                break;
-            case 4:
-                colour = ContextCompat.getColor(context, R.color.materialIndigo);
-                break;
-            case 5:
-                colour = ContextCompat.getColor(context, R.color.materialBlue);
-                break;
-            case 6:
-                colour = ContextCompat.getColor(context, R.color.materialLightBlue);
-                break;
-            case 7:
-                colour = ContextCompat.getColor(context, R.color.materialCyan);
-                break;
-            case 8:
-                colour = ContextCompat.getColor(context, R.color.materialTeal);
-                break;
-            case 9:
-                colour = ContextCompat.getColor(context, R.color.materialGreen);
-                break;
-            case 10:
-                colour = ContextCompat.getColor(context, R.color.materialLightGreen);
-                break;
-            case 11:
-                colour = ContextCompat.getColor(context, R.color.materialLime);
-                break;
-            case 12:
-                colour = ContextCompat.getColor(context, R.color.materialYellow);
-                break;
-            case 13:
-                colour = ContextCompat.getColor(context, R.color.materialAmber);
-                break;
-            case 14:
                 colour = ContextCompat.getColor(context, R.color.materialOrange);
                 break;
-            case 15:
-                colour = ContextCompat.getColor(context, R.color.materialDeepOrange);
+
+            case 3:
+                colour = ContextCompat.getColor(context, R.color.materialPurple);
+                break;
+            case 4:
+                colour = ContextCompat.getColor(context, R.color.materialDeepPurple);
+                break;
+            case 5:
+                colour = ContextCompat.getColor(context, R.color.materialIndigo);
+                break;
+
+            case 6:
+                colour = ContextCompat.getColor(context, R.color.materialBlue);
+                break;
+            case 7:
+                colour = ContextCompat.getColor(context, R.color.materialLightBlue);
+                break;
+            case 8:
+                colour = ContextCompat.getColor(context, R.color.materialCyan);
+                break;
+
+            case 9:
+                colour = ContextCompat.getColor(context, R.color.materialTeal);
+                break;
+            case 10:
+                colour = ContextCompat.getColor(context, R.color.materialGreen);
+                break;
+            case 11:
+                colour = ContextCompat.getColor(context, R.color.materialLightGreen);
                 break;
         }
         return colour;
@@ -126,21 +118,20 @@ public class HelperUtils {
     }
 
     public static void hideSoftKeyboard(Context context, View view) {
-        try {
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        } catch (NullPointerException E) {
-            // Not a huge problem if keyboard is not hidden
-        }
     }
 
-    public static void showSoftKeyboard(Context context) {
-        try {
-            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-        } catch (NullPointerException E) {
-            // Not a huge problem if keyboard is not automatically shown
-        }
+    public static void showSoftKeyboard(final Context context, View view) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.toggleSoftInput(0, 0);
+            }
+        }, 100);
     }
 
     public static void rotateView(View view, int duration) {

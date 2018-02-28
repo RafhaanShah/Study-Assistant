@@ -1,12 +1,11 @@
 package com.rafhaanshah.studyassistant.lecture;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -72,13 +71,6 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         holder.lectureDate.setText(DateFormat.getDateInstance().format(lec.lastModified()));
         holder.lectureLetter.setText(lec.getName().substring(0, 1).toUpperCase());
         holder.letterBackground.getBackground().setTint(HelperUtils.getColour(context, position + offset));
-
-        if (position + offset % 16 == 11 || position + offset % 16 == 12) {
-            holder.lectureLetter.setTextColor(ContextCompat.getColor(context, R.color.textGrey));
-        } else {
-            holder.lectureLetter.setTextColor(ContextCompat.getColor(context, R.color.textWhite));
-        }
-
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,9 +78,10 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 Intent intent = new Intent(Intent.ACTION_VIEW)
                         .setDataAndType(uri, MainActivity.TYPE_APPLICATION_PDF)
                         .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                try {
-                    context.startActivity(Intent.createChooser(intent, context.getString(R.string.pdf_reader_select)));
-                } catch (ActivityNotFoundException e) {
+                if (intent.resolveActivity(context.getPackageManager()) != null) {
+                    //context.startActivity(Intent.createChooser(intent, context.getString(R.string.pdf_reader_select)));
+                    context.startActivity(intent);
+                } else {
                     Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -126,8 +119,6 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
     }
 
     private void renameLecture(final File lec) {
-        HelperUtils.showSoftKeyboard(context);
-
         final EditText input = new EditText(context);
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
@@ -168,6 +159,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 }
             }
         });
+        HelperUtils.showSoftKeyboard(context, input);
     }
 
     void deleteLecture(final int position) {
@@ -178,6 +170,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 .setPositiveButton(context.getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         filteredFiles.remove(position);
+                        ((Activity) context).closeContextMenu();
                         notifyItemRemoved(position);
                         lec.delete();
                     }

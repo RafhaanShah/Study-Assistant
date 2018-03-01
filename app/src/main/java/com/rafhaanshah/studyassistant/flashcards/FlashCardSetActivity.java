@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -20,12 +19,15 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.omadahealth.lollipin.lib.PinCompatActivity;
+import com.github.omadahealth.lollipin.lib.managers.LockManager;
+import com.rafhaanshah.studyassistant.LockScreenActivity;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
 import io.realm.Realm;
 
-public class FlashCardSetActivity extends AppCompatActivity {
+public class FlashCardSetActivity extends PinCompatActivity {
 
     private static final String EXTRA_SET_TITLE = "EXTRA_SET_TITLE";
     private static final String EXTRA_SET_OFFSET = "EXTRA_SET_OFFSET";
@@ -131,6 +133,9 @@ public class FlashCardSetActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
+        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
+        if (lockManager != null)
+            lockManager.getAppLock().setLastActiveMillis();
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();
         super.onPause();

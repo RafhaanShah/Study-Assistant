@@ -11,7 +11,6 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -31,6 +30,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.github.omadahealth.lollipin.lib.PinCompatActivity;
+import com.github.omadahealth.lollipin.lib.managers.LockManager;
+import com.rafhaanshah.studyassistant.LockScreenActivity;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.notifications.Notifier;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
@@ -40,7 +42,7 @@ import java.util.Calendar;
 
 import io.realm.Realm;
 
-public class ScheduleEventActivity extends AppCompatActivity {
+public class ScheduleEventActivity extends PinCompatActivity {
 
     public static final String EXTRA_EVENT_ID = "EXTRA_EVENT_ID";
     private static final String BUNDLE_EVENT_TIME_MS = "BUNDLE_EVENT_TIME_MS";
@@ -139,6 +141,14 @@ public class ScheduleEventActivity extends AppCompatActivity {
         super.onRestoreInstanceState(in);
         eventCal.setTimeInMillis(in.getLong(BUNDLE_EVENT_TIME_MS));
         notificationCal.setTimeInMillis(in.getLong(BUNDLE_NOTIFICATION_TIME_MS));
+    }
+
+    @Override
+    public void onPause() {
+        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
+        if (lockManager != null)
+            lockManager.getAppLock().setLastActiveMillis();
+        super.onPause();
     }
 
     @Override

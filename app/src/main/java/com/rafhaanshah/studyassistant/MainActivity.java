@@ -18,7 +18,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +29,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.omadahealth.lollipin.lib.PinCompatActivity;
+import com.github.omadahealth.lollipin.lib.managers.AppLock;
+import com.github.omadahealth.lollipin.lib.managers.LockManager;
 import com.rafhaanshah.studyassistant.flashcards.FlashCardSetListFragment;
 import com.rafhaanshah.studyassistant.lecture.LectureListFragment;
 import com.rafhaanshah.studyassistant.notifications.Notifier;
@@ -45,7 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends PinCompatActivity {
 
     public static final String TYPE_APPLICATION_PDF = "application/pdf";
     public static final String PDF = ".pdf";
@@ -54,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
     public static final int SORT_SIZE = 2;
     private static final int REQUEST_LECTURE = 100;
     private static final String PREF_SORTING = "PREF_SORTING";
+    private static final String PREF_PASSCODE = "PREF_PASSCODE";
     private static final String BUNDLE_SCHEDULE_HISTORY = "BUNDLE_SCHEDULE_HISTORY";
+    private static final int REQUEST_CODE_ENABLE = 999;
     private static boolean active = false;
-
     private boolean scheduleHistory;
     private int lectureSorting;
     private Menu menu;
@@ -96,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
             selectedFragment = getSupportFragmentManager().findFragmentById(R.id.content);
             scheduleHistory = savedInstanceState.getBoolean(BUNDLE_SCHEDULE_HISTORY, false);
         }
+
+        setPassCode();
     }
 
     @Override
@@ -112,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         Log.v("Widget", "Main Paused");
         //WidgetProvider.updateWidgets(MainActivity.this);
+        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
+        if (lockManager != null)
+            lockManager.getAppLock().setLastActiveMillis();
         active = false;
         if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();
@@ -182,7 +190,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_ENABLE) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(PREF_PASSCODE, true);
+            editor.apply();
+            //TODO: Show popup for secret question
+        } else if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
             String fileName = "temporary new file name" + PDF;
 
@@ -291,6 +304,14 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         LocalBroadcastManager.getInstance(MainActivity.this).registerReceiver(broadcastReceiver, new IntentFilter(Notifier.ACTION_SNACKBAR_NOTIFICATION));
+    }
+
+    private void setPassCode() {
+        if (!preferences.getBoolean(PREF_PASSCODE, false)) {
+            Intent intent = new Intent(MainActivity.this, LockScreenActivity.class);
+            intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
+            startActivityForResult(intent, REQUEST_CODE_ENABLE);
+        }
     }
 
     private void setSearchView() {

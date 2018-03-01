@@ -31,5 +31,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:27.0.2'
     compile 'com.android.support:design:27.0.2'
     compile 'com.android.support:cardview-v7:27.0.2'
+    compile('com.github.omadahealth:lollipin:2.1.0@aar') { transitive = true }
     testCompile 'junit:junit:4.12'
 }

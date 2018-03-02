@@ -40,6 +40,7 @@ import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventFragment;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventListFragment;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
+import com.rafhaanshah.studyassistant.widgets.WidgetProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,9 +57,7 @@ public class MainActivity extends PinCompatActivity {
     public static final int SORT_SIZE = 2;
     private static final int REQUEST_LECTURE = 100;
     private static final String PREF_SORTING = "PREF_SORTING";
-    private static final String PREF_PASSCODE = "PREF_PASSCODE";
     private static final String BUNDLE_SCHEDULE_HISTORY = "BUNDLE_SCHEDULE_HISTORY";
-    private static final int REQUEST_CODE_ENABLE = 999;
     private static boolean active = false;
     private boolean scheduleHistory;
     private int lectureSorting;
@@ -115,8 +114,7 @@ public class MainActivity extends PinCompatActivity {
 
     @Override
     public void onPause() {
-        Log.v("Widget", "Main Paused");
-        //WidgetProvider.updateWidgets(MainActivity.this);
+        WidgetProvider.updateWidgets(MainActivity.this);
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
         if (lockManager != null)
             lockManager.getAppLock().setLastActiveMillis();
@@ -190,11 +188,8 @@ public class MainActivity extends PinCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_ENABLE) {
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(PREF_PASSCODE, true);
-            editor.apply();
-            //TODO: Show popup for secret question
+        if (requestCode == LockScreenActivity.REQUEST_CODE_ENABLE) {
+            LockScreenActivity.setSecurityQuestion(MainActivity.this);
         } else if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
             String fileName = "temporary new file name" + PDF;
@@ -307,10 +302,10 @@ public class MainActivity extends PinCompatActivity {
     }
 
     private void setPassCode() {
-        if (!preferences.getBoolean(PREF_PASSCODE, false)) {
+        if (!preferences.getBoolean(LockScreenActivity.PREF_PASSCODE, false)) {
             Intent intent = new Intent(MainActivity.this, LockScreenActivity.class);
             intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
-            startActivityForResult(intent, REQUEST_CODE_ENABLE);
+            startActivityForResult(intent, LockScreenActivity.REQUEST_CODE_ENABLE);
         }
     }
 

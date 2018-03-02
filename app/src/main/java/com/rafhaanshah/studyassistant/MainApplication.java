@@ -18,7 +18,9 @@ public class MainApplication extends Application {
 
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
         lockManager.enableAppLock(this, LockScreenActivity.class);
-        lockManager.getAppLock().setTimeout(60000);
+        //lockManager.disableAppLock();
+        //lockManager.getAppLock().setTimeout(60000);
+        lockManager.getAppLock().setTimeout(1000);
         lockManager.getAppLock().setOnlyBackgroundTimeout(true);
         lockManager.getAppLock().setLogoId(R.drawable.ic_lock_black_24dp);
 

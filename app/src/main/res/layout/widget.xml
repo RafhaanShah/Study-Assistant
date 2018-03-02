@@ -47,6 +47,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/empty_widget"
+        android:textColor="@color/textGrey"
         android:textSize="20sp"
         android:visibility="gone" />
 

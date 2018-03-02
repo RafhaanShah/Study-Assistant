@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
@@ -180,7 +179,7 @@ public class FlashCardSetListFragment extends Fragment {
             public void onClick(View view) {
                 final String title = input.getText().toString().trim();
                 if (TextUtils.isEmpty(title)) {
-                    Toast.makeText(getContext(), R.string.error_blank, Toast.LENGTH_SHORT).show();
+                    input.setError(getString(R.string.blank_input));
                 } else {
                     FlashCardSet set = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
                     if (set == null) {
@@ -201,9 +200,8 @@ public class FlashCardSetListFragment extends Fragment {
                         updateView();
                         dialog.dismiss();
                         getContext().startActivity(FlashCardSetActivity.getStartIntent(getContext(), title, recyclerAdapter.getSetPosition(title)));
-                        //getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
                     } else {
-                        Toast.makeText(getContext(), R.string.error_set_exists, Toast.LENGTH_SHORT).show();
+                        input.setError(getString(R.string.already_exists));
                     }
                 }
             }

@@ -18,6 +18,8 @@
     <string name="content_description_event_type">Event Type</string>
     <string name="content_description_reminder">Event Type</string>
     <string name="date">Due Date</string>
+    <string name="blank_input">Cannot be empty</string>
+    <string name="already_exists">Same name already exists</string>
     <string name="delete">Delete</string>
     <string name="delete_event">Are you sure you want to delete this event?</string>
     <string name="delete_lecture">Are you sure you want to delete this lecture file?</string>

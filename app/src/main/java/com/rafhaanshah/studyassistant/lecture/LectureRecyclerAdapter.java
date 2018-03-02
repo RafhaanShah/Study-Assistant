@@ -80,10 +80,9 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                         .setDataAndType(uri, MainActivity.TYPE_APPLICATION_PDF)
                         .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 if (intent.resolveActivity(context.getPackageManager()) != null) {
-                    //context.startActivity(Intent.createChooser(intent, context.getString(R.string.pdf_reader_select)));
                     context.startActivity(intent);
                 } else {
-                    Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -146,13 +145,13 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
             public void onClick(View view) {
                 String text = input.getText().toString().trim();
                 if (TextUtils.isEmpty(text)) {
-                    Toast.makeText(context, context.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
+                    input.setError(context.getString(R.string.blank_input));
                 } else {
                     File newFile = new File(HelperUtils.getLectureDirectory(context) + File.separator + text + MainActivity.PDF);
                     if (newFile.exists()) {
-                        Toast.makeText(context, context.getString(R.string.error_rename), Toast.LENGTH_LONG).show();
+                        input.setError(context.getString(R.string.already_exists));
                     } else if (!lec.renameTo(newFile)) {
-                        Toast.makeText(context, context.getString(R.string.error_characters), Toast.LENGTH_LONG).show();
+                        input.setError(context.getString(R.string.error_characters));
                     } else {
                         updateData(sorting, HelperUtils.getLectureFiles(context));
                         dialog.dismiss();

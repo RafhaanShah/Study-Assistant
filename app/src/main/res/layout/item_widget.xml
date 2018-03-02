@@ -20,6 +20,7 @@
         android:layout_toEndOf="@id/widget_rectangle"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textColor="@color/textGrey"
         android:textSize="20sp" />
 
     <TextView
@@ -28,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@id/widget_rectangle"
+        android:textColor="@color/textGrey"
         android:textSize="15sp" />
 
     <ImageView

@@ -201,7 +201,7 @@ public class MainActivity extends PinCompatActivity {
             }
 
             if (!fileName.toLowerCase().endsWith(PDF)) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_invalid_file), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_invalid_file), Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -404,7 +404,6 @@ public class MainActivity extends PinCompatActivity {
 
     public void newScheduleItem(View view) {
         startActivity(ScheduleEventActivity.getStartIntent(MainActivity.this, -1));
-        //overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 
     public void newFlashCardItem(View view) {
@@ -420,7 +419,7 @@ public class MainActivity extends PinCompatActivity {
             //startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
             startActivityForResult(intent, REQUEST_LECTURE);
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_LONG).show();
         }
     }
 

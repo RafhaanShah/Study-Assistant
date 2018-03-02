@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,7 +15,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.omadahealth.lollipin.lib.managers.AppLockActivity;
 import com.github.omadahealth.lollipin.lib.managers.LockManager;
@@ -64,7 +64,8 @@ public class LockScreenActivity extends AppLockActivity {
                 final String answer = input.getText().toString();
                 final String question = inputQuestion.getText().toString();
                 if (TextUtils.isEmpty(answer) || TextUtils.isEmpty(question)) {
-                    Toast.makeText(context, R.string.error_blank, Toast.LENGTH_SHORT).show();
+                    input.setError(context.getString(R.string.blank_input));
+                    inputQuestion.setError(context.getString(R.string.blank_input));
                 } else {
                     try {
                         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -121,7 +122,7 @@ public class LockScreenActivity extends AppLockActivity {
             public void onClick(View view) {
                 final String title = input.getText().toString().trim();
                 if (TextUtils.isEmpty(title)) {
-                    Toast.makeText(LockScreenActivity.this, R.string.error_blank, Toast.LENGTH_SHORT).show();
+                    input.setError(getString(R.string.blank_input));
                 } else {
                     try {
                         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -131,13 +132,14 @@ public class LockScreenActivity extends AppLockActivity {
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(LockScreenActivity.this).edit();
                             editor.putBoolean(PREF_PASSCODE, false);
                             editor.apply();
-                            Toast.makeText(LockScreenActivity.this, "Restart App To Set New Passcode", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.content), "Restart App To Set New Passcode", Snackbar.LENGTH_INDEFINITE).show();
+                            dialog.dismiss();
                             LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
                             if (lockManager != null)
                                 lockManager.getAppLock().disableAndRemoveConfiguration();
-                            dialog.dismiss();
+
                         } else {
-                            Toast.makeText(LockScreenActivity.this, "Incorrect Answer", Toast.LENGTH_SHORT).show();
+                            input.setError("Incorrect");
                         }
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();

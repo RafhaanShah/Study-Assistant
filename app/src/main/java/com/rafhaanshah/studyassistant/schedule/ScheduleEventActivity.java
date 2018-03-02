@@ -126,7 +126,6 @@ public class ScheduleEventActivity extends PinCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
 
     @Override
@@ -278,8 +277,16 @@ public class ScheduleEventActivity extends PinCompatActivity {
         final long reminderTime;
         final long eventTime = eventCal.getTimeInMillis();
 
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(timeText.getText().toString()) || TextUtils.isEmpty(dateText.getText().toString())) {
-            Toast.makeText(getApplicationContext(), getString(R.string.fill_event), Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(title)) {
+            titleText.setError(getString(R.string.blank_input));
+            return;
+        }
+        if (TextUtils.isEmpty(dateText.getText().toString())) {
+            timeText.setError(getString(R.string.blank_input));
+            return;
+        }
+        if (TextUtils.isEmpty(timeText.getText().toString())) {
+            dateText.setError(getString(R.string.blank_input));
             return;
         }
 
@@ -290,15 +297,21 @@ public class ScheduleEventActivity extends PinCompatActivity {
         // If event is not complete and notification is on:
         if (!completed && notificationSwitch.isChecked()) {
             if (TextUtils.isEmpty(notificationTimeText.getText().toString()) || TextUtils.isEmpty(notificationDateText.getText().toString())) {
-                Toast.makeText(getApplicationContext(), getString(R.string.fill_notification), Toast.LENGTH_SHORT).show();
+                notificationDateText.setError(getString(R.string.blank_input));
+                notificationTimeText.setError(getString(R.string.blank_input));
+                Toast.makeText(getApplicationContext(), getString(R.string.fill_notification), Toast.LENGTH_LONG).show();
                 return;
             }
             if (eventCal.getTimeInMillis() < notificationCal.getTimeInMillis()) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time), Toast.LENGTH_LONG).show();
+                notificationDateText.setError(getString(R.string.blank_input));
+                notificationTimeText.setError(getString(R.string.blank_input));
                 return;
             }
             if (System.currentTimeMillis() > notificationCal.getTimeInMillis()) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time_past), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_reminder_time_past), Toast.LENGTH_LONG).show();
+                notificationDateText.setError(getString(R.string.blank_input));
+                notificationTimeText.setError(getString(R.string.blank_input));
                 return;
             }
             reminder = true;
@@ -332,7 +345,6 @@ public class ScheduleEventActivity extends PinCompatActivity {
             }
         });
         finish();
-        //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
     }
 
     private int getNextID() {
@@ -363,7 +375,6 @@ public class ScheduleEventActivity extends PinCompatActivity {
                         if (reminderSetting)
                             Notifier.cancelScheduledNotification(ScheduleEventActivity.this, eventID);
                         finish();
-                        //overridePendingTransition(R.anim.slide_to_bottom, R.anim.slide_from_top);
                     }
                 })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {

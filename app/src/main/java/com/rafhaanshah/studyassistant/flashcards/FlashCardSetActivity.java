@@ -128,7 +128,6 @@ public class FlashCardSetActivity extends PinCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
     }
 
     @Override
@@ -179,14 +178,13 @@ public class FlashCardSetActivity extends PinCompatActivity {
             public void onClick(View view) {
                 String text = input.getText().toString().trim();
                 if (TextUtils.isEmpty(text)) {
-                    Toast.makeText(FlashCardSetActivity.this, FlashCardSetActivity.this.getString(R.string.error_blank), Toast.LENGTH_LONG).show();
-                    input.setText("");
+                    input.setError(getString(R.string.already_exists));
                 } else {
                     if (Integer.valueOf(text) <= flashCardSet.getCards().size() && Integer.valueOf(text) > 0) {
                         viewPager.setCurrentItem(Integer.valueOf(text) - 1, true);
                         dialog.dismiss();
                     } else {
-                        Toast.makeText(FlashCardSetActivity.this, FlashCardSetActivity.this.getString(R.string.error_out_of_bounds), Toast.LENGTH_LONG).show();
+                        input.setError(getString(R.string.error_out_of_bounds));
                         input.requestFocus();
                         input.selectAll();
                     }
@@ -198,7 +196,7 @@ public class FlashCardSetActivity extends PinCompatActivity {
 
     private void addFlashCard() {
         if (flashCardSet.getCards().size() > 99) {
-            Toast.makeText(getApplicationContext(), getString(R.string.max_cards), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.max_cards), Toast.LENGTH_LONG).show();
             return;
         }
         saveFlashCard(getFragment(), viewPager.getCurrentItem());
@@ -230,7 +228,6 @@ public class FlashCardSetActivity extends PinCompatActivity {
         });
         if (viewPager.getAdapter() == null) {
             finish();
-            //overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
         } else {
             flashCardSetAdapter.removeFragment(current);
             flashCardSetAdapter.notifyDataSetChanged();

@@ -96,8 +96,6 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
             @Override
             public void onClick(View view) {
                 showDialogFragment(scheduleEvent.getID());
-                //context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
-                //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
             }
         });
         setContextMenu(holder, scheduleEvent);
@@ -173,7 +171,6 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
 
     private void editEvent(ScheduleEvent scheduleEvent) {
         context.startActivity(ScheduleEventActivity.getStartIntent(context, scheduleEvent.getID()));
-        //((Activity) context).overridePendingTransition(R.anim.slide_from_bottom, R.anim.slide_to_top);
     }
 
     private void deleteEvent(final ScheduleEvent scheduleEvent, final int position) {

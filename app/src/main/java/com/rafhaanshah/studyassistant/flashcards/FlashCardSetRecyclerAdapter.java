@@ -23,7 +23,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
@@ -69,7 +68,6 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             @Override
             public void onClick(View view) {
                 context.startActivity(FlashCardSetActivity.getStartIntent(context, flashCardSet.getTitle(), holder.getAdapterPosition()));
-                //((Activity) context).overridePendingTransition(R.anim.slide_from_right, R.anim.slide_to_left);
             }
         });
         setContextMenu(holder, flashCardSet);
@@ -164,7 +162,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
             public void onClick(View view) {
                 final String title = input.getText().toString().trim();
                 if (TextUtils.isEmpty(title)) {
-                    Toast.makeText(context, R.string.error_blank, Toast.LENGTH_SHORT).show();
+                    input.setError(context.getString(R.string.blank_input));
                 } else {
                     FlashCardSet set = realm.where(FlashCardSet.class).equalTo(FlashCardSet.FlashCardSet_TITLE, title).findFirst();
                     if (set == null) {
@@ -177,7 +175,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                         });
                         dialog.dismiss();
                     } else {
-                        Toast.makeText(context, R.string.error_set_exists, Toast.LENGTH_SHORT).show();
+                        input.setError(context.getString(R.string.already_exists));
                     }
                 }
             }

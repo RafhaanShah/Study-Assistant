@@ -3,6 +3,7 @@
     <color name="colorPrimary">@color/materialLightBlue</color>
     <color name="colorPrimaryDark">@color/materialLightBlueDark</color>
     <color name="colorAccent">@color/materialAmber</color>
+    <color name="colorPrimaryTransparent">#CC03A9F4</color>
 
     <color name="materialRed">#F44336</color>
     <color name="materialPink">#E91E63</color>
@@ -20,14 +21,13 @@
     <color name="materialAmber">#FFC107</color>
     <color name="materialOrange">#FF9800</color>
     <color name="materialDeepOrange">#FF5722</color>
-
     <color name="materialRedDark">#D32F2F</color>
     <color name="materialGreenDark">#388E3C</color>
     <color name="materialLightBlueDark">#0288D1</color>
 
     <color name="dividerGrey">#E0E0E0</color>
     <color name="backgroundGrey">#efefef</color>
-    <color name="backgroundGreyTransparent">#80efefef</color>
+    <color name="backgroundWhiteTransparent">#CCFFFFFF</color>
     <color name="textWhite">#F5F5F5</color>
     <color name="textGrey">#808080</color>
 

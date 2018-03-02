@@ -144,6 +144,7 @@ public class ScheduleEventFragment extends DialogFragment {
                 typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(3), null, null, null);
                 break;
         }
+        icons.recycle();
         HelperUtils.setDrawableColour(typeText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(context, R.color.textGrey));
     }
 

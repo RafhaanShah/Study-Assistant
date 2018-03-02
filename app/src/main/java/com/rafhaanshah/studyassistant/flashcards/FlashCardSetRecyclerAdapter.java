@@ -1,10 +1,12 @@
 package com.rafhaanshah.studyassistant.flashcards;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
@@ -116,6 +118,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                             }
                         });
                         notifyItemRemoved(position);
+                        Snackbar.make(((Activity) context).findViewById(R.id.content), context.getString(R.string.deleted), Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {

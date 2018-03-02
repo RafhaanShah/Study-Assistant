@@ -33,7 +33,7 @@
             android:maxLines="1"
             android:paddingEnd="4dp"
             android:paddingStart="20dp"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_event_type"

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -172,6 +173,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                         filteredFiles.remove(position);
                         ((Activity) context).closeContextMenu();
                         notifyItemRemoved(position);
+                        Snackbar.make(((Activity) context).findViewById(R.id.content), context.getString(R.string.deleted), Snackbar.LENGTH_SHORT).show();
                         lec.delete();
                     }
                 })

@@ -199,12 +199,12 @@ public class ScheduleEventActivity extends PinCompatActivity {
                 }
         );
 
-        final TypedArray icons = getResources().obtainTypedArray(R.array.event_type_icons);
         spinner = findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                final TypedArray icons = getResources().obtainTypedArray(R.array.event_type_icons);
                 switch (i) {
                     case 0:
                         type = ScheduleEvent.ScheduleEventType.HOMEWORK;
@@ -223,6 +223,7 @@ public class ScheduleEventActivity extends PinCompatActivity {
                         imageView.setImageDrawable(icons.getDrawable(3));
                         break;
                 }
+                icons.recycle();
                 HelperUtils.setDrawableColour(imageView.getDrawable(), ContextCompat.getColor(ScheduleEventActivity.this, android.R.color.black));
             }
 

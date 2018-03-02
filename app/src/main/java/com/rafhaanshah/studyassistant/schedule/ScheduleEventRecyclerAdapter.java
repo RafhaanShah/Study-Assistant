@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -166,6 +167,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                 typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(3), null, null, null);
                 break;
         }
+        icons.recycle();
         HelperUtils.setDrawableColour(typeText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(context, R.color.textGrey));
     }
 
@@ -189,6 +191,7 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
                                 scheduleEvent.deleteFromRealm();
                             }
                         });
+                        Snackbar.make(((Activity) context).findViewById(R.id.content), context.getString(R.string.deleted), Snackbar.LENGTH_SHORT).show();
                         notifyItemRemoved(position);
                     }
                 })
@@ -209,10 +212,11 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         final ScheduleEvent scheduleEvent = filteredEvents.get(position);
         final long notificationTime = scheduleEvent.getReminderTime();
         final boolean notification = scheduleEvent.isReminderSet();
+        final boolean status = scheduleEvent.isCompleted();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                if (scheduleEvent.isCompleted()) {
+                if (status) {
                     scheduleEvent.setCompleted(false);
                 } else {
                     scheduleEvent.setCompleted(true);
@@ -225,6 +229,11 @@ public class ScheduleEventRecyclerAdapter extends RecyclerView.Adapter<ScheduleE
         notifyItemRemoved(position);
         if (notification && notificationTime > System.currentTimeMillis()) {
             Notifier.cancelScheduledNotification(context, scheduleEvent.getID());
+        }
+        if (status) {
+            Snackbar.make(((Activity) context).findViewById(R.id.content), context.getString(R.string.undo_complete), Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(((Activity) context).findViewById(R.id.content), context.getString(R.string.event_complete), Snackbar.LENGTH_SHORT).show();
         }
     }
 

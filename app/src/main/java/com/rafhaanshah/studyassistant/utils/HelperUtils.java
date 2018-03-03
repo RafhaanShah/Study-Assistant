@@ -123,7 +123,7 @@ public class HelperUtils {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static void showSoftKeyboard(final Context context, View view) {
+    public static void showSoftKeyboard(final Context context) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

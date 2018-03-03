@@ -180,7 +180,7 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
                 }
             }
         });
-        HelperUtils.showSoftKeyboard(context, input);
+        HelperUtils.showSoftKeyboard(context);
     }
 
     private void resetList() {

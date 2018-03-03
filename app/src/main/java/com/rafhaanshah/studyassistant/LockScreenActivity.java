@@ -85,7 +85,7 @@ public class LockScreenActivity extends AppLockActivity {
                 }
             }
         });
-        HelperUtils.showSoftKeyboard(context, input);
+        HelperUtils.showSoftKeyboard(context);
     }
 
     static void closeDialog() {
@@ -167,7 +167,7 @@ public class LockScreenActivity extends AppLockActivity {
                 }
             }
         });
-        HelperUtils.showSoftKeyboard(LockScreenActivity.this, input);
+        HelperUtils.showSoftKeyboard(LockScreenActivity.this);
     }
 
     @Override

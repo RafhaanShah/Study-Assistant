@@ -191,7 +191,7 @@ public class FlashCardSetActivity extends PinCompatActivity {
                 }
             }
         });
-        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this, input);
+        HelperUtils.showSoftKeyboard(FlashCardSetActivity.this);
     }
 
     private void addFlashCard() {

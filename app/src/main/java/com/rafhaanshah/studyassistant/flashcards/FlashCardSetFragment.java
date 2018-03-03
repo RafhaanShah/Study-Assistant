@@ -181,18 +181,6 @@ public class FlashCardSetFragment extends Fragment {
                 public void afterTextChanged(Editable editable) {
                 }
             });
-
-            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean focused) {
-                    if (!focused) {
-                        HelperUtils.hideSoftKeyboard(getContext(), view);
-                    } else {
-                        HelperUtils.showSoftKeyboard(getContext(), view);
-                    }
-                }
-            });
-
         }
 
         private void editCard() {
@@ -202,8 +190,10 @@ public class FlashCardSetFragment extends Fragment {
                     textView.setVisibility(View.GONE);
                     editText.setVisibility(View.VISIBLE);
                     editText.requestFocus();
+                    HelperUtils.showSoftKeyboard(getContext());
                 } else {
                     editing = false;
+                    HelperUtils.hideSoftKeyboard(getContext(), editText);
                     editText.setVisibility(View.GONE);
                     textView.setVisibility(View.VISIBLE);
                 }

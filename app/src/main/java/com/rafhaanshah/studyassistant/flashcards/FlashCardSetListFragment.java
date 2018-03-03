@@ -209,7 +209,7 @@ public class FlashCardSetListFragment extends Fragment {
                 }
             }
         });
-        HelperUtils.showSoftKeyboard(getContext(), input);
+        HelperUtils.showSoftKeyboard(getContext());
     }
 
     private void updateView() {

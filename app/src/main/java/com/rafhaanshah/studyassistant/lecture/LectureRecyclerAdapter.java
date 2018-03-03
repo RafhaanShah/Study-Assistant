@@ -159,7 +159,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 }
             }
         });
-        HelperUtils.showSoftKeyboard(context, input);
+        HelperUtils.showSoftKeyboard(context);
     }
 
     void deleteLecture(final int position) {

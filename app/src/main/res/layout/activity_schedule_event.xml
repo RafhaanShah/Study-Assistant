@@ -216,7 +216,6 @@
                     android:layout_toEndOf="@id/tv_notification_date_time_hint" />
 
                 <ImageView
-                    android:id="@+id/image_view_reminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"

@@ -9,6 +9,4 @@
     <dimen name="card_max_elevation">8dp</dimen>
     <dimen name="card_text_margin">20dp</dimen>
     <dimen name="empty_text_margin">10dp</dimen>
-    <dimen name="activity_margin">8dp</dimen>
-    <dimen name="card_corner">2dp</dimen>
 </resources>

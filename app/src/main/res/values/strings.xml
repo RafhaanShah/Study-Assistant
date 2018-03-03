@@ -27,30 +27,24 @@
     <string name="date_and_time">%1$s, %2$s</string>
     <string name="disabled_shortcut">Shortcut Disabled</string>
     <string name="edit_event">Edit Event</string>
-    <string name="ellipses">…</string>
     <string name="empty_flash_cards">There are no flash card sets! Press the button on the bottom right to get started.</string>
     <string name="empty_lectures">No lecture files added! Press the button on the bottom right to retrieve one from your files.</string>
     <string name="empty_schedule">You have no events! Press the button on the bottom right to add a new one.</string>
-    <string name="error_blank">Error: Enter some text</string>
     <string name="error_characters">Invalid characters entered</string>
     <string name="error_file_added">File has already been added</string>
     <string name="error_file_picker">No file browser app installed</string>
     <string name="error_inaccessible_file">"Error: File location may not be accessible"</string>
     <string name="error_invalid_file">Error: Not a PDF file</string>
-    <string name="error_notification_time">Reminder time cannot be in the past</string>
     <string name="error_out_of_bounds">That card number does not exist</string>
     <string name="error_pdf">Error: No PDF reader app installed</string>
-    <string name="error_rename">Error: A file with that name already exists</string>
     <string name="error_reminder_time">Reminder time cannot be after the event</string>
     <string name="error_reminder_time_past">Reminder time cannot be in the past</string>
-    <string name="error_set_exists">A flash card set with that name already exists</string>
     <string name="event_complete">Event Is Completed</string>
     <string name="event_status">Event Status</string>
     <string name="event_type">Event Type</string>
     <string name="exam">Exam</string>
     <string name="incomplete">Incomplete</string>
     <string name="file_provider_authority" translatable="false">com.rafhaanshah.studyassistant.utils.GenericFileProvider</string>
-    <string name="fill_event">Please fill in the title and select a date</string>
     <string name="fill_notification">Please fill in the reminder options</string>
     <string name="filter">Filter</string>
     <string name="go_to_card">Go To Card Number:</string>
@@ -76,20 +70,16 @@
     <string name="no">No</string>
     <string name="no_reminder">No Reminder Set</string>
     <string name="notes">Notes</string>
-    <string name="notification_text">You have some reminders</string>
     <string name="notification_date">Notification Date</string>
     <string name="notification_time">Notification Time</string>
     <string name="notification_switch">Set Reminder</string>
-    <string name="package_name" translatable="false">com.rafhaanshah.studyassistant</string>
     <string name="pdf_select">Select a PDF file</string>
-    <string name="pdf_reader_select">Select a PDF Reader App</string>
     <string name="pick_date_time">Pick Date and Time</string>
     <string name="rename">Rename</string>
     <string name="rename_file">Rename File</string>
     <string name="rename_flash_card_set">Rename Flash Card Set</string>
     <string name="save">Save</string>
     <string name="search">Search</string>
-    <string name="shortcut_disabled">Shortcut Disabled</string>
     <string name="sort_date">Sorting by added date</string>
     <string name="sort_size">Sorting by file size</string>
     <string name="sort_title">Sorting by title</string>
@@ -98,7 +88,6 @@
     <string name="view">View</string>
     <string name="yes">Yes</string>
     <string name="deleted">Deleted</string>
-    <string name="event_completed">Event Completed</string>
     <string name="undo_complete">Undo Complete</string>
     <string name="empty_widget">No Events to Display</string>
 </resources>

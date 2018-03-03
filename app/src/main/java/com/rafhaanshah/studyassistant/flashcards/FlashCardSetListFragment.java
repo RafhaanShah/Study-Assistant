@@ -27,6 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.rafhaanshah.studyassistant.MainApplication;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
@@ -108,6 +109,8 @@ public class FlashCardSetListFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         realm.close();
+        super.onDestroy();
+        MainApplication.getRefWatcher(getActivity()).watch(this);
     }
 
     private void setItemTouchHelper() {

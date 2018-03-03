@@ -11,11 +11,13 @@ import java.util.ArrayList;
 public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<FlashCardSetFragment> flashCardSetFragments;
+    private FragmentManager fragmentManager;
     private FlashCardSet flashCardSet;
     private int offset;
 
     FlashCardSetAdapter(FragmentManager fm, FlashCardSet set, int colourOffset) {
         super(fm);
+        fragmentManager = fm;
         flashCardSet = set;
         offset = colourOffset;
         flashCardSetFragments = new ArrayList<>(flashCardSet.getCards().size());
@@ -56,6 +58,7 @@ public class FlashCardSetAdapter extends FragmentStatePagerAdapter {
     }
 
     void removeFragment(int position) {
+        fragmentManager.beginTransaction().remove(flashCardSetFragments.get(position)).commit();
         flashCardSetFragments.remove(position);
     }
 

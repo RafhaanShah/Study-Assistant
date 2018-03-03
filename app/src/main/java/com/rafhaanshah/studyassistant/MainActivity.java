@@ -79,6 +79,7 @@ public class MainActivity extends PinCompatActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.v("Main", "Created");
 
         preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         lectureSorting = preferences.getInt(PREF_SORTING, 0);
@@ -115,21 +116,23 @@ public class MainActivity extends PinCompatActivity {
     @Override
     public void onPause() {
         WidgetProvider.updateWidgets(MainActivity.this);
-        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
-        if (lockManager != null)
-            lockManager.getAppLock().setLastActiveMillis();
         active = false;
         if (lectureSorting != preferences.getInt(PREF_SORTING, 0)) {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt(PREF_SORTING, lectureSorting);
             editor.apply();
         }
+        LockScreenActivity.closeDialog();
+        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
+        if (lockManager != null)
+            lockManager.getAppLock().setLastActiveMillis();
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        Log.v("Main", "Destroyed");
         super.onDestroy();
     }
 
@@ -302,7 +305,8 @@ public class MainActivity extends PinCompatActivity {
     }
 
     private void setPassCode() {
-        if (!preferences.getBoolean(LockScreenActivity.PREF_PASSCODE, false)) {
+        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
+        if (!preferences.getBoolean(LockScreenActivity.PREF_PASSCODE_SET, false)) {
             Intent intent = new Intent(MainActivity.this, LockScreenActivity.class);
             intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
             startActivityForResult(intent, LockScreenActivity.REQUEST_CODE_ENABLE);

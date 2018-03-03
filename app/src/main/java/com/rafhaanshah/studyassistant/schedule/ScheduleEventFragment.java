@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.rafhaanshah.studyassistant.MainApplication;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
@@ -69,6 +70,8 @@ public class ScheduleEventFragment extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
         realm.close();
+        super.onDestroy();
+        MainApplication.getRefWatcher(getActivity()).watch(this);
     }
 
     private void setHeaderColour(@NonNull final View view) {

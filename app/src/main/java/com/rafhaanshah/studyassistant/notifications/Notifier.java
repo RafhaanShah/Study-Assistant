@@ -19,7 +19,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.DateUtils;
-import android.util.Log;
 
 import com.rafhaanshah.studyassistant.MainActivity;
 import com.rafhaanshah.studyassistant.R;
@@ -33,7 +32,7 @@ public class Notifier {
 
     public static final String ACTION_SNACKBAR_NOTIFICATION = "com.rafhaanshah.studyassistant.action.EVENT_SNACKBAR_NOTIFICATION";
     public static final String EXTRA_NOTIFICATION_TITLE = "EXTRA_NOTIFICATION_TITLE";
-    public static final String EXTRA_NOTIFICATION_TEXT = "EXTRA_NOTIFICATION_TEXT";
+    public static final String EXTRA_NOTIFICATION_EVENT_TIME = "EXTRA_NOTIFICATION_EVENT_TIME";
     public static final String EXTRA_NOTIFICATION_ID = "EXTRA_NOTIFICATION_ID";
     static final String ACTION_NOTIFICATION = "com.rafhaanshah.studyassistant.action.EVENT_NOTIFICATION";
     static final String ACTION_MARK_EVENT = "com.rafhaanshah.studyassistant.action.MARK_EVENT";
@@ -43,20 +42,17 @@ public class Notifier {
     private Notifier() {
     }
 
-    public static void scheduleNotification(Context context, int eventID, String eventTitle, String timeString, long alarmTime) {
-        Log.v("Notification", "Set");
+    public static void scheduleNotification(Context context, int eventID, String eventTitle, Long eventTime, long alarmTime) {
         // Schedule an Alarm to fire a Pending Intent at the given time
         // It will overwrite an existing Alarm with the same Pending Intent
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
-            // TODO: Uncomment this line for actual time notifications
-            //alarmManager.set(AlarmManager.RTC, alarmTime, createAlarmIntent(context, eventID, eventTitle, timeString));
-            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 15000, createAlarmIntent(context, eventID, eventTitle, timeString));
+            alarmManager.set(AlarmManager.RTC, alarmTime, createAlarmIntent(context, eventID, eventTitle, eventTime));
+            //alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 10000, createAlarmIntent(context, eventID, eventTitle, eventTime));
         }
     }
 
     public static void cancelScheduledNotification(Context context, int eventID) {
-        Log.v("Notification", "Cancel");
         // Get an existing Alarm Pending Intent and cancel it
         PendingIntent pendingIntent = getAlarmIntent(context, eventID);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -66,13 +62,13 @@ public class Notifier {
         }
     }
 
-    private static PendingIntent createAlarmIntent(Context context, int eventID, String eventTitle, String timeString) {
+    private static PendingIntent createAlarmIntent(Context context, int eventID, String eventTitle, Long eventTime) {
         // Create a Pending Intent for the Alarm, includes the ID, Notification Title and Text
         Intent intent = new Intent(context, NotificationReceiver.class);
         intent.setAction(ACTION_NOTIFICATION);
         intent.putExtra(EXTRA_NOTIFICATION_ID, eventID);
         intent.putExtra(EXTRA_NOTIFICATION_TITLE, eventTitle);
-        intent.putExtra(EXTRA_NOTIFICATION_TEXT, timeString);
+        intent.putExtra(EXTRA_NOTIFICATION_EVENT_TIME, eventTime);
         return PendingIntent.getBroadcast(context, eventID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -86,36 +82,35 @@ public class Notifier {
     static void showNotification(Context context, Intent intent) {
         final int ID = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1);
         final String title = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
-        final String text = intent.getStringExtra(EXTRA_NOTIFICATION_TEXT);
+        final Long eventTime = intent.getLongExtra(EXTRA_NOTIFICATION_EVENT_TIME, 0L);
 
         setEventReminderOff(ID);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // If the Main Activity is not active, show a notification
         if (notificationManager != null && !MainActivity.isActive()) {
-            Log.v("Notification", "Show Notification");
             Notification notification = buildNotification(context,
                     createClickIntent(context, ID),
                     createButtonIntent(context, ID),
-                    title, text);
+                    title, eventTime);
             notificationManager.notify(ID, notification);
 
             // Else show a snackbar
         } else {
-            Log.v("Notification", "Show Snackbar");
             Intent snackBarIntent = new Intent(ACTION_SNACKBAR_NOTIFICATION);
             snackBarIntent.putExtra(EXTRA_NOTIFICATION_TITLE, title);
-            snackBarIntent.putExtra(EXTRA_NOTIFICATION_TEXT, text);
+            snackBarIntent.putExtra(EXTRA_NOTIFICATION_EVENT_TIME, eventTime);
             snackBarIntent.putExtra(EXTRA_NOTIFICATION_ID, ID);
             LocalBroadcastManager.getInstance(context).sendBroadcast(snackBarIntent);
         }
     }
 
-    private static Notification buildNotification(Context context, PendingIntent clickIntent, PendingIntent buttonIntent, String title, String text) {
+    private static Notification buildNotification(Context context, PendingIntent clickIntent, PendingIntent buttonIntent, String title, Long time) {
         // Build a notification with the given Title, Text and Intents
+        final String timeString = DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_EVENT)
                 .setContentTitle(title)
-                .setContentText(text)
+                .setContentText(timeString)
                 .setContentIntent(clickIntent)
                 .setGroup(NOTIFICATION_GROUP_EVENT)
                 .setShowWhen(true)
@@ -190,14 +185,11 @@ public class Notifier {
                 .equalTo(ScheduleEvent.ScheduleEvent_REMINDER, true)
                 // are not in the past,
                 .greaterThan(ScheduleEvent.ScheduleEvent_TIME, System.currentTimeMillis())
-                // that do not have the reminder set to a past time
-                .greaterThan(ScheduleEvent.ScheduleEvent_REMINDER_TIME, System.currentTimeMillis())
                 .findAll();
 
         for (ScheduleEvent scheduleEvent : scheduleEvents) {
             // Schedule a notification for each event
-            String timeString = DateUtils.getRelativeTimeSpanString(scheduleEvent.getEventTime(), scheduleEvent.getReminderTime(), DateUtils.MINUTE_IN_MILLIS).toString();
-            Notifier.scheduleNotification(context, scheduleEvent.getID(), scheduleEvent.getTitle(), timeString, scheduleEvent.getReminderTime());
+            Notifier.scheduleNotification(context, scheduleEvent.getID(), scheduleEvent.getTitle(), scheduleEvent.getEventTime(), scheduleEvent.getReminderTime());
         }
         realm.close();
     }

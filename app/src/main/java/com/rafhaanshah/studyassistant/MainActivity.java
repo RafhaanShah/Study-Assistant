@@ -21,7 +21,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,7 +79,6 @@ public class MainActivity extends PinCompatActivity {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.v("Main", "Created");
 
         preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         lectureSorting = preferences.getInt(PREF_SORTING, 0);
@@ -132,7 +131,6 @@ public class MainActivity extends PinCompatActivity {
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        Log.v("Main", "Destroyed");
         super.onDestroy();
     }
 
@@ -286,11 +284,12 @@ public class MainActivity extends PinCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.v("Notification", "Snackbar Received");
                 final String title = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TITLE);
-                final String time = intent.getStringExtra(Notifier.EXTRA_NOTIFICATION_TEXT);
+                final Long time = intent.getLongExtra(Notifier.EXTRA_NOTIFICATION_EVENT_TIME, 0L);
                 final int ID = intent.getIntExtra(Notifier.EXTRA_NOTIFICATION_ID, -1);
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.content), title + " " + time, Snackbar.LENGTH_LONG)
+                final String timeString = DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString();
+
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.content), title + " " + timeString, Snackbar.LENGTH_LONG)
                         .setAction(getString(R.string.view), new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

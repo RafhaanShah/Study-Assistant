@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -316,8 +315,7 @@ public class ScheduleEventActivity extends PinCompatActivity {
             }
             reminder = true;
             reminderTime = notificationCal.getTimeInMillis();
-            String timeString = DateUtils.getRelativeTimeSpanString(eventTime, reminderTime, DateUtils.MINUTE_IN_MILLIS).toString();
-            Notifier.scheduleNotification(ScheduleEventActivity.this, eventID, title, timeString, reminderTime);
+            Notifier.scheduleNotification(ScheduleEventActivity.this, eventID, title, eventTime, reminderTime);
         } else {
             // No reminder
             reminder = false;

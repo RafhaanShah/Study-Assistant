@@ -35,14 +35,14 @@ public class LockScreenActivity extends AppLockActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(10, 10, 10, 10);
 
-        final EditText input = new EditText(context);
-        input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        input.setHint("Security Question Answer");
         final EditText inputQuestion = new EditText(context);
         inputQuestion.setHint("Security Question");
         inputQuestion.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-        inputQuestion.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        inputQuestion.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         inputQuestion.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
+
+        final EditText input = new EditText(context);
+        input.setHint("Security Question Answer");
         input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
 

@@ -20,9 +20,19 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_description_btn_close"
             android:paddingBottom="20dp"
-            android:paddingEnd="20dp"
-            android:paddingStart="0dp"
             android:src="@drawable/ic_close_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/btn_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8dp"
+            android:layout_toStartOf="@id/btn_edit"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/content_description_btn_edit"
+            android:paddingBottom="20dp"
+            android:src="@drawable/ic_today_white_24dp" />
 
         <ImageButton
             android:id="@+id/btn_edit"
@@ -34,8 +44,6 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/content_description_btn_edit"
             android:paddingBottom="20dp"
-            android:paddingEnd="0dp"
-            android:paddingStart="20dp"
             android:src="@drawable/ic_edit_white_24dp" />
 
         <TextView

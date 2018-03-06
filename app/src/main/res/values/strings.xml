@@ -13,6 +13,7 @@
     <string name="completed">Completed</string>
     <string name="confirm">Confirm</string>
     <string name="confirm_delete">Confirm Delete</string>
+    <string name="content_description_btn_calendar">Add to Calendar Button</string>
     <string name="content_description_btn_close">Close Button</string>
     <string name="content_description_btn_edit">Edit Button</string>
     <string name="content_description_btn_new">New Button</string>
@@ -32,13 +33,14 @@
     <string name="empty_lectures">No lecture files added! Press the button on the bottom right to retrieve one from your files.</string>
     <string name="empty_schedule">You have no events! Press the button on the bottom right to add a new one.</string>
     <string name="empty_widget">No Events to Display</string>
+    <string name="error_calendar_app">No calendar app installed</string>
     <string name="error_characters">Invalid characters entered</string>
     <string name="error_file_added">File has already been added</string>
-    <string name="error_file_picker">No file browser app installed</string>
+    <string name="error_file_app">No file browser app installed</string>
     <string name="error_inaccessible_file">"Error: File location may not be accessible"</string>
     <string name="error_invalid_file">Error: Not a PDF file</string>
     <string name="error_out_of_bounds">That card number does not exist</string>
-    <string name="error_pdf">Error: No PDF reader app installed</string>
+    <string name="error_pdf_app">Error: No PDF reader app installed</string>
     <string name="error_reminder_time">Reminder time cannot be after the event</string>
     <string name="error_reminder_time_past">Reminder time cannot be in the past</string>
     <string name="event_complete">Event Is Completed</string>

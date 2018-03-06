@@ -82,7 +82,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
                 if (intent.resolveActivity(context.getPackageManager()) != null) {
                     context.startActivity(intent);
                 } else {
-                    Toast.makeText(context, context.getString(R.string.error_pdf), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getString(R.string.error_pdf_app), Toast.LENGTH_LONG).show();
                 }
             }
         });

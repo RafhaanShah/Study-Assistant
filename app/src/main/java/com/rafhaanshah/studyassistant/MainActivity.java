@@ -419,10 +419,9 @@ public class MainActivity extends PinCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
                 .setType(TYPE_APPLICATION_PDF);
         if (intent.resolveActivity(getPackageManager()) != null) {
-            //startActivityForResult(Intent.createChooser(intent, getString(R.string.pdf_select)), REQUEST_LECTURE);
             startActivityForResult(intent, REQUEST_LECTURE);
         } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.error_file_picker), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.error_file_app), Toast.LENGTH_LONG).show();
         }
     }
 

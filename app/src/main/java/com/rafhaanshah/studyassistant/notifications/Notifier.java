@@ -24,6 +24,7 @@ import com.rafhaanshah.studyassistant.MainActivity;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
+import com.rafhaanshah.studyassistant.widgets.WidgetProvider;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -170,6 +171,7 @@ public class Notifier {
             });
         }
         realm.close();
+        WidgetProvider.updateWidgets(context);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null)
             notificationManager.cancel(ID);

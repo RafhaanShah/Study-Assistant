@@ -3,8 +3,10 @@ package com.rafhaanshah.studyassistant.schedule;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rafhaanshah.studyassistant.MainApplication;
 import com.rafhaanshah.studyassistant.R;
@@ -31,6 +34,7 @@ public class ScheduleEventFragment extends DialogFragment {
     private static final String BUNDLE_ID = "BUNDLE_ID";
     private ScheduleEvent event;
     private Realm realm;
+    private String typeString;
 
     public static ScheduleEventFragment newInstance(int ID) {
         ScheduleEventFragment frag = new ScheduleEventFragment();
@@ -62,7 +66,7 @@ public class ScheduleEventFragment extends DialogFragment {
             setHeaderColour(view);
             setIconAndType(getContext(), (TextView) view.findViewById(R.id.tv_event_type), event.getType());
             setTextViews(view);
-            setButtonActions((ImageButton) view.findViewById(R.id.btn_close), (ImageButton) view.findViewById(R.id.btn_edit));
+            setButtonActions((ImageButton) view.findViewById(R.id.btn_close), (ImageButton) view.findViewById(R.id.btn_calendar), (ImageButton) view.findViewById(R.id.btn_edit));
         }
     }
 
@@ -147,15 +151,34 @@ public class ScheduleEventFragment extends DialogFragment {
                 typeText.setCompoundDrawablesRelativeWithIntrinsicBounds(icons.getDrawable(3), null, null, null);
                 break;
         }
+        typeString = typeText.getText().toString();
         icons.recycle();
         HelperUtils.setDrawableColour(typeText.getCompoundDrawablesRelative()[0], ContextCompat.getColor(context, R.color.textGrey));
     }
 
-    private void setButtonActions(ImageButton closeButton, ImageButton editButton) {
+    private void setButtonActions(ImageButton closeButton, ImageButton calendarButton, ImageButton editButton) {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
+            }
+        });
+
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getEventTime())
+                        .putExtra(CalendarContract.Events.TITLE, event.getTitle())
+                        .putExtra(CalendarContract.Events.DESCRIPTION, typeString + System.lineSeparator() + event.getNotes())
+                        .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                    dismiss();
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.error_calendar_app), Toast.LENGTH_LONG).show();
+                }
             }
         });
 

@@ -1,5 +1,7 @@
 package com.rafhaanshah.studyassistant.widgets;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -9,6 +11,7 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.rafhaanshah.studyassistant.R;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
 
 public class WidgetProvider extends AppWidgetProvider {
 
@@ -16,6 +19,13 @@ public class WidgetProvider extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int appWidgetIds[] = appWidgetManager.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_widget);
+    }
+
+    private static PendingIntent createClickIntent(Context context, int eventID) {
+        Intent clickIntent = new Intent(context, ScheduleEventActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addNextIntentWithParentStack(clickIntent);
+        return stackBuilder.getPendingIntent(eventID, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override
@@ -34,24 +44,30 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     private RemoteViews updateWidgetListView(Context context, int appWidgetId) {
-        //Which layout to show on widget
+        // Which layout to show on widget
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
-        //RemoteViews Service needed to provide adapter for ListView
+        // RemoteViews Service needed to provide adapter for ListView
         Intent intent = new Intent(context, WidgetService.class);
 
-        //Pass Widget ID to the RemoteViews Service
+        // Pass Widget ID to the RemoteViews Service
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
-        //Set a unique Uri to the intent
+        // Set a unique Uri to the intent
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-        //Set an adapter to ListView of the widget
+        // Set an adapter to ListView of the widget
         remoteViews.setRemoteAdapter(R.id.list_view_widget, intent);
 
-        //Set an empty view in case of no data objects
+        // Set an empty view in case of no data objects
         remoteViews.setEmptyView(R.id.list_view_widget, R.id.tv_widget_empty);
+
+        // Set intent template for list items
+        remoteViews.setPendingIntentTemplate(R.id.list_view_widget, createClickIntent(context, -2));
+
+        // Set intent for the new button
+        remoteViews.setOnClickPendingIntent(R.id.btn_widget_new, createClickIntent(context, -1));
+
         return remoteViews;
     }
-
 }

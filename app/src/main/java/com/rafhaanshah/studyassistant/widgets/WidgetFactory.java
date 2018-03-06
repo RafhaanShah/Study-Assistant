@@ -12,6 +12,7 @@ import android.widget.RemoteViewsService;
 
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.schedule.ScheduleEvent;
+import com.rafhaanshah.studyassistant.schedule.ScheduleEventActivity;
 
 import java.util.ArrayList;
 
@@ -90,6 +91,10 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
             colour = ContextCompat.getColor(context, R.color.materialOrange);
         }
 
+        Intent intent = new Intent();
+        intent.putExtra(ScheduleEventActivity.EXTRA_EVENT_ID, event.getID());
+        remoteView.setOnClickFillInIntent(R.id.widget_item_layout, intent);
+
         setIcon(remoteView, event.getType());
         remoteView.setTextViewText(R.id.tv_widget_title, scheduleEvents.get(position).getTitle());
         remoteView.setTextViewText(R.id.tv_widget_date, showTime);
@@ -126,4 +131,5 @@ public class WidgetFactory implements RemoteViewsService.RemoteViewsFactory {
         }
         icons.recycle();
     }
+
 }

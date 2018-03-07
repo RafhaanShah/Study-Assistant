@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rafhaanshah.studyassistant.MainApplication;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
@@ -66,7 +65,7 @@ public class FlashCardSetFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MainApplication.getRefWatcher(getActivity()).watch(this);
+        //MainApplication.getRefWatcher(getActivity()).watch(this);
     }
 
     int getPosition() {

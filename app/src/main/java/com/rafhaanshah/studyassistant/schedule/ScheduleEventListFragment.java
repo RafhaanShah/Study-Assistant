@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rafhaanshah.studyassistant.MainApplication;
 import com.rafhaanshah.studyassistant.R;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
@@ -103,7 +102,7 @@ public class ScheduleEventListFragment extends Fragment {
         super.onDestroy();
         realm.close();
         super.onDestroy();
-        MainApplication.getRefWatcher(getActivity()).watch(this);
+        //MainApplication.getRefWatcher(getActivity()).watch(this);
     }
 
     private void setItemTouchHelper() {

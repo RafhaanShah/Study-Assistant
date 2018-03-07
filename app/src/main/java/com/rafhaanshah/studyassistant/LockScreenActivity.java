@@ -19,9 +19,6 @@ import com.github.omadahealth.lollipin.lib.managers.AppLockActivity;
 import com.github.omadahealth.lollipin.lib.managers.LockManager;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 public class LockScreenActivity extends AppLockActivity {
 
     static final String PREF_PASSCODE_SET = "PREF_PASSCODE_SET";
@@ -69,19 +66,13 @@ public class LockScreenActivity extends AppLockActivity {
                     input.setError(context.getString(R.string.blank_input));
                     inputQuestion.setError(context.getString(R.string.blank_input));
                 } else {
-                    try {
-                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                        messageDigest.update(answer.getBytes());
-                        String encryptedString = new String(messageDigest.digest());
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                        editor.putString(PREF_QUESTION, question);
-                        editor.putString(PREF_ANSWER, encryptedString);
-                        editor.putBoolean(LockScreenActivity.PREF_PASSCODE_SET, true);
-                        editor.apply();
-                        dialog.dismiss();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
+                    String encryptedString = HelperUtils.hashString(answer);
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                    editor.putString(PREF_QUESTION, question);
+                    editor.putString(PREF_ANSWER, encryptedString);
+                    editor.putBoolean(LockScreenActivity.PREF_PASSCODE_SET, true);
+                    editor.apply();
+                    dialog.dismiss();
                 }
             }
         });
@@ -110,7 +101,7 @@ public class LockScreenActivity extends AppLockActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LockScreenActivity.this);
 
         final String questionString = preferences
-                .getString(PREF_QUESTION, "No Question Set. Press Confirm to Reset.");
+                .getString(PREF_QUESTION, "No Security Question Set. Press Confirm to Reset Passcode.");
         final String encryptedAnswer = preferences
                 .getString(PREF_ANSWER, "");
         final boolean passSet = preferences.getBoolean(LockScreenActivity.PREF_PASSCODE_SET, false);
@@ -145,24 +136,18 @@ public class LockScreenActivity extends AppLockActivity {
                             lockManager.getAppLock().disableAndRemoveConfiguration();
                     }
                 } else {
-                    try {
-                        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-                        messageDigest.update(input.getText().toString().getBytes());
-                        String encryptedString = new String(messageDigest.digest());
-                        if (encryptedString.equals(encryptedAnswer)) {
-                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(LockScreenActivity.this).edit();
-                            editor.putBoolean(PREF_PASSCODE_SET, false);
-                            editor.apply();
-                            dialog.dismiss();
-                            showAlert(LockScreenActivity.this);
-                            LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
-                            if (lockManager != null)
-                                lockManager.getAppLock().disableAndRemoveConfiguration();
-                        } else {
-                            input.setError("Incorrect");
-                        }
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
+                    String encryptedString = HelperUtils.hashString(input.getText().toString());
+                    if (encryptedString.equals(encryptedAnswer)) {
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(LockScreenActivity.this).edit();
+                        editor.putBoolean(PREF_PASSCODE_SET, false);
+                        editor.apply();
+                        dialog.dismiss();
+                        showAlert(LockScreenActivity.this);
+                        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
+                        if (lockManager != null)
+                            lockManager.getAppLock().disableAndRemoveConfiguration();
+                    } else {
+                        input.setError("Incorrect");
                     }
                 }
             }
@@ -195,7 +180,7 @@ public class LockScreenActivity extends AppLockActivity {
     private void showAlert(final Context context) {
         dialog = new AlertDialog.Builder(context).create();
         dialog.setTitle("Attention");
-        dialog.setMessage("Fully restart the app to set a new passcode");
+        dialog.setMessage("Fully close and restart the app to set a new passcode");
         dialog.setCancelable(false);
         dialog.show();
     }

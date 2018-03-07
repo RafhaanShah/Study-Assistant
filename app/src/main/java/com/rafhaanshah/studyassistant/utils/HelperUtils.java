@@ -27,6 +27,9 @@ import com.rafhaanshah.studyassistant.R;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,6 +51,18 @@ public class HelperUtils {
 
     public static File getLectureDirectory(Context context) {
         return new File(context.getFilesDir().getAbsolutePath() + File.separator + LECTURE_DIRECTORY);
+    }
+
+    public static String hashString(String string) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(string.getBytes());
+            byte byteData[] = messageDigest.digest();
+            BigInteger bi = new BigInteger(1, byteData);
+            return String.format("%0" + (byteData.length << 1) + "x", bi);
+        } catch (NoSuchAlgorithmException e) {
+            return "";
+        }
     }
 
     public static int getColour(Context context, int position) {

@@ -144,7 +144,7 @@ public class ScheduleEventActivity extends PinCompatActivity {
     @Override
     public void onPause() {
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
-        if (lockManager != null)
+        if (lockManager != null && lockManager.isAppLockEnabled())
             lockManager.getAppLock().setLastActiveMillis();
         super.onPause();
     }

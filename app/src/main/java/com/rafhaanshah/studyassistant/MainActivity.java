@@ -123,7 +123,7 @@ public class MainActivity extends PinCompatActivity {
         }
         LockScreenActivity.closeDialog();
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
-        if (lockManager != null)
+        if (lockManager != null && lockManager.isAppLockEnabled())
             lockManager.getAppLock().setLastActiveMillis();
         super.onPause();
     }

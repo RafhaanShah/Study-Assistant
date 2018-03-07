@@ -133,7 +133,7 @@ public class FlashCardSetActivity extends PinCompatActivity {
     @Override
     public void onPause() {
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
-        if (lockManager != null)
+        if (lockManager != null && lockManager.isAppLockEnabled())
             lockManager.getAppLock().setLastActiveMillis();
         if (dialog != null && dialog.isShowing())
             dialog.dismiss();

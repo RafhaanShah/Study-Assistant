@@ -70,6 +70,7 @@ public class ScheduleEventTest {
     @Test
     public void scheduleEventTest() {
         mActivityTestRule.launchActivity(new Intent());
+        typePasscode();
 
         ViewInteraction floatingActionButton = onView(
                 allOf(withId(R.id.fab),
@@ -99,14 +100,9 @@ public class ScheduleEventTest {
                                 5)));
         appCompatEditText2.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        appCompatButton2.perform(scrollTo(), click());
+        ViewInteraction appCompatButton = onView(
+                withText("OK"));
+        appCompatButton.perform(click());
 
         ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.et_time),
@@ -117,14 +113,9 @@ public class ScheduleEventTest {
                                 6)));
         appCompatEditText3.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        appCompatButton3.perform(scrollTo(), click());
+        ViewInteraction appCompatButton2 = onView(
+                withText("OK"));
+        appCompatButton2.perform(click());
 
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.menu_btn_save_event), withText("Save"),
@@ -249,14 +240,9 @@ public class ScheduleEventTest {
                                 12)));
         appCompatButton4.perform(scrollTo(), click());
 
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(android.R.id.button1), withText("Yes"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        appCompatButton5.perform(scrollTo(), click());
+        ViewInteraction appCompatButton3 = onView(
+                withText("Yes"));
+        appCompatButton3.perform(click());
 
         ViewInteraction textView4 = onView(
                 allOf(withId(R.id.tv_empty), withText("You have no events! Press the button on the bottom right to add a new one."),
@@ -274,21 +260,12 @@ public class ScheduleEventTest {
         Context context = getInstrumentation().getTargetContext();
         SharedPreferences preferenceManager = PreferenceManager.getDefaultSharedPreferences(context);
         preferenceManager.edit().clear()
-                .putString("PASSWORD_SALT_PREFERENCE_KEY", "[-120, 28, -65, 39, -115, -26, 54, 9, 108, -60, 101, 121," +
-                        "-113, -96, -26, 106, 20, -15, -50, -40, 84, -74, -35, 65, -54, -37, -69, 110, 110, 125, 84, -123, 49, -6, -97, -32, 59," +
-                        "60, -57, -47, 1, -115, -26, 65, 12, -51, 63, -15, 41, -4, -118, 32, 87, -46, -68, 103, 121, 34, 126, 21, 119, 33, -97, -24," +
-                        "-4, -91, 64, 11, 45, -85, 77, 106, 103, -51, 119, -114, -27, 69, 48, 106, 23, -122, -55, 7, -30, 30, -14, 12, 68, -30, -14, -17," +
-                        "91, 82, -34, 120, -128, -9, 10, -91, 31, -15, -76, 113, -26, -85, 108, 26, -111, 112, -112, -38, 110, 119, 118, -122, 41, 67, 8, 41," +
-                        "-112, -69, -109, 53, -100, 5, 105, -65, 2, -33, 59, -45, 87, -119, 107, -73, 34, -66, -4, 113, -74, 75, 118, 8, -34, -79, 70, 16, 89," +
-                        "-8, 11, -124, 46, -42, -3, -11, 31, 89, -52, -54, -118, -80, 1, -18, 9, 107, 81, 9, 53, -93, -53, -56, -109, -94, -44, -78, 41, 19, 56," +
-                        "-92, -91, 122, -86, -118, 38, 54, 90, -83, 59, -17, -49, -57, 77, -92, 30, 16, 41, -67, 32, 95, 52, -8, -48, -56, -72, -67, -38, -57, -35," +
-                        "-58, -68, -3, 24, 125, 115, 24, 93, 18, 107, 14, -59, 1, -79, 109, -23, 34, 68, -116, 37, -5, -81, 82, -50, 97, 42, 113, -41, -90, -83, 40," +
-                        "-84, -74, -105, -106, -79, -79, 63, 98, -95, 39, -22, 12, 45, 66, -40, -9]")
-                .putString("PASSCODE", "79c6e53812ea5b473d556cb32194c3004750bd5d08d6161b7ce8e986bc29452e")
+                .putString("PASSWORD_SALT_PREFERENCE_KEY", "[-19, -11, 112, -92, 83, -18, 85, 14, -63, 72, 48, 55, 85, -1, 13, -49, -23, 53, -64, -90, 2, -93, -125, -16, -84, -82, 38, -34, 2, 76, 77, 117, 72, -2, 26, 17, 57, 50, 108, 25, -29, -60, -83, 94, -44, 18, -83, -6, -15, 72, 74, -64, 109, -10, -100, -31, 118, 47, 114, 62, 117, -79, 78, -50, 32, -100, 18, 72, -15, 104, 113, 98, -88, -118, -21, 90, -60, -39, -19, -7, -27, 109, 70, -28, 108, 66, 68, 8, -117, -126, 56, 38, 44, 7, 79, 60, -108, 79, 21, 6, 0, 115, 2, -112, 1, 86, 28, -122, 32, -112, 59, -26, -80, -28, -9, -8, 15, 102, 27, -98, -112, 56, 32, 32, -93, 14, -56, 24, 109, -86, 109, -70, -58, 93, 124, 47, -10, -94, 22, -68, 38, 30, 33, -1, -109, 3, 66, 39, -119, -105, 3, -32, -116, 16, -23, -70, 58, -15, 111, -85, -85, -125, 25, 45, 109, -50, -73, 40, -28, 46, 97, -85, 17, -123, -55, -125, -9, 16, 103, -98, 57, -78, 125, -98, -30, -38, 116, -69, 5, 90, -47, 100, 94, -91, 30, 114, -76, 7, -73, -88, -113, -98, -89, 75, -30, -62, -8, 21, -47, 71, 16, 103, 69, 61, -23, 19, -63, 67, -34, -91, -113, -33, 52, 38, -102, -102, 87, -60, -99, -40, 50, -29, 120, -82, 41, -39, -85, -6, 109, -73, 22, -117, -122, 85, -4, 51, -103, -88, 1, 85, 4, 77, 89, 67, -60, -58]")
+                .putString("PASSCODE", "728ead185bc393ef75ed9b8e1bad4a64c559f54701128bca4ebd7242d076436d")
+                .putString("ALGORITHM", "2")
                 .putBoolean("PREF_PASSCODE_SET", true)
                 .putString("PREF_QUESTION", "Question")
                 .putString("PREF_ANSWER", "0db52f4076c082518412afd3dd3576e2cb0c63703fd7fed5e23ade60efef31d9")
-                .putString("ALGORITHM", "2")
                 .commit();
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {

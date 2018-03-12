@@ -118,9 +118,8 @@ public class Notifier {
                 .setAutoCancel(true)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setSmallIcon(R.drawable.ic_notification_lamp)
-                .addAction(R.drawable.ic_check_white_24dp, context.getString(R.string.mark_completed), buttonIntent)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setVibrate(new long[]{100, 200, 100});
+                .setDefaults(Notification.DEFAULT_ALL)
+                .addAction(R.drawable.ic_check_white_24dp, context.getString(R.string.mark_completed), buttonIntent);
 
         return builder.build();
     }
@@ -202,9 +201,9 @@ public class Notifier {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_EVENT, context.getString(R.string.channel_name), NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.setDescription(context.getString(R.string.channel_description));
             notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.YELLOW);
+            notificationChannel.setLightColor(Color.CYAN);
             notificationChannel.enableVibration(true);
-            notificationChannel.setVibrationPattern(new long[]{100, 200, 100});
+            notificationChannel.setVibrationPattern(new long[]{500, 500});
             notificationChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)

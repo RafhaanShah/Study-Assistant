@@ -1,8 +1,10 @@
 package com.rafhaanshah.studyassistant;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -21,11 +23,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +55,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import static com.rafhaanshah.studyassistant.LockScreenActivity.PREF_ANSWER;
+import static com.rafhaanshah.studyassistant.LockScreenActivity.PREF_QUESTION;
+
 public class MainActivity extends PinCompatActivity {
 
     public static final String TYPE_APPLICATION_PDF = "application/pdf";
@@ -69,6 +79,7 @@ public class MainActivity extends PinCompatActivity {
     private SharedPreferences preferences;
     private SearchView searchView;
     private BroadcastReceiver broadcastReceiver;
+    private AlertDialog dialog;
 
     public static boolean isActive() {
         return active;
@@ -121,7 +132,6 @@ public class MainActivity extends PinCompatActivity {
             editor.putInt(PREF_SORTING, lectureSorting);
             editor.apply();
         }
-        LockScreenActivity.closeDialog();
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
         if (lockManager != null && lockManager.isAppLockEnabled())
             lockManager.getAppLock().setLastActiveMillis();
@@ -131,6 +141,10 @@ public class MainActivity extends PinCompatActivity {
     @Override
     public void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        LockScreenActivity.closeDialog();
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+        dialog = null;
         super.onDestroy();
     }
 
@@ -190,7 +204,7 @@ public class MainActivity extends PinCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LockScreenActivity.REQUEST_CODE_ENABLE) {
-            LockScreenActivity.setSecurityQuestion(MainActivity.this);
+            setSecurityQuestion(MainActivity.this);
         } else if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
             Uri selectedFile = data.getData();
             String fileName = "temporary new file name" + PDF;
@@ -439,5 +453,57 @@ public class MainActivity extends PinCompatActivity {
 
         setTaskDescription(new ActivityManager.TaskDescription(getString(R.string.app_name),
                 BitmapFactory.decodeResource(getResources(), R.drawable.ic_lamp), darkColour));
+    }
+
+    public void setSecurityQuestion(final Context context) {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(10, 10, 10, 10);
+
+        final EditText inputQuestion = new EditText(context);
+        inputQuestion.setHint("Security Question");
+        inputQuestion.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+        inputQuestion.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        inputQuestion.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
+
+        final EditText input = new EditText(context);
+        input.setHint("Security Question Answer");
+        input.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40)});
+
+        layout.addView(inputQuestion);
+        layout.addView(input);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Set Security Question and Answer");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.setIcon(R.drawable.ic_lock_black_24dp);
+        builder.setView(layout);
+        dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String answer = input.getText().toString();
+                final String question = inputQuestion.getText().toString();
+                if (TextUtils.isEmpty(answer) || TextUtils.isEmpty(question)) {
+                    input.setError(context.getString(R.string.blank_input));
+                    inputQuestion.setError(context.getString(R.string.blank_input));
+                } else {
+                    String encryptedString = HelperUtils.hashString(answer);
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                    editor.putString(PREF_QUESTION, question);
+                    editor.putString(PREF_ANSWER, encryptedString);
+                    editor.putBoolean(LockScreenActivity.PREF_PASSCODE_SET, true);
+                    editor.apply();
+                    dialog.dismiss();
+                }
+            }
+        });
+        HelperUtils.showSoftKeyboard(context);
     }
 }

@@ -184,8 +184,6 @@ public class Notifier {
                 .equalTo(ScheduleEvent.ScheduleEvent_COMPLETED, false)
                 // have reminder enabled,
                 .equalTo(ScheduleEvent.ScheduleEvent_REMINDER, true)
-                // are not in the past,
-                .greaterThan(ScheduleEvent.ScheduleEvent_TIME, System.currentTimeMillis())
                 .findAll();
 
         for (ScheduleEvent scheduleEvent : scheduleEvents) {

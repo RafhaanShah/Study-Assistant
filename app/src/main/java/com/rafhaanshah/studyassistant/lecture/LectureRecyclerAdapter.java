@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
@@ -55,17 +56,18 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         context = getContext;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_lecture, parent, false);
         return new LectureRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final LectureRecyclerAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final LectureRecyclerAdapter.ViewHolder holder, final int position) {
         final File lec = filteredFiles.get(position);
-        int offset = 9;
+        int offset = 10;
         String size = new DecimalFormat("#.##").format((double) lec.length() / 1000000);
         holder.lectureTitle.setText(lec.getName().substring(0, lec.getName().lastIndexOf(".")));
         holder.lectureSize.setText(context.getString(R.string.mb, size));
@@ -203,7 +205,7 @@ public class LectureRecyclerAdapter extends RecyclerView.Adapter<LectureRecycler
         animateList();
     }
 
-    void animateList() {
+    private void animateList() {
         final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_fall_down);
         recyclerView.setLayoutAnimation(controller);
         notifyDataSetChanged();

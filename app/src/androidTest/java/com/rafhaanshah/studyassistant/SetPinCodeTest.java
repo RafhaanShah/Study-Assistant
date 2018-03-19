@@ -15,6 +15,7 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,7 +35,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SetPasscodeTest {
+public class SetPinCodeTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
@@ -110,6 +111,17 @@ public class SetPasscodeTest {
         ViewInteraction appCompatButton = onView(
                 withText("Confirm"));
         appCompatButton.perform(click());
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Context context = getInstrumentation().getTargetContext();
+        boolean set = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(LockScreenActivity.PREF_PASSCODE_SET, false);
+
+        Assert.assertEquals(true, set);
     }
 
     @Before

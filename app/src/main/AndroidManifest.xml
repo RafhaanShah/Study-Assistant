@@ -27,7 +27,9 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <activity android:name=".LockScreenActivity" />
+        <activity
+            android:name=".LockScreenActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".schedule.ScheduleEventActivity"

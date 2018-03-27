@@ -16,12 +16,14 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // Uses LolliPin library from https://github.com/omadahealth/LolliPin
         LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
         lockManager.enableAppLock(this, LockScreenActivity.class);
         lockManager.getAppLock().setTimeout(1000);
         lockManager.getAppLock().setOnlyBackgroundTimeout(true);
         lockManager.getAppLock().setLogoId(R.drawable.ic_lock_black_24dp);
 
+        // Uses Realm library from https://realm.io/
         Realm.init(MainApplication.this);
 
         Notifier.createNotificationChannel(MainApplication.this);

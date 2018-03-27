@@ -65,7 +65,6 @@ public class FlashCardSetActivity extends PinCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         flashCardSetAdapter = new FlashCardSetAdapter(getSupportFragmentManager(), flashCardSet, offset);
 
-        //viewPager.setPageTransformer(true, new FlashCardStackTransformer());
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(flashCardSetAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -287,16 +286,4 @@ public class FlashCardSetActivity extends PinCompatActivity {
     private FlashCardSetFragment getFragment() {
         return flashCardSetAdapter.getFragment(viewPager.getCurrentItem());
     }
-
-    /*private class FlashCardStackTransformer implements ViewPager.PageTransformer {
-        @Override
-        public void transformPage(View page, float position) {
-            if (position >= 0) {
-                page.setScaleX(0.8f - 0.02f * position);
-                page.setScaleY(0.8f);
-                page.setTranslationX(-page.getWidth() * position);
-                page.setTranslationY(30 * position);
-            }
-        }
-    }*/
 }

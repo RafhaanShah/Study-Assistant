@@ -203,11 +203,13 @@ public class MainActivity extends PinCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // If the pin code has been set, prompt for the security question
         if (requestCode == LockScreenActivity.REQUEST_CODE_ENABLE) {
             setSecurityQuestion(MainActivity.this);
         } else if (requestCode == REQUEST_LECTURE && resultCode == RESULT_OK) {
+            // If a PDF file has been selected, copy it to the internal storage
             Uri selectedFile = data.getData();
-            String fileName = "temporary new file name" + PDF;
+            String fileName = "temp" + PDF;
 
             try (Cursor cursor = getContentResolver().query(selectedFile, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -318,7 +320,6 @@ public class MainActivity extends PinCompatActivity {
     }
 
     private void setPassCode() {
-        LockManager<LockScreenActivity> lockManager = LockManager.getInstance();
         if (!preferences.getBoolean(LockScreenActivity.PREF_PASSCODE_SET, false)) {
             Intent intent = new Intent(MainActivity.this, LockScreenActivity.class);
             intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);

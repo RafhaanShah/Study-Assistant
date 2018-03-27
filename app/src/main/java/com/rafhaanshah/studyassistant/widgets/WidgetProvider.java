@@ -43,6 +43,7 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
     }
 
+    // Examples used from https://laaptu.wordpress.com/2013/07/19/android-app-widget-with-listview/
     private RemoteViews updateWidgetListView(Context context, int appWidgetId) {
         // Which layout to show on widget
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);

@@ -18,6 +18,7 @@ import com.github.omadahealth.lollipin.lib.managers.AppLockActivity;
 import com.github.omadahealth.lollipin.lib.managers.LockManager;
 import com.rafhaanshah.studyassistant.utils.HelperUtils;
 
+// Uses LolliPin library found at https://github.com/omadahealth/LolliPin
 public class LockScreenActivity extends AppLockActivity {
 
     static final String PREF_PASSCODE_SET = "PREF_PASSCODE_SET";

@@ -29,6 +29,8 @@ import com.rafhaanshah.studyassistant.widgets.WidgetProvider;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+// Examples used from https://developer.android.com/training/scheduling/alarms.html,
+// https://developer.android.com/training/notify-user/build-notification.html
 public class Notifier {
 
     public static final String ACTION_SNACKBAR_NOTIFICATION = "com.rafhaanshah.studyassistant.action.EVENT_SNACKBAR_NOTIFICATION";

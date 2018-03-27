@@ -49,8 +49,9 @@ public class FlashCardSetRecyclerAdapter extends RecyclerView.Adapter<FlashCardS
         filteredSets = flashCardSets;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.item_flash_card_set, parent, false);
         return new ViewHolder(view);

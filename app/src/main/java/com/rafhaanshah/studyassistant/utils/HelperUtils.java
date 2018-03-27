@@ -53,6 +53,7 @@ public class HelperUtils {
         return new File(context.getFilesDir().getAbsolutePath() + File.separator + LECTURE_DIRECTORY);
     }
 
+    // Example used from https://www.mkyong.com/java/java-sha-hashing-example/
     public static String hashString(String string) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -111,6 +112,7 @@ public class HelperUtils {
         return colour;
     }
 
+    // Example used from https://gist.github.com/martintreurnicht/f6bbb20a43211bc2060e
     public static int darkenColor(int color, double fraction) {
         int red = Color.red(color);
         int green = Color.green(color);

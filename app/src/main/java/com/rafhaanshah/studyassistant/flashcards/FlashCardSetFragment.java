@@ -23,7 +23,8 @@ public class FlashCardSetFragment extends Fragment {
     private static final String BUNDLE_OFFSET = "BUNDLE_OFFSET";
 
     private String cardText, answerText;
-    private int colour, position, offset;
+    private int colour;
+    private int position;
     private boolean cardFlipped;
     private CardFragment currentFragment;
 
@@ -44,7 +45,7 @@ public class FlashCardSetFragment extends Fragment {
         cardText = getArguments().getString(BUNDLE_CARD_TEXT);
         answerText = getArguments().getString(BUNDLE_ANSWER_TEXT);
         position = getArguments().getInt(BUNDLE_POSITION);
-        offset = getArguments().getInt(BUNDLE_OFFSET);
+        int offset = getArguments().getInt(BUNDLE_OFFSET);
         colour = HelperUtils.getColour(getContext(), position + offset);
     }
 
@@ -105,6 +106,7 @@ public class FlashCardSetFragment extends Fragment {
             newFragment = CardFragment.newInstance(answerText, HelperUtils.darkenColor(colour, 0.25));
         }
 
+        // Example used from https://developer.android.com/training/animation/reveal-or-hide-view.html#CardFlip
         getChildFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(

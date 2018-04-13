@@ -321,9 +321,13 @@ public class MainActivity extends PinCompatActivity {
 
     private void setPassCode() {
         if (!preferences.getBoolean(LockScreenActivity.PREF_PASSCODE_SET, false)) {
-            Intent intent = new Intent(MainActivity.this, LockScreenActivity.class);
-            intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
-            startActivityForResult(intent, LockScreenActivity.REQUEST_CODE_ENABLE);
+            if (preferences.contains("PASSCODE")) {
+                setSecurityQuestion(MainActivity.this);
+            } else {
+                Intent intent = new Intent(MainActivity.this, LockScreenActivity.class);
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
+                startActivityForResult(intent, LockScreenActivity.REQUEST_CODE_ENABLE);
+            }
         }
     }
 

@@ -58,7 +58,9 @@ public class LockScreenActivity extends AppLockActivity {
         question.setText(questionString);
 
         layout.addView(question);
-        layout.addView(input);
+        if (!TextUtils.isEmpty(encryptedAnswer)) {
+            layout.addView(input);
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(LockScreenActivity.this);
         builder.setTitle("Answer Your Security Question");
@@ -87,8 +89,8 @@ public class LockScreenActivity extends AppLockActivity {
                     if (encryptedString.equals(encryptedAnswer)) {
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(LockScreenActivity.this).edit();
                         editor.putBoolean(PREF_PASSCODE_SET, false);
-                        editor.putString(PREF_QUESTION, "");
-                        editor.putString(PREF_ANSWER, "");
+                        editor.remove(PREF_QUESTION);
+                        editor.remove(PREF_ANSWER);
                         editor.apply();
                         dialog.dismiss();
                         showAlert(LockScreenActivity.this);
@@ -129,7 +131,7 @@ public class LockScreenActivity extends AppLockActivity {
     private void showAlert(final Context context) {
         dialog = new AlertDialog.Builder(context).create();
         dialog.setTitle("Attention");
-        dialog.setMessage("Fully close and restart the app to set a new passcode");
+        dialog.setMessage("Fully close (from the app switcher) and restart the app to set a new passcode");
         dialog.setCancelable(false);
         dialog.show();
     }
